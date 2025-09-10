@@ -1,0 +1,66 @@
+<div class="app-container">
+  <header class="app-header">
+    <div class="header-content">
+      <h1>📅 File to Calendar Converter</h1>
+      <p>Convert images and PDFs to ICS calendar files</p>
+    </div>
+    <app-auth></app-auth>
+  </header>
+
+  <main class="app-main" *ngIf="user$ | async">
+    <div class="converter-section" *ngIf="!showResults">
+      <app-file-upload (textExtracted)="onTextExtracted($event)"></app-file-upload>
+    </div>
+
+    <div class="results-section" *ngIf="showResults && extractedText">
+      <div class="extracted-text-card">
+        <h2>📄 Extracted Text</h2>
+        <p class="confidence">Confidence: {{ extractedText.confidence }}%</p>
+        <div class="text-content">
+          {{ extractedText.content }}
+        </div>
+      </div>
+
+      <div class="events-card" *ngIf="parsedEvents.length > 0">
+        <h2>📅 Parsed Events ({{ parsedEvents.length }})</h2>
+        <div class="events-list">
+          <div class="event-item" *ngFor="let event of parsedEvents">
+            <h3>{{ event.title }}</h3>
+            <p class="event-date">
+              📅 {{ event.startDate | date:'fullDate' }} at {{ event.startDate | date:'shortTime' }}
+            </p>
+            <p class="event-description" *ngIf="event.description">
+              {{ event.description }}
+            </p>
+          </div>
+        </div>
+        
+        <div class="action-buttons">
+          <button class="download-btn" (click)="downloadCalendar()">
+            📥 Download Calendar (.ics)
+          </button>
+          <button class="reset-btn" (click)="resetConverter()">
+            🔄 Convert Another File
+          </button>
+        </div>
+      </div>
+
+      <div class="no-events-card" *ngIf="parsedEvents.length === 0">
+        <h2>⚠️ No Events Found</h2>
+        <p>We couldn't detect any calendar events in the extracted text. Try uploading a file with clear date/time information.</p>
+        <button class="reset-btn" (click)="resetConverter()">
+          🔄 Try Another File
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <div class="login-prompt" *ngIf="!(user$ | async)">
+    <div class="prompt-content">
+      <h2>🔐 Authentication Required</h2>
+      <p>Please sign in with Google to use the file converter</p>
+    </div>
+  </div>
+</div>
+
+<router-outlet></router-outlet>
