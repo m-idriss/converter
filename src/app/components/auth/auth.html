@@ -1,0 +1,33 @@
+<div class="auth-container">
+  <div *ngIf="user$ | async as user; else signInTemplate" class="user-info">
+    <div class="user-profile">
+      <img [src]="user.photoURL" [alt]="user.displayName" class="profile-image">
+      <div class="user-details">
+        <h3>{{ user.displayName }}</h3>
+        <p>{{ user.email }}</p>
+      </div>
+    </div>
+    <button 
+      class="sign-out-btn" 
+      (click)="signOut()" 
+      [disabled]="isLoading"
+    >
+      {{ isLoading ? 'Signing out...' : 'Sign Out' }}
+    </button>
+  </div>
+
+  <ng-template #signInTemplate>
+    <div class="sign-in-container">
+      <h2>Welcome to Converter</h2>
+      <p>Sign in with Google to convert your images and PDFs to calendar events</p>
+      <button 
+        class="google-sign-in-btn" 
+        (click)="signInWithGoogle()" 
+        [disabled]="isLoading"
+      >
+        <span class="google-icon">🔐</span>
+        {{ isLoading ? 'Signing in...' : 'Sign in with Google' }}
+      </button>
+    </div>
+  </ng-template>
+</div>
