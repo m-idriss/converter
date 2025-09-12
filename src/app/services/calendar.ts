@@ -23,24 +23,46 @@ export class Calendar {
     const events: CalendarEvent[] = [];
     const lines = text.split('\n').filter(line => line.trim().length > 0);
 
-    // Regex without the 'g' flag to avoid duplicates
+    // Check if text contains iCalendar format data
+    const hasICalendarData = lines.some(line => 
+      line.match(/^(DTSTART|DTEND|DTSTAMP|SUMMARY|DESCRIPTION)[:;]/i)
+    );
+
+    if (hasICalendarData) {
+      return this.parseICalendarFormat(lines);
+    }
+
+    // Regex patterns for natural text with dates
     const dateTimePatterns = [
-      /(\w+\s+\d{1,2},?\s+\d{4})(?:\s+at\s+)?(\d{1,2}:\d{2}\s*(?:AM|PM)?)/i, // ex: January 15, 2025 at 2:00 PM
-      /(\d{1,2}\/\d{1,2}\/\d{4})\s+(\d{1,2}:\d{2})/i,                        // ex: 01/15/2025 14:00
-      /(\d{4}-\d{2}-\d{2})\s+(\d{1,2}:\d{2}\s*(?:AM|PM)?)/i,                 // ex: 2025-01-15 2:00 PM
-      /(\d{8}T\d{6}Z?)/i                                                     // ex: 20231001T090000Z
+      {
+        regex: /^(.+?)\s+(?:on\s+)?(\w+\s+\d{1,2},?\s+\d{4})(?:\s+at\s+)?(\d{1,2}:\d{2}\s*(?:AM|PM)?)/i,
+        titleGroup: 1, dateGroup: 2, timeGroup: 3
+      }, // ex: "Meeting on January 15, 2025 at 2:00 PM"
+      {
+        regex: /^(.+?)[:,]\s*(\d{1,2}\/\d{1,2}\/\d{4})\s+(\d{1,2}:\d{2})/i,
+        titleGroup: 1, dateGroup: 2, timeGroup: 3
+      }, // ex: "Appointment: 01/15/2025 14:00"
+      {
+        regex: /^(.+?)\s+(\d{4}-\d{2}-\d{2})\s+(\d{1,2}:\d{2}\s*(?:AM|PM)?)/i,
+        titleGroup: 1, dateGroup: 2, timeGroup: 3
+      }, // ex: "Team Meeting 2025-01-15 2:00 PM"
+      {
+        regex: /(\d{8}T\d{6}Z?)/i,
+        titleGroup: null, dateGroup: 1, timeGroup: null
+      } // ex: 20231001T090000Z (standalone timestamp)
     ];
 
     for (const line of lines) {
       let matched = false;
 
       for (const pattern of dateTimePatterns) {
-        const match = pattern.exec(line);
+        const match = pattern.regex.exec(line);
         if (match) {
           matched = true;
 
-          const dateStr = match[1];
-          const timeStr = match[2] || '';
+          const titleText = pattern.titleGroup ? match[pattern.titleGroup] : '';
+          const dateStr = match[pattern.dateGroup];
+          const timeStr = pattern.timeGroup ? match[pattern.timeGroup] || '' : '';
 
           let eventDate: moment.Moment;
 
@@ -57,8 +79,15 @@ export class Calendar {
           }
 
           if (eventDate.isValid()) {
-            let title = line.replace(match[0], '').trim();
-            title = title.replace(/^(meeting|appointment|event):?\s*/i, '') || 'Calendar Event';
+            let title = titleText ? titleText.trim() : '';
+            
+            // Clean up common prefixes
+            title = title.replace(/^(meeting|appointment|event)[:]\s*/i, '');
+            
+            // If no meaningful title found, generate one
+            if (!title || title.length < 2) {
+              title = 'Calendar Event';
+            }
 
             events.push({
               title,
@@ -96,6 +125,112 @@ export class Calendar {
     }
 
     return uniqueEvents;
+  }
+
+  private parseICalendarFormat(lines: string[]): CalendarEvent[] {
+    const events: CalendarEvent[] = [];
+    let currentEvent: Partial<CalendarEvent> = {};
+    let inEvent = false;
+
+    for (const line of lines) {
+      const trimmedLine = line.trim();
+
+      if (trimmedLine === 'BEGIN:VEVENT') {
+        inEvent = true;
+        currentEvent = {};
+        continue;
+      }
+
+      if (trimmedLine === 'END:VEVENT' && inEvent) {
+        if (currentEvent.startDate) {
+          // Generate a meaningful title if none found
+          if (!currentEvent.title || currentEvent.title.trim().length === 0) {
+            currentEvent.title = 'Calendar Event';
+          }
+
+          events.push({
+            title: currentEvent.title || 'Calendar Event',
+            description: currentEvent.description || '',
+            startDate: currentEvent.startDate,
+            endDate: currentEvent.endDate || new Date(currentEvent.startDate.getTime() + 60 * 60 * 1000),
+            allDay: currentEvent.allDay || false,
+            timezone: currentEvent.timezone || 'Europe/Paris'
+          });
+        }
+        inEvent = false;
+        currentEvent = {};
+        continue;
+      }
+
+      if (inEvent || !inEvent) { // Process iCalendar properties even outside VEVENT blocks
+        // Parse iCalendar properties
+        if (trimmedLine.startsWith('SUMMARY:')) {
+          currentEvent.title = trimmedLine.substring(8).trim();
+        } else if (trimmedLine.startsWith('DESCRIPTION:')) {
+          currentEvent.description = trimmedLine.substring(12).trim();
+        } else if (trimmedLine.match(/^DTSTART[:;]/)) {
+          const dateValue = this.extractICalendarDate(trimmedLine);
+          if (dateValue) {
+            currentEvent.startDate = dateValue;
+          }
+        } else if (trimmedLine.match(/^DTEND[:;]/)) {
+          const dateValue = this.extractICalendarDate(trimmedLine);
+          if (dateValue) {
+            currentEvent.endDate = dateValue;
+          }
+        } else if (trimmedLine.match(/^DTSTAMP[:;]/)) {
+          // Extract date from DTSTAMP as fallback if no other dates found
+          if (!currentEvent.startDate) {
+            const dateValue = this.extractICalendarDate(trimmedLine);
+            if (dateValue) {
+              currentEvent.startDate = dateValue;
+            }
+          }
+        }
+      }
+    }
+
+    // Handle any remaining event data that wasn't properly closed
+    if (currentEvent.startDate && !inEvent) {
+      events.push({
+        title: currentEvent.title || 'Calendar Event',
+        description: currentEvent.description || '',
+        startDate: currentEvent.startDate,
+        endDate: currentEvent.endDate || new Date(currentEvent.startDate.getTime() + 60 * 60 * 1000),
+        allDay: currentEvent.allDay || false,
+        timezone: currentEvent.timezone || 'Europe/Paris'
+      });
+    }
+
+    return events.length > 0 ? events : [{
+      title: 'Calendar Event',
+      description: 'Extracted from iCalendar format',
+      startDate: new Date(),
+      endDate: new Date(Date.now() + 60 * 60 * 1000),
+      allDay: false,
+      timezone: 'Europe/Paris'
+    }];
+  }
+
+  private extractICalendarDate(line: string): Date | null {
+    // Extract datetime value from iCalendar property line
+    const colonIndex = line.indexOf(':');
+    if (colonIndex === -1) return null;
+
+    const dateStr = line.substring(colonIndex + 1).trim();
+    
+    // Handle different iCalendar date formats
+    if (/^\d{8}T\d{6}Z?$/.test(dateStr)) {
+      // 20231003T120000Z format
+      const momentDate = moment.utc(dateStr, ['YYYYMMDDTHHmmss[Z]', 'YYYYMMDDTHHmmss']);
+      return momentDate.isValid() ? momentDate.toDate() : null;
+    } else if (/^\d{8}$/.test(dateStr)) {
+      // 20231003 format (date only)
+      const momentDate = moment.utc(dateStr, 'YYYYMMDD');
+      return momentDate.isValid() ? momentDate.toDate() : null;
+    }
+
+    return null;
   }
 
   generateICS(events: CalendarEvent[]): string {
