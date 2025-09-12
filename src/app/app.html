@@ -13,13 +13,6 @@
     </div>
 
     <div class="results-section" *ngIf="showResults && extractedText">
-      <div class="extracted-text-card">
-        <h2>📄 Extracted Text</h2>
-        <div class="text-content">
-          {{ extractedText.content }}
-        </div>
-      </div>
-
       <div class="events-card" *ngIf="parsedEvents.length > 0">
         <h2>📅 Events Found ({{ parsedEvents.length }})</h2>
         <div class="events-list">
