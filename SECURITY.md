@@ -12,8 +12,8 @@ The following table lists which versions of this project are currently supported
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+To report a security vulnerability, please email our security team at [security@example.com](mailto:security@example.com) with a detailed description of the issue.
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+- We will acknowledge receipt of your report within 2 business days.
+- You can expect a status update at least once every 7 days until the issue is resolved.
+- After triage, we will work with you to understand and address the vulnerability. If the vulnerability is accepted, we will coordinate a fix and disclosure timeline. If declined, we will provide a clear explanation.
