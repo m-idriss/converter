@@ -30,6 +30,20 @@ describe('Calendar', () => {
       }
     });
 
+    it('should parse schedule format correctly', () => {
+      const scheduleText = `8H00    PHYSIQUE-CHIMIE BASSE M.    ANGLAIS LV1 RUPPERT H.
+9H00    MATHEMATIQUES               FRANCAIS`;
+      
+      const events = service.parseTextForEvents(scheduleText);
+      
+      expect(events.length).toBeGreaterThan(0);
+      const eventTitles = events.map(e => e.title);
+      expect(eventTitles).toContain('PHYSIQUE-CHIMIE');
+      expect(eventTitles).toContain('ANGLAIS LV1');
+      expect(eventTitles).toContain('MATHEMATIQUES');
+      expect(eventTitles).toContain('FRANCAIS');
+    });
+
     it('should create default event when no dates found', () => {
       const text = 'Some random text without dates';
       const events = service.parseTextForEvents(text);
@@ -169,7 +183,7 @@ describe('Calendar', () => {
 
     it('should use default name for generic titles', () => {
       const events: CalendarEvent[] = [{
-        title: 'Calendar Event',
+        title: 'Extracted Text Event',
         startDate: new Date(),
         endDate: new Date(),
         allDay: false
