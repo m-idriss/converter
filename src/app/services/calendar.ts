@@ -23,7 +23,7 @@ export class Calendar {
     const events: CalendarEvent[] = [];
     const lines = text.split('\n').filter(line => line.trim().length > 0);
 
-    // Regex sans le flag "g" pour éviter les doublons
+    // Regex without the 'g' flag to avoid duplicates
     const dateTimePatterns = [
       /(\w+\s+\d{1,2},?\s+\d{4})(?:\s+at\s+)?(\d{1,2}:\d{2}\s*(?:AM|PM)?)/i, // ex: January 15, 2025 at 2:00 PM
       /(\d{1,2}\/\d{1,2}\/\d{4})\s+(\d{1,2}:\d{2})/i,                        // ex: 01/15/2025 14:00
