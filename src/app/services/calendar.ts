@@ -70,7 +70,7 @@ export class Calendar {
             });
           }
 
-          break; // ✅ arrête dès qu’un pattern matche une ligne
+          break; // Stop as soon as a pattern matches a line
         }
       }
     }
