@@ -86,7 +86,6 @@
             "local": {
               "buildTarget": "converter-app:build:local"
             }
-            }
           },
           "defaultConfiguration": "development"
         },
