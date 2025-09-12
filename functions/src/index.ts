@@ -1,75 +1,88 @@
 import * as functions from "firebase-functions";
-import { setGlobalOptions } from "firebase-functions";
-const cors = require("cors")({ origin: true });
-const { defineString } = require("firebase-functions/params");
-import * as admin from "firebase-admin";
-import OpenAI from "openai";
+import {setGlobalOptions} from "firebase-functions";
+const cors = require("cors")({origin: true});
+const { defineString } = require('firebase-functions/params');
 
-const baseTextMessage = defineString("BASE_TEXT_MESSAGE");
-const prompt = defineString("PROMPT");
+const admin = require('firebase-admin');
+const OpenAI = require('openai');
+const baseTextMessage = defineString('BASE_TEXT_MESSAGE');
+const prompt = defineString('PROMPT');
 
-require("dotenv").config();
+require('dotenv').config();
 
 setGlobalOptions({ maxInstances: 10 });
+
 admin.initializeApp();
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error(
-    "OpenAI API key is not set. Please set it using `firebase functions:config:set openai.key`"
+    "OpenAI API key is not set. Please set it using `firebase functions:config:set openai.key"
   );
 }
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export const helloWorld = functions.https.onRequest(async (req, res) => {
-  await cors(req, res, async () => {
+  cors(req, res, async () => {
     try {
       const { imageUrls, extraContext, timeZone } = req.body;
 
-      if (!imageUrls || !Array.isArray(imageUrls) || imageUrls.length === 0) {
-        res.status(400).send({ error: "No images provided" });
+      if (!imageUrls || !Array.isArray(imageUrls)) {
+        res.status(400).send({ error: 'No images provided' });
         return;
       }
 
-      // Construire le message utilisateur pour OpenAI
+      // Préparer le contenu pour OpenAI
+      const content: any[] = [];
       let baseText = baseTextMessage.value().replace(/\$\{timeZone\}/g, timeZone);
+
       if (extraContext) {
         baseText += ` Additional context: ${extraContext}`;
       }
+      content.push({ type: 'text', text: baseText });
 
-      const imagesText = imageUrls
-        .map((img: string, idx: number) =>
-          img.startsWith("http") ? `Image ${idx + 1} URL: ${img}` : `Image ${idx + 1} base64: ${img}`
-        )
-        .join("\n");
+     // ✅ Ajout: support URL ou base64
+      for (const img of imageUrls) {
+        if (typeof img === "string" && img.startsWith("http")) {
+          // Si c’est une URL
+          content.push({
+            type: "image_url",
+            image_url: {url: img},
+          });
+        } else {
+          // Sinon, on suppose du base64
+          content.push({
+            type: "image_url",
+            image_url: {url: `data:image/jpeg;base64,${img}`},
+          });
+        }
+      }
 
-      const userContent = `${baseText}\n\n${imagesText}`;
-
-      // Appel à OpenAI
+      // Appel OpenAI
       const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: 'gpt-4o-mini',
         messages: [
-          { role: "system", content: prompt.value() },
-          { role: "user", content: userContent },
+          {
+            role: 'system',
+            content: prompt,
+          },
+          {
+            role: 'user',
+            content: content,
+          },
         ],
         temperature: 0.2,
         max_tokens: 4096,
       });
 
-      const icsContent = completion.choices[0].message?.content;
-
-      if (!icsContent) {
-        res.status(500).send({ error: "No ICS content returned" });
-        return;
-      }
-
-      // Retourner en tant que fichier ICS
-      res.setHeader("Content-Type", "text/calendar; charset=utf-8");
-      res.setHeader("Content-Disposition", "attachment; filename=events.ics");
-      res.status(200).send(icsContent);
+      const icsContent = completion.choices[0].message?.content?.trim();
+      // type  "text/calendar"
+      res.status(200).set('Content-Type', 'text/calendar').send(icsContent);
     } catch (err: any) {
       console.error(err);
-      res.status(500).send({ error: err.message || "Failed to generate ICS" });
+      res.status(500).send({ error: err.message || 'Failed to convert images' });
     }
+
+
   });
 });
