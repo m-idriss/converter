@@ -18,16 +18,21 @@ describe('Calendar', () => {
       const text = 'Meeting on January 15, 2025 at 2:00 PM\nAppointment: 01/15/2025 14:00';
       const events = service.parseTextForEvents(text);
       
-      // The parsing may create a default event if patterns don't match exactly
-      expect(events.length).toBeGreaterThanOrEqual(1);
+      // Should parse both events correctly
+      expect(events.length).toBe(2);
+      expect(events[0].title).toContain('Meeting');
+      expect(events[1].title).toContain('Appointment');
+    });
+
+    it('should handle iCalendar format text', () => {
+      const text = 'DTSTAMP:20231003T120000Z\nDTSTART;TZID=Europe/Paris:20231003T120000\nDTEND;TZID=Europe/Paris:20231003T130000';
+      const events = service.parseTextForEvents(text);
       
-      if (events.length > 1) {
-        expect(events[0].title).toContain('Meeting');
-        expect(events[1].title).toContain('Appointment');
-      } else {
-        // If parsing didn't work, we should get the default event
-        expect(events[0].title).toBe('Extracted Text Event');
-      }
+      expect(events.length).toBeGreaterThanOrEqual(1);
+      // Should not use iCalendar property names as titles
+      expect(events[0].title).not.toBe('DTSTAMP:');
+      expect(events[0].title).not.toBe('DTSTART;TZID=Europe/Paris:');
+      expect(events[0].title).not.toBe('DTEND;TZID=Europe/Paris:');
     });
 
     it('should create default event when no dates found', () => {
