@@ -1,0 +1,83 @@
+name: Deploy to 3dime.com/converter
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build Angular app
+      run: npm run build -- --configuration=production --base-href=/converter/
+      
+    # Option 1: Deploy via FTP (uncomment if using FTP)
+    # - name: Deploy via FTP
+    #   uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+    #   with:
+    #     server: ${{ secrets.FTP_SERVER }}
+    #     username: ${{ secrets.FTP_USERNAME }}
+    #     password: ${{ secrets.FTP_PASSWORD }}
+    #     local-dir: ./dist/converter-app/browser/
+    #     server-dir: /converter/
+    #     exclude: |
+    #       **/.git*
+    #       **/.git*/**
+    #       **/node_modules/**
+    
+    # Option 2: Deploy via SSH/Rsync (uncomment if using SSH)
+    - name: Deploy via SSH
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.SSH_PORT || 22 }}
+        script: |
+          # Create backup of current deployment
+          if [ -d "/var/www/3dime.com/converter" ]; then
+            sudo cp -r /var/www/3dime.com/converter /var/www/3dime.com/converter.backup.$(date +%Y%m%d-%H%M%S)
+          fi
+          # Create directory if it doesn't exist
+          sudo mkdir -p /var/www/3dime.com/converter
+          
+    - name: Copy files via SCP
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.SSH_PORT || 22 }}
+        source: "dist/converter-app/browser/*"
+        target: "/tmp/converter-deploy"
+        strip_components: 3
+        
+    - name: Move files to web directory
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.SSH_PORT || 22 }}
+        script: |
+          # Move files from temp to web directory
+          sudo rm -rf /var/www/3dime.com/converter/*
+          sudo mv /tmp/converter-deploy/* /var/www/3dime.com/converter/
+          sudo rm -rf /tmp/converter-deploy
+          # Set proper permissions
+          sudo chown -R www-data:www-data /var/www/3dime.com/converter
+          sudo chmod -R 755 /var/www/3dime.com/converter
