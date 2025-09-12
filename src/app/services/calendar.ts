@@ -9,6 +9,7 @@ export interface CalendarEvent {
   endDate: Date;
   location?: string;
   allDay?: boolean;
+  timezone?: string;
 }
 
 @Injectable({
@@ -20,75 +21,81 @@ export class Calendar {
 
   parseTextForEvents(text: string): CalendarEvent[] {
     const events: CalendarEvent[] = [];
-
-    // Simple pattern matching for common date/time formats and event indicators
     const lines = text.split('\n').filter(line => line.trim().length > 0);
 
-    // Look for patterns like:
-    // - "Meeting on January 15, 2025 at 2:00 PM"
-    // - "Appointment: 01/15/2025 14:00"
-    // - "Event scheduled for 2025-01-15 2:00 PM"
-
+    // Regex without the 'g' flag to avoid duplicates
     const dateTimePatterns = [
-      /(\w+\s+\w+\s+\d{1,2},?\s+\d{4})\s+(?:at\s+)?(\d{1,2}:\d{2}\s*(?:AM|PM)?)/gi,
-      /(\d{1,2}\/\d{1,2}\/\d{4})\s+(\d{1,2}:\d{2})/gi,
-      /(\d{4}-\d{2}-\d{2})\s+(\d{1,2}:\d{2}\s*(?:AM|PM)?)/gi
+      /(\w+\s+\d{1,2},?\s+\d{4})(?:\s+at\s+)?(\d{1,2}:\d{2}\s*(?:AM|PM)?)/i, // ex: January 15, 2025 at 2:00 PM
+      /(\d{1,2}\/\d{1,2}\/\d{4})\s+(\d{1,2}:\d{2})/i,                        // ex: 01/15/2025 14:00
+      /(\d{4}-\d{2}-\d{2})\s+(\d{1,2}:\d{2}\s*(?:AM|PM)?)/i,                 // ex: 2025-01-15 2:00 PM
+      /(\d{8}T\d{6}Z?)/i                                                     // ex: 20231001T090000Z
     ];
 
     for (const line of lines) {
+      let matched = false;
+
       for (const pattern of dateTimePatterns) {
-        const matches = [...line.matchAll(pattern)];
+        const match = pattern.exec(line);
+        if (match) {
+          matched = true;
 
-        for (const match of matches) {
-          try {
-            const dateStr = match[1];
-            const timeStr = match[2];
+          const dateStr = match[1];
+          const timeStr = match[2] || '';
 
-            // Parse the date and time
-            const eventDate = moment(`${dateStr} ${timeStr}`, [
+          let eventDate: moment.Moment;
+
+          if (/^\d{8}T\d{6}Z?$/.test(dateStr)) {
+            eventDate = moment.utc(dateStr, ['YYYYMMDDTHHmmss[Z]', 'YYYYMMDDTHHmmss']);
+          } else {
+            eventDate = moment(`${dateStr} ${timeStr}`, [
               'MMMM D, YYYY h:mm A',
               'MMMM D YYYY h:mm A',
               'MM/DD/YYYY H:mm',
               'YYYY-MM-DD h:mm A',
               'YYYY-MM-DD H:mm'
             ]);
-
-            if (eventDate.isValid()) {
-              // Extract title from the line
-              let title = line.replace(match[0], '').trim();
-              title = title.replace(/^(meeting|appointment|event):?\s*/i, '');
-              title = title || 'Calendar Event';
-
-              const event: CalendarEvent = {
-                title: title,
-                description: `Extracted from: ${line}`,
-                startDate: eventDate.toDate(),
-                endDate: eventDate.add(1, 'hour').toDate(), // Default to 1 hour duration
-                allDay: false
-              };
-
-              events.push(event);
-            }
-          } catch (error) {
-            console.warn('Error parsing date from line:', line, error);
           }
+
+          if (eventDate.isValid()) {
+            let title = line.replace(match[0], '').trim();
+            title = title.replace(/^(meeting|appointment|event):?\s*/i, '') || 'Calendar Event';
+
+            events.push({
+              title,
+              description: `Extracted from: ${line}`,
+              startDate: eventDate.toDate(),
+              endDate: eventDate.clone().add(1, 'hour').toDate(),
+              allDay: false,
+              timezone: 'Europe/Paris'
+            });
+          }
+
+          break; // Stop as soon as a pattern matches a line
         }
       }
     }
 
-    // If no events found, create a generic event
-    if (events.length === 0) {
+    // Remove exact duplicates (same title + same date)
+    const uniqueEvents = events.filter((event, index, self) =>
+      index === self.findIndex(e =>
+        e.title === event.title &&
+        e.startDate.getTime() === event.startDate.getTime()
+      )
+    );
+
+    if (uniqueEvents.length === 0) {
       const now = new Date();
-      events.push({
+      return [{
         title: 'Extracted Text Event',
         description: text,
         startDate: now,
-        endDate: new Date(now.getTime() + 60 * 60 * 1000), // 1 hour later
-        allDay: false
-      });
+        endDate: new Date(now.getTime() + 60 * 60 * 1000),
+        allDay: false,
+        timezone: 'Europe/Paris'
+      }];
     }
 
-    return events;
+    return uniqueEvents;
   }
 
   generateICS(events: CalendarEvent[]): string {
@@ -148,11 +155,13 @@ export class Calendar {
   downloadICS(events: CalendarEvent[], filename?: string): Promise<{ success: boolean; message: string; filename?: string }> {
     return new Promise((resolve) => {
       try {
+
         // Validate events
         if (!events || events.length === 0) {
           resolve({ success: false, message: 'No events to download' });
           return;
         }
+
 
         // Generate ICS content
         const icsContent = this.generateICS(events);
@@ -162,6 +171,7 @@ export class Calendar {
           resolve({ success: false, message: 'Generated calendar content is invalid' });
           return;
         }
+
 
         // Generate smart filename if not provided
         const finalFilename = filename || this.generateSmartFilename(events);
@@ -191,6 +201,7 @@ export class Calendar {
 
   private generateSmartFilename(events: CalendarEvent[]): string {
     const now = new Date();
+
     const timestamp = now.toISOString().split('T')[0]; // YYYY-MM-DD format
     const eventCount = events.length;
     
@@ -199,6 +210,7 @@ export class Calendar {
     if (events.length > 0) {
       const firstEvent = events[0];
       if (firstEvent.title && firstEvent.title !== 'Calendar Event' && firstEvent.title !== 'Extracted Text Event') {
+
         // Clean the title for filename use
         baseName = firstEvent.title
           .toLowerCase()
@@ -213,6 +225,7 @@ export class Calendar {
 
   private validateICSContent(icsContent: string): boolean {
     try {
+
       // Basic ICS validation
       const lines = icsContent.split('\r\n');
       

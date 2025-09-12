@@ -27,16 +27,16 @@
             <h3>{{ event.title }}</h3>
             <p class="event-date">
               📅 {{ event.startDate | date:'fullDate' }} at {{ event.startDate | date:'shortTime' }}
+              - {{ event.endDate | date:'shortTime' }}
             </p>
-            <p class="event-description" *ngIf="event.description">
-              {{ event.description }}
-            </p>
+            <p class="event-description" *ngIf="event.description">{{ event.description }}</p>
+            <p class="event-location" *ngIf="event.location">📍 {{ event.location }}</p>
           </div>
         </div>
 
         <div class="action-buttons">
-          <button 
-            class="download-btn" 
+          <button
+            class="download-btn"
             (click)="downloadCalendar()"
             [disabled]="isDownloading"
             [class.downloading]="isDownloading">
