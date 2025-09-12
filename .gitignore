@@ -43,4 +43,4 @@ Thumbs.db
 
 src/environments/environment.local.ts
 
-functions/.env
+functions/.env.local
