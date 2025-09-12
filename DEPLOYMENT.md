@@ -10,41 +10,29 @@ The deployment is handled by the GitHub Actions workflow in `.github/workflows/d
 2. Sets the base href to `/converter/` for proper routing on the subdomain
 3. Deploys the built files to the target server
 
-## Deployment Methods
+## Deployment Method
 
-The workflow supports SSH/SCP deployment (recommended). To use it, you need to configure the following GitHub repository secrets:
+The workflow uses FTP deployment to upload files to the server. You need to configure the following GitHub repository secrets:
 
-### SSH Deployment (Recommended)
+### FTP Deployment
 
 Required secrets in your GitHub repository:
-- `SSH_HOST`: The server hostname or IP address (e.g., `3dime.com`)
-- `SSH_USERNAME`: SSH username for the server
-- `SSH_PRIVATE_KEY`: Private SSH key for authentication
-- `SSH_PORT`: SSH port (optional, defaults to 22)
+- `FTP_SERVER`: The FTP server hostname or IP address (e.g., `3dime.com` or `ftp.3dime.com`)
+- `FTP_USERNAME`: FTP username for the server
+- `FTP_PASSWORD`: FTP password for authentication
 
-### Setting up SSH Secrets
+### Setting up FTP Secrets
 
 1. Go to your repository on GitHub
 2. Navigate to Settings → Secrets and variables → Actions
 3. Click "New repository secret" and add each of the required secrets above
 
-### SSH Key Generation
-
-If you don't have an SSH key pair, generate one:
-
-```bash
-ssh-keygen -t ed25519 -C "github-actions@converter-deploy"
-```
-
-- Copy the public key (`~/.ssh/id_ed25519.pub`) to your server's `~/.ssh/authorized_keys`
-- Copy the private key (`~/.ssh/id_ed25519`) to the `SSH_PRIVATE_KEY` secret
-
 ## Server Configuration
 
-The workflow assumes:
-- The web server serves files from `/var/www/3dime.com/converter/`
-- The web server user is `www-data` (typical for Apache/Nginx on Ubuntu)
-- The deployment user has sudo privileges to modify files in `/var/www/`
+The workflow deploys files to the `/converter/` directory on your FTP server. Make sure:
+- The FTP user has write permissions to the target directory
+- The web server is configured to serve files from the correct location
+- The target directory path matches your web server document root structure
 
 ### Nginx Configuration Example
 
@@ -53,9 +41,9 @@ If using Nginx, add this location block to serve the converter app:
 ```nginx
 server {
     server_name 3dime.com;
+    root /var/www/html;  # or your document root
     
     location /converter/ {
-        alias /var/www/3dime.com/converter/;
         try_files $uri $uri/ /converter/index.html;
         
         # Handle Angular routing
@@ -70,10 +58,10 @@ server {
 
 ### Apache Configuration Example
 
-If using Apache, add this to your virtual host or `.htaccess`:
+If using Apache, add this to your virtual host or `.htaccess` in the `/converter/` directory:
 
 ```apache
-<Directory "/var/www/3dime.com/converter">
+<Directory "/var/www/html/converter">
     Options Indexes FollowSymLinks
     AllowOverride All
     Require all granted
@@ -88,12 +76,25 @@ If using Apache, add this to your virtual host or `.htaccess`:
 
 ## Alternative Deployment Methods
 
-### FTP Deployment
+### SSH Deployment
 
-If you prefer FTP deployment, uncomment the FTP section in the workflow and add these secrets:
-- `FTP_SERVER`: FTP server hostname
-- `FTP_USERNAME`: FTP username
-- `FTP_PASSWORD`: FTP password
+If you prefer SSH deployment, you can modify the workflow to use SSH instead of FTP by adding these secrets:
+- `SSH_HOST`: The server hostname or IP address
+- `SSH_USERNAME`: SSH username for the server  
+- `SSH_PRIVATE_KEY`: Private SSH key for authentication
+- `SSH_PORT`: SSH port (optional, defaults to 22)
+
+### Manual FTP Upload
+
+If you need to deploy manually:
+
+```bash
+# Build the application
+npm run build -- --configuration=production --base-href=/converter/
+
+# Upload files to FTP server (example using lftp)
+lftp -c "set ftp:ssl-allow no; open ftp://username:password@3dime.com; mirror -R dist/converter-app/browser/ /converter/"
+```
 
 ## Troubleshooting
 
@@ -103,8 +104,9 @@ If you prefer FTP deployment, uncomment the FTP section in the workflow and add 
 - Verify the build works locally: `npm run build -- --configuration=production --base-href=/converter/`
 
 ### Deployment Issues
-- Check that SSH connectivity works: `ssh user@3dime.com`
-- Verify the target directory exists and has proper permissions
+- Verify FTP connectivity and credentials: test with an FTP client like FileZilla
+- Check that the target directory has proper write permissions
+- Verify the FTP server path is correct (usually relative to FTP user's home directory)
 - Check GitHub Actions logs for specific error messages
 
 ### Routing Issues
@@ -128,6 +130,6 @@ If you need to deploy manually:
 # Build the application
 npm run build -- --configuration=production --base-href=/converter/
 
-# Copy files to server (example using rsync)
-rsync -avz --delete dist/converter-app/browser/ user@3dime.com:/var/www/3dime.com/converter/
+# Upload files to FTP server (example using lftp)
+lftp -c "set ftp:ssl-allow no; open ftp://username:password@3dime.com; mirror -R dist/converter-app/browser/ /converter/"
 ```
