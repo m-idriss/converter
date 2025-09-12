@@ -35,12 +35,26 @@
         </div>
 
         <div class="action-buttons">
-          <button class="download-btn" (click)="downloadCalendar()">
-            📥 Download Calendar (.ics)
+          <button 
+            class="download-btn" 
+            (click)="downloadCalendar()"
+            [disabled]="isDownloading"
+            [class.downloading]="isDownloading">
+            <span *ngIf="!isDownloading">📥 Download Calendar (.ics)</span>
+            <span *ngIf="isDownloading">⏳ Preparing Download...</span>
           </button>
           <button class="reset-btn" (click)="resetConverter()">
             🔄 Convert Another File
           </button>
+        </div>
+
+        <div class="download-status" *ngIf="downloadStatus" [class]="'status-' + downloadStatus.type">
+          <div class="status-message">
+            <span class="status-icon">
+              {{ downloadStatus.type === 'success' ? '✅' : downloadStatus.type === 'error' ? '❌' : 'ℹ️' }}
+            </span>
+            {{ downloadStatus.message }}
+          </div>
         </div>
       </div>
 
