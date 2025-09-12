@@ -145,9 +145,96 @@ export class Calendar {
       .replace(/\n/g, '\\n');
   }
 
-  downloadICS(events: CalendarEvent[], filename: string = 'calendar-events.ics'): void {
-    const icsContent = this.generateICS(events);
-    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-    saveAs(blob, filename);
+  downloadICS(events: CalendarEvent[], filename?: string): Promise<{ success: boolean; message: string; filename?: string }> {
+    return new Promise((resolve) => {
+      try {
+        // Validate events
+        if (!events || events.length === 0) {
+          resolve({ success: false, message: 'No events to download' });
+          return;
+        }
+
+        // Generate ICS content
+        const icsContent = this.generateICS(events);
+        
+        // Validate ICS content
+        if (!this.validateICSContent(icsContent)) {
+          resolve({ success: false, message: 'Generated calendar content is invalid' });
+          return;
+        }
+
+        // Generate smart filename if not provided
+        const finalFilename = filename || this.generateSmartFilename(events);
+
+        // Create blob with proper MIME type
+        const blob = new Blob([icsContent], { 
+          type: 'text/calendar;charset=utf-8;component=vevent' 
+        });
+
+        // Download file
+        saveAs(blob, finalFilename);
+        
+        resolve({ 
+          success: true, 
+          message: `Downloaded ${events.length} event${events.length > 1 ? 's' : ''} successfully`, 
+          filename: finalFilename 
+        });
+      } catch (error) {
+        console.error('Error downloading ICS file:', error);
+        resolve({ 
+          success: false, 
+          message: 'Failed to download calendar file. Please try again.' 
+        });
+      }
+    });
+  }
+
+  private generateSmartFilename(events: CalendarEvent[]): string {
+    const now = new Date();
+    const timestamp = now.toISOString().split('T')[0]; // YYYY-MM-DD format
+    const eventCount = events.length;
+    
+    // Try to get a meaningful name from the first event
+    let baseName = 'calendar-events';
+    if (events.length > 0) {
+      const firstEvent = events[0];
+      if (firstEvent.title && firstEvent.title !== 'Calendar Event' && firstEvent.title !== 'Extracted Text Event') {
+        // Clean the title for filename use
+        baseName = firstEvent.title
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+          .replace(/\s+/g, '-') // Replace spaces with hyphens
+          .substring(0, 20); // Limit length
+      }
+    }
+
+    return `${baseName}-${eventCount}events-${timestamp}.ics`;
+  }
+
+  private validateICSContent(icsContent: string): boolean {
+    try {
+      // Basic ICS validation
+      const lines = icsContent.split('\r\n');
+      
+      // Check required headers
+      if (!lines.includes('BEGIN:VCALENDAR') || !lines.includes('END:VCALENDAR')) {
+        return false;
+      }
+      
+      // Check for at least one event
+      const hasEvent = lines.some(line => line === 'BEGIN:VEVENT');
+      if (!hasEvent) {
+        return false;
+      }
+      
+      // Check for required properties
+      const hasVersion = lines.some(line => line.startsWith('VERSION:'));
+      const hasProdId = lines.some(line => line.startsWith('PRODID:'));
+      
+      return hasVersion && hasProdId;
+    } catch (error) {
+      console.error('ICS validation error:', error);
+      return false;
+    }
   }
 }

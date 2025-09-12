@@ -21,6 +21,8 @@ export class App {
   extractedText: ExtractedText | null = null;
   parsedEvents: CalendarEvent[] = [];
   showResults = false;
+  downloadStatus: { message: string; type: 'success' | 'error' | 'info' } | null = null;
+  isDownloading = false;
 
   constructor(
     private authService: AuthService,
@@ -35,9 +37,33 @@ export class App {
     this.showResults = true;
   }
 
-  downloadCalendar(): void {
+  async downloadCalendar(): Promise<void> {
     if (this.parsedEvents.length > 0) {
-      this.calendarService.downloadICS(this.parsedEvents);
+      this.isDownloading = true;
+      this.downloadStatus = { message: 'Preparing download...', type: 'info' };
+      
+      try {
+        const result = await this.calendarService.downloadICS(this.parsedEvents);
+        this.downloadStatus = { 
+          message: result.message, 
+          type: result.success ? 'success' : 'error' 
+        };
+        
+        // Clear status after 5 seconds
+        setTimeout(() => {
+          this.downloadStatus = null;
+        }, 5000);
+      } catch (error) {
+        this.downloadStatus = { 
+          message: 'Unexpected error occurred while downloading', 
+          type: 'error' 
+        };
+        setTimeout(() => {
+          this.downloadStatus = null;
+        }, 5000);
+      } finally {
+        this.isDownloading = false;
+      }
     }
   }
 
@@ -45,5 +71,7 @@ export class App {
     this.extractedText = null;
     this.parsedEvents = [];
     this.showResults = false;
+    this.downloadStatus = null;
+    this.isDownloading = false;
   }
 }
