@@ -1,4 +1,6 @@
 name: Deploy to 3dime.com/converter
+permissions:
+  contents: read
 
 on:
   push:
