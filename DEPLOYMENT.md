@@ -84,18 +84,6 @@ If you prefer SSH deployment, you can modify the workflow to use SSH instead of 
 - `SSH_PRIVATE_KEY`: Private SSH key for authentication
 - `SSH_PORT`: SSH port (optional, defaults to 22)
 
-### Manual FTP Upload
-
-If you need to deploy manually:
-
-```bash
-# Build the application
-npm run build -- --configuration=production --base-href=/converter/
-
-# Upload files to FTP server (example using lftp)
-lftp -c "set ftp:ssl-allow no; open ftp://username:password@3dime.com; mirror -R dist/converter-app/browser/ /converter/"
-```
-
 ## Troubleshooting
 
 ### Build Issues
