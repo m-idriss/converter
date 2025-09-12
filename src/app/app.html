@@ -15,7 +15,6 @@
     <div class="results-section" *ngIf="showResults && extractedText">
       <div class="extracted-text-card">
         <h2>📄 Extracted Text</h2>
-        <p class="confidence">Confidence: {{ extractedText.confidence }}%</p>
         <div class="text-content">
           {{ extractedText.content }}
         </div>
@@ -34,7 +33,7 @@
             </p>
           </div>
         </div>
-        
+
         <div class="action-buttons">
           <button class="download-btn" (click)="downloadCalendar()">
             📥 Download Calendar (.ics)

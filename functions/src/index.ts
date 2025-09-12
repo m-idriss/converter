@@ -1,155 +1,88 @@
-import {onRequest} from "firebase-functions/v2/https";
-import {logger} from "firebase-functions";
-import * as admin from "firebase-admin";
-import Tesseract from "tesseract.js";
+import * as functions from "firebase-functions";
+import {setGlobalOptions} from "firebase-functions";
+const cors = require("cors")({origin: true});
+const { defineString } = require('firebase-functions/params');
+
+const admin = require('firebase-admin');
+const OpenAI = require('openai');
+const baseTextMessage = defineString('BASE_TEXT_MESSAGE');
+const prompt = defineString('PROMPT');
+
+require('dotenv').config();
+
+setGlobalOptions({ maxInstances: 10 });
 
 admin.initializeApp();
 
-export const processImageText = onRequest(async (req, res) => {
-  // Set CORS headers
-  res.set("Access-Control-Allow-Origin", "*");
-  res.set("Access-Control-Allow-Methods", "GET, POST");
-  res.set("Access-Control-Allow-Headers", "Content-Type");
+if (!process.env.OPENAI_API_KEY) {
+  throw new Error(
+    "OpenAI API key is not set. Please set it using `firebase functions:config:set openai.key"
+  );
+}
 
-  if (req.method === "OPTIONS") {
-    res.status(204).send("");
-    return;
-  }
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-  if (req.method !== "POST") {
-    res.status(405).send("Method Not Allowed");
-    return;
-  }
+export const helloWorld = functions.https.onRequest(async (req, res) => {
+  cors(req, res, async () => {
+    try {
+      const { imageUrls, extraContext, timeZone } = req.body;
 
-  try {
-    const {imageData} = req.body;
-    
-    if (!imageData) {
-      res.status(400).send("Missing image data");
-      return;
-    }
+      if (!imageUrls || !Array.isArray(imageUrls)) {
+        res.status(400).send({ error: 'No images provided' });
+        return;
+      }
 
-    logger.info("Processing image with Tesseract");
-    
-    // Convert base64 to buffer
-    const imageBuffer = Buffer.from(imageData, "base64");
-    
-    // Process image with Tesseract
-    const result = await Tesseract.recognize(imageBuffer, "eng");
-    
-    const response = {
-      text: result.data.text,
-      confidence: result.data.confidence,
-    };
+      // Préparer le contenu pour OpenAI
+      const content: any[] = [];
+      let baseText = baseTextMessage.value().replace(/\$\{timeZone\}/g, timeZone);
 
-    logger.info("Text extraction completed", {confidence: response.confidence});
-    res.json(response);
-  } catch (error) {
-    logger.error("Error processing image:", error);
-    res.status(500).send("Internal Server Error");
-  }
-});
+      if (extraContext) {
+        baseText += ` Additional context: ${extraContext}`;
+      }
+      content.push({ type: 'text', text: baseText });
 
-export const parseCalendarEvents = onRequest(async (req, res) => {
-  // Set CORS headers
-  res.set("Access-Control-Allow-Origin", "*");
-  res.set("Access-Control-Allow-Methods", "GET, POST");
-  res.set("Access-Control-Allow-Headers", "Content-Type");
-
-  if (req.method === "OPTIONS") {
-    res.status(204).send("");
-    return;
-  }
-
-  if (req.method !== "POST") {
-    res.status(405).send("Method Not Allowed");
-    return;
-  }
-
-  try {
-    const {text} = req.body;
-    
-    if (!text) {
-      res.status(400).send("Missing text data");
-      return;
-    }
-
-    logger.info("Parsing calendar events from text");
-    
-    // Simple event parsing logic (can be enhanced with AI/ML)
-    const events = parseTextForEvents(text);
-    
-    logger.info(`Found ${events.length} events`);
-    res.json({events});
-  } catch (error) {
-    logger.error("Error parsing events:", error);
-    res.status(500).send("Internal Server Error");
-  }
-});
-
-function parseTextForEvents(text: string) {
-  const events: Array<{
-    title: string;
-    description?: string;
-    startDate: string;
-    endDate: string;
-    location?: string;
-  }> = [];
-  
-  const lines = text.split("\n").filter((line) => line.trim().length > 0);
-  
-  // Enhanced date/time patterns
-  const dateTimePatterns = [
-    /(\w+\s+\w+\s+\d{1,2},?\s+\d{4})\s+(?:at\s+)?(\d{1,2}:\d{2}\s*(?:AM|PM)?)/gi,
-    /(\d{1,2}\/\d{1,2}\/\d{4})\s+(\d{1,2}:\d{2})/gi,
-    /(\d{4}-\d{2}-\d{2})\s+(\d{1,2}:\d{2}\s*(?:AM|PM)?)/gi,
-  ];
-
-  for (const line of lines) {
-    for (const pattern of dateTimePatterns) {
-      const matches = [...line.matchAll(pattern)];
-      
-      for (const match of matches) {
-        try {
-          const dateStr = match[1];
-          const timeStr = match[2];
-          
-          // Create a simple date parsing
-          const startDate = new Date(`${dateStr} ${timeStr}`);
-          
-          if (!isNaN(startDate.getTime())) {
-            const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // +1 hour
-            
-            let title = line.replace(match[0], "").trim();
-            title = title.replace(/^(meeting|appointment|event):?\s*/i, "");
-            title = title || "Calendar Event";
-
-            events.push({
-              title,
-              description: `Extracted from: ${line}`,
-              startDate: startDate.toISOString(),
-              endDate: endDate.toISOString(),
-            });
-          }
-        } catch (error) {
-          logger.warn("Error parsing date from line:", line, error);
+     // ✅ Ajout: support URL ou base64
+      for (const img of imageUrls) {
+        if (typeof img === "string" && img.startsWith("http")) {
+          // Si c’est une URL
+          content.push({
+            type: "image_url",
+            image_url: {url: img},
+          });
+        } else {
+          // Sinon, on suppose du base64
+          content.push({
+            type: "image_url",
+            image_url: {url: `data:image/jpeg;base64,${img}`},
+          });
         }
       }
+
+      // Appel OpenAI
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: prompt,
+          },
+          {
+            role: 'user',
+            content: content,
+          },
+        ],
+        temperature: 0.2,
+        max_tokens: 4096,
+      });
+
+      const icsContent = completion.choices[0].message?.content?.trim();
+      // type  "text/calendar"
+      res.status(200).set('Content-Type', 'text/calendar').send(icsContent);
+    } catch (err: any) {
+      console.error(err);
+      res.status(500).send({ error: err.message || 'Failed to convert images' });
     }
-  }
 
-  // If no events found, create a generic one
-  if (events.length === 0) {
-    const now = new Date();
-    const endTime = new Date(now.getTime() + 60 * 60 * 1000);
-    
-    events.push({
-      title: "Extracted Text Event",
-      description: text,
-      startDate: now.toISOString(),
-      endDate: endTime.toISOString(),
-    });
-  }
 
-  return events;
-}
+  });
+});
