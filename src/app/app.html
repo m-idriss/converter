@@ -21,7 +21,7 @@
       </div>
 
       <div class="events-card" *ngIf="parsedEvents.length > 0">
-        <h2>📅 Parsed Events ({{ parsedEvents.length }})</h2>
+        <h2>📅 Events Found ({{ parsedEvents.length }})</h2>
         <div class="events-list">
           <div class="event-item" *ngFor="let event of parsedEvents">
             <h3>{{ event.title }}</h3>
