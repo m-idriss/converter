@@ -75,7 +75,7 @@ export class Calendar {
       }
     }
 
-    // Supprimer les doublons exacts (même titre + même date)
+    // Remove exact duplicates (same title + same date)
     const uniqueEvents = events.filter((event, index, self) =>
       index === self.findIndex(e =>
         e.title === event.title &&
