@@ -74,15 +74,16 @@ export class Calendar {
             // Try various date formats with native parsing and date-fns
             const dateTimeCombined = `${dateStr} ${timeStr}`.trim();
             
+            // Use a single reference date for all format attempts
+            const referenceDate = new Date();
             // Try parsing with different formats
             const formatAttempts = [
-              () => parse(dateTimeCombined, 'MMMM d, yyyy h:mm a', new Date()),
-              () => parse(dateTimeCombined, 'MM/dd/yyyy H:mm', new Date()),
-              () => parse(dateTimeCombined, 'yyyy-MM-dd h:mm a', new Date()),
-              () => parse(dateTimeCombined, 'yyyy-MM-dd H:mm', new Date()),
+              () => parse(dateTimeCombined, 'MMMM d, yyyy h:mm a', referenceDate),
+              () => parse(dateTimeCombined, 'MM/dd/yyyy H:mm', referenceDate),
+              () => parse(dateTimeCombined, 'yyyy-MM-dd h:mm a', referenceDate),
+              () => parse(dateTimeCombined, 'yyyy-MM-dd H:mm', referenceDate),
               () => new Date(dateTimeCombined) // Native parsing as fallback
             ];
-
             for (const formatAttempt of formatAttempts) {
               try {
                 const parsedDate = formatAttempt();
