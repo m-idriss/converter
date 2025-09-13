@@ -27,10 +27,105 @@ jobs:
 
     - name: Update environment.ts for production
       run: |
+        echo "🔧 Updating environment.ts for production build..."
         echo "${{ secrets.ENV_PROD_TS }}" > src/environments/environment.ts
+        
+        echo "📋 Validating generated environment.ts..."
+        echo "Generated content preview (first 10 lines):"
+        head -10 src/environments/environment.ts | sed 's/^/   /'
+        
+        echo ""
+        echo "🔍 Checking for common configuration issues..."
+        
+        # Check if the file contains the export statement
+        if grep -q "export const environment" src/environments/environment.ts; then
+          echo "✅ Environment export statement found"
+        else
+          echo "❌ Missing 'export const environment' - check ENV_PROD_TS secret format"
+          exit 1
+        fi
+        
+        # Check if Firebase config exists
+        if grep -q "firebase:" src/environments/environment.ts; then
+          echo "✅ Firebase configuration section found"
+        else
+          echo "❌ Missing Firebase configuration - check ENV_PROD_TS secret"
+          exit 1
+        fi
+        
+        # Check for likely unquoted values that cause TypeScript errors
+        if grep -E 'apiKey: [^"].*[^"],' src/environments/environment.ts; then
+          echo "⚠️  WARNING: apiKey appears to be unquoted - this will cause TypeScript errors"
+          echo "   Make sure your ENV_PROD_TS secret has quoted values: apiKey: \"your-key-here\""
+        fi
+        
+        if grep -E 'authDomain: [^"].*[^"],' src/environments/environment.ts; then
+          echo "⚠️  WARNING: authDomain appears to be unquoted - this will cause TypeScript errors"  
+          echo "   Make sure your ENV_PROD_TS secret has quoted values: authDomain: \"your-domain.firebaseapp.com\""
+        fi
+        
+        echo "✅ Environment configuration update completed"
 
     - name: Build Angular app
+      id: angular-build
       run: npm run build -- --configuration=production --base-href=/converter/
+      continue-on-error: true
+
+    - name: Handle build failure
+      if: steps.angular-build.outcome == 'failure'
+      run: |
+        echo "❌ Angular build failed. Analyzing potential causes..."
+        echo ""
+        echo "=== BUILD ERROR ANALYSIS ==="
+        echo ""
+        
+        # Check for common Firebase configuration errors
+        echo "🔍 Checking for Firebase configuration issues..."
+        
+        if grep -q "Cannot find name" <<< "${{ steps.angular-build.outputs.stderr }}" 2>/dev/null; then
+          echo ""
+          echo "🔥 FIREBASE CONFIGURATION ERROR DETECTED"
+          echo "========================================"
+          echo ""
+          echo "The build failed due to unquoted values in the Firebase configuration."
+          echo "This is usually caused by the ENV_PROD_TS secret containing unquoted strings."
+          echo ""
+          echo "💡 SOLUTION:"
+          echo "1. Update the ENV_PROD_TS repository secret"
+          echo "2. Ensure ALL Firebase values are properly quoted as strings:"
+          echo ""
+          echo "   ✅ Correct format:"
+          echo "   apiKey: \"AIzaSyDvQ4aCcWtSxGmTXefINTcsdb0O5zheYzE\","
+          echo "   authDomain: \"your-project.firebaseapp.com\","
+          echo "   projectId: \"your-project\","
+          echo "   storageBucket: \"your-project.firebasestorage.app\","
+          echo "   messagingSenderId: \"123456789\","
+          echo "   appId: \"1:123456789:web:abcdef123456\","
+          echo "   measurementId: \"G-ABCDEF1234\""
+          echo ""
+          echo "   ❌ Wrong format (causes this error):"
+          echo "   apiKey: AIzaSyDvQ4aCcWtSxGmTXefINTcsdb0O5zheYzE,"
+          echo "   authDomain: your-project.firebaseapp.com,"
+          echo ""
+          echo "3. Test locally with: ./scripts/validate-environment.sh"
+          echo "4. Re-run this deployment"
+          echo ""
+          
+          echo "📄 Current environment.ts content:"
+          cat src/environments/environment.ts | sed 's/^/   /'
+          echo ""
+        fi
+        
+        echo "📋 For more help, see:"
+        echo "   - FIREBASE_DEPLOYMENT_FIX.md"
+        echo "   - DEPLOYMENT.md"
+        echo "   - Use ./scripts/validate-environment.sh to test configuration"
+        
+        exit 1
+
+    - name: Ensure build succeeded
+      if: steps.angular-build.outcome == 'failure'
+      run: exit 1
 
     - name: Verify build output
       run: |
