@@ -20,6 +20,7 @@ Required secrets in your GitHub repository:
 - `FTP_SERVER`: The FTP server hostname or IP address (e.g., `3dime.com` or `ftp.3dime.com`)
 - `FTP_USERNAME`: FTP username for the server
 - `FTP_PASSWORD`: FTP password for authentication
+- `FTP_PATH`: Target directory path on the server (e.g., `/public_html/converter/` or `/converter/`)
 
 ### Setting up FTP Secrets
 
@@ -92,10 +93,29 @@ If you prefer SSH deployment, you can modify the workflow to use SSH instead of 
 - Verify the build works locally: `npm run build -- --configuration=production --base-href=/converter/`
 
 ### Deployment Issues
+
+#### DNS Resolution Errors (ENOTFOUND)
+If you encounter "getaddrinfo ENOTFOUND" errors in GitHub Actions:
+
+1. **Verify FTP server hostname**: Ensure the `FTP_SERVER` secret contains the correct hostname
+2. **Use troubleshooting script**: Run `./scripts/troubleshoot-deployment.sh your-ftp-server.com` locally
+3. **Check DNS configuration**: Verify the hostname resolves correctly with multiple DNS servers
+4. **Test from different locations**: The hostname might be geographically restricted
+5. **Consider using IP address**: Use the server's IP address instead of hostname if DNS is problematic
+6. **Check server availability**: Ensure the FTP server is online and accessible
+
+The deployment workflow now includes:
+- Automatic DNS resolution validation with multiple DNS servers
+- Retry mechanism with 30-second delay between attempts
+- Comprehensive diagnostics if deployment fails
+- Timeout and error handling for network issues
+
+#### General FTP Issues
 - Verify FTP connectivity and credentials: test with an FTP client like FileZilla
 - Check that the target directory has proper write permissions
 - Verify the FTP server path is correct (usually relative to FTP user's home directory)
 - Check GitHub Actions logs for specific error messages
+- Ensure GitHub Actions IP ranges are allowed on your server firewall
 
 ### Routing Issues
 - Ensure the web server is configured to serve the Angular app correctly
