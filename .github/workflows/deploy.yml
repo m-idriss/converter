@@ -25,6 +25,10 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
+    - name: Generate environment.prod.ts
+      run: |
+        echo "${{ secrets.ENV_PROD_TS }}" > src/environments/environment.prod.ts
+
     - name: Build Angular app
       run: npm run build -- --configuration=production --base-href=/converter/
 
