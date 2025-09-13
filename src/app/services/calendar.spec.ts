@@ -24,6 +24,26 @@ describe('Calendar', () => {
       expect(events[1].title).toContain('Appointment');
     });
 
+    it('should parse date formats correctly with date-fns', () => {
+      const text = 'Team Meeting 2025-01-15 2:00 PM\nProject Review on December 25, 2024 at 10:30 AM';
+      const events = service.parseTextForEvents(text);
+      
+      expect(events.length).toBe(2);
+      
+      // Check that dates were parsed correctly
+      const firstEvent = events[0];
+      expect(firstEvent.title).toBe('Team Meeting');
+      expect(firstEvent.startDate.getFullYear()).toBe(2025);
+      expect(firstEvent.startDate.getMonth()).toBe(0); // January = 0
+      expect(firstEvent.startDate.getDate()).toBe(15);
+      
+      const secondEvent = events[1];
+      expect(secondEvent.title).toBe('Project Review');
+      expect(secondEvent.startDate.getFullYear()).toBe(2024);
+      expect(secondEvent.startDate.getMonth()).toBe(11); // December = 11
+      expect(secondEvent.startDate.getDate()).toBe(25);
+    });
+
     it('should handle iCalendar format text', () => {
       const text = 'DTSTAMP:20231003T120000Z\nDTSTART;TZID=Europe/Paris:20231003T120000\nDTEND;TZID=Europe/Paris:20231003T130000';
       const events = service.parseTextForEvents(text);
