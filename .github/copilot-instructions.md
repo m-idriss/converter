@@ -142,7 +142,7 @@ functions/
 ## Configuration
 
 ### Environment Setup
-Update `src/environments/environment.ts` and `environment.prod.ts`:
+Update `src/environments/environment.ts`:
 ```typescript
 export const environment = {
   production: false, // true for prod
