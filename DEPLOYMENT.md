@@ -22,7 +22,34 @@ Required secrets in your GitHub repository:
 - `FTP_PASSWORD`: FTP password for authentication
 - `FTP_PATH`: Target directory path on the server (e.g., `/public_html/converter/` or `/converter/`)
 
-### Setting up FTP Secrets
+### Firebase Environment Configuration
+
+The deployment workflow requires a Firebase configuration for production. You need to set up one additional secret:
+
+- `ENV_PROD_TS`: Complete TypeScript content for the production environment file
+
+#### Setting up the ENV_PROD_TS Secret
+
+The `ENV_PROD_TS` secret must contain properly formatted TypeScript code with **quoted string values**. Here's the correct format:
+
+```typescript
+export const environment = {
+  production: true,
+  firebase: {
+    apiKey: "your-api-key-here",
+    authDomain: "your-project-id.firebaseapp.com",
+    projectId: "your-project-id", 
+    storageBucket: "your-project-id.firebasestorage.app",
+    messagingSenderId: "your-messaging-sender-id",
+    appId: "1:your-messaging-sender-id:web:your-app-id-here",
+    measurementId: "G-your-measurement-id"
+  }
+};
+```
+
+**⚠️ Critical: All Firebase configuration values must be quoted as strings!**
+
+### Setting up GitHub Secrets
 
 1. Go to your repository on GitHub
 2. Navigate to Settings → Secrets and variables → Actions
@@ -92,6 +119,25 @@ If you prefer SSH deployment, you can modify the workflow to use SSH instead of 
 - Check that all dependencies install correctly with `npm ci`
 - Verify the build works locally: `npm run build -- --configuration=production --base-href=/converter/`
 
+#### Firebase Configuration Errors
+
+If you see TypeScript compilation errors like:
+- `Cannot find name 'AIzaSyDvQ4aCcWtSxGmTXefINTcsdb0O5zheYzE'`
+- `Cannot find name 'image'`
+- `Types of property 'authDomain' are incompatible. Type 'number' is not assignable to type 'string'`
+
+This means your `ENV_PROD_TS` secret contains unquoted Firebase configuration values. Update the secret to ensure all values are properly quoted as strings:
+
+```typescript
+// ❌ Wrong (causes build failures):
+apiKey: AIzaSyDvQ4aCcWtSxGmTXefINTcsdb0O5zheYzE,
+authDomain: your-project.firebaseapp.com,
+
+// ✅ Correct (properly quoted):
+apiKey: "AIzaSyDvQ4aCcWtSxGmTXefINTcsdb0O5zheYzE",
+authDomain: "your-project.firebaseapp.com",
+```
+
 ### Deployment Issues
 
 #### DNS Resolution Errors (ENOTFOUND)
@@ -123,6 +169,29 @@ The deployment workflow now includes:
 - Check that the web server handles Angular's client-side routing
 
 ## Testing the Deployment
+
+### Validating Environment Configuration
+
+Before setting up deployment, you can test your Firebase environment configuration:
+
+```bash
+# Validate current environment file
+./scripts/validate-environment.sh
+
+# Validate specific environment file
+./scripts/validate-environment.sh src/environments/environment.prod.ts
+
+# Test what GitHub Actions would do with your ENV_PROD_TS content
+./scripts/validate-environment.sh "" "$(cat your-prod-env-content.ts)"
+```
+
+The validation script will:
+- Check TypeScript syntax
+- Verify all required Firebase fields are present  
+- Detect unquoted configuration values that cause deployment failures
+- Simulate the GitHub Actions environment replacement process
+
+### Deployment Testing
 
 After a successful deployment:
 1. Visit `http://3dime.com/converter`
