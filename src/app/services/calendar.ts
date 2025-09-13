@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
-import moment from 'moment';
+import { parse, parseISO, isValid, addHours } from 'date-fns';
 
 export interface CalendarEvent {
   title: string;
@@ -64,21 +64,40 @@ export class Calendar {
           const dateStr = match[pattern.dateGroup];
           const timeStr = pattern.timeGroup ? match[pattern.timeGroup] || '' : '';
 
-          let eventDate: moment.Moment;
+          let eventDate: Date | null = null;
 
           if (/^\d{8}T\d{6}Z?$/.test(dateStr)) {
-            eventDate = moment.utc(dateStr, ['YYYYMMDDTHHmmss[Z]', 'YYYYMMDDTHHmmss']);
+            // Parse ISO-like format: 20231001T090000Z
+            const isoString = dateStr.replace(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z?$/, '$1-$2-$3T$4:$5:$6Z');
+            eventDate = parseISO(isoString);
           } else {
-            eventDate = moment(`${dateStr} ${timeStr}`, [
-              'MMMM D, YYYY h:mm A',
-              'MMMM D YYYY h:mm A',
-              'MM/DD/YYYY H:mm',
-              'YYYY-MM-DD h:mm A',
-              'YYYY-MM-DD H:mm'
-            ]);
+            // Try various date formats with native parsing and date-fns
+            const dateTimeCombined = `${dateStr} ${timeStr}`.trim();
+            
+            // Use a single reference date for all format attempts
+            const referenceDate = new Date();
+            // Try parsing with different formats
+            const formatAttempts = [
+              () => parse(dateTimeCombined, 'MMMM d, yyyy h:mm a', referenceDate),
+              () => parse(dateTimeCombined, 'MM/dd/yyyy H:mm', referenceDate),
+              () => parse(dateTimeCombined, 'yyyy-MM-dd h:mm a', referenceDate),
+              () => parse(dateTimeCombined, 'yyyy-MM-dd H:mm', referenceDate),
+              () => new Date(dateTimeCombined) // Native parsing as fallback
+            ];
+            for (const formatAttempt of formatAttempts) {
+              try {
+                const parsedDate = formatAttempt();
+                if (isValid(parsedDate)) {
+                  eventDate = parsedDate;
+                  break;
+                }
+              } catch (e) {
+                // Continue to next format
+              }
+            }
           }
 
-          if (eventDate.isValid()) {
+          if (eventDate && isValid(eventDate)) {
             let title = titleText ? titleText.trim() : '';
             
             // Clean up common prefixes
@@ -92,8 +111,8 @@ export class Calendar {
             events.push({
               title,
               description: `Extracted from: ${line}`,
-              startDate: eventDate.toDate(),
-              endDate: eventDate.clone().add(1, 'hour').toDate(),
+              startDate: eventDate,
+              endDate: addHours(eventDate, 1),
               allDay: false,
               timezone: 'Europe/Paris'
             });
@@ -222,12 +241,17 @@ export class Calendar {
     // Handle different iCalendar date formats
     if (/^\d{8}T\d{6}Z?$/.test(dateStr)) {
       // 20231003T120000Z format
-      const momentDate = moment.utc(dateStr, ['YYYYMMDDTHHmmss[Z]', 'YYYYMMDDTHHmmss']);
-      return momentDate.isValid() ? momentDate.toDate() : null;
+      const isoString = dateStr.replace(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z?$/, '$1-$2-$3T$4:$5:$6Z');
+      const parsedDate = parseISO(isoString);
+      return isValid(parsedDate) ? parsedDate : null;
     } else if (/^\d{8}$/.test(dateStr)) {
       // 20231003 format (date only)
-      const momentDate = moment.utc(dateStr, 'YYYYMMDD');
-      return momentDate.isValid() ? momentDate.toDate() : null;
+      try {
+        const parsedDate = parse(dateStr, 'yyyyMMdd', new Date());
+        return isValid(parsedDate) ? parsedDate : null;
+      } catch (e) {
+        return null;
+      }
     }
 
     return null;
