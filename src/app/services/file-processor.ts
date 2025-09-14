@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 
 export interface ExtractedText {
   content: string;
+  confidence?: number;
 }
 
 @Injectable({
@@ -59,7 +60,8 @@ export class FileProcessor {
       );
 
       return {
-        content: response ?? ''
+        content: response ?? '',
+        confidence: 0.85 // Mock confidence value since Firebase OCR doesn't return confidence
       };
     } catch (error) {
       console.error('Error calling Firebase helloWorld:', error);
