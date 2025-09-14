@@ -1,5 +1,6 @@
 <div class="auth-container">
-  <div *ngIf="user$ | async as user; else signInTemplate" class="user-info">
+  <!-- Header mode: Only show user profile when authenticated -->
+  <div *ngIf="mode === 'header' && (user$ | async) as user" class="user-info">
     <!-- Desktop View -->
     <div class="desktop-auth">
       <div class="user-profile">
@@ -46,18 +47,15 @@
     </div>
   </div>
 
-  <ng-template #signInTemplate>
-    <div class="sign-in-container">
-      <h2>Welcome to Converter</h2>
-      <p>Sign in with Google to convert your images and PDFs to calendar events</p>
-      <button 
-        class="google-sign-in-btn" 
-        (click)="signInWithGoogle()" 
-        [disabled]="isLoading"
-      >
-        <span class="google-icon">🔐</span>
-        {{ isLoading ? 'Signing in...' : 'Sign in with Google' }}
-      </button>
-    </div>
-  </ng-template>
+  <!-- Login mode: Show sign-in form when not authenticated -->
+  <div *ngIf="mode === 'login' && !(user$ | async)" class="sign-in-container">
+    <button 
+      class="google-sign-in-btn" 
+      (click)="signInWithGoogle()" 
+      [disabled]="isLoading"
+    >
+      <span class="google-icon">🔐</span>
+      {{ isLoading ? 'Signing in...' : 'Sign in with Google' }}
+    </button>
+  </div>
 </div>
