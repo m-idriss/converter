@@ -13,208 +13,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
+      - name: Checkout code
+        uses: actions/checkout@v5
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v5
-      with:
-        node-version: '20'
-        cache: 'npm'
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: node server.js
+        env:
+          FIREBASE_DETAILS: ${{ secrets.ENV_PROD_TS }}
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Build Angular app
-      run: npm run build -- --configuration=production --base-href=/converter/
+      - name: Build Angular app
+        run: npm run build -- --configuration=production --base-href=/converter/
 
-    - name: Verify build output
-      run: |
-        echo "Verifying build output..."
-        ls -la ./dist/
-        if [ -d "./dist/converter-app/browser/" ]; then
-          echo "✅ Build output directory exists"
-          echo "Files to deploy:"
-          ls -la ./dist/converter-app/browser/
-        else
-          echo "❌ Build output directory not found"
-          exit 1
-        fi
-
-    - name: Validate deployment environment
-      run: |
-        echo "Validating deployment environment..."
-        # Check required secrets are available
-        if [ -z "${{ secrets.FTP_SERVER }}" ]; then
-          echo "❌ FTP_SERVER secret is missing"
-          exit 1
-        fi
-        if [ -z "${{ secrets.FTP_USERNAME }}" ]; then
-          echo "❌ FTP_USERNAME secret is missing"
-          exit 1
-        fi
-        if [ -z "${{ secrets.FTP_PASSWORD }}" ]; then
-          echo "❌ FTP_PASSWORD secret is missing"
-          exit 1
-        fi
-        if [ -z "${{ secrets.FTP_PATH }}" ]; then
-          echo "❌ FTP_PATH secret is missing"
-          exit 1
-        fi
-        echo "✅ All required secrets are available"
-
-    - name: Validate FTP server connectivity
-      run: |
-        echo "Checking FTP server connectivity..."
-        # Test DNS resolution for FTP server
-        if [ -n "${{ secrets.FTP_SERVER }}" ]; then
-          echo "Testing DNS resolution for FTP server..."
-          # Use timeout and multiple attempts for DNS resolution
-          for i in {1..3}; do
-            echo "Attempt $i/3: Resolving ${{ secrets.FTP_SERVER }}"
-            # Try multiple DNS resolution methods
-            if timeout 10 nslookup ${{ secrets.FTP_SERVER }} || timeout 10 host ${{ secrets.FTP_SERVER }} || timeout 10 dig ${{ secrets.FTP_SERVER }} +short; then
-              echo "✅ DNS resolution successful"
-              break
-            else
-              echo "❌ DNS resolution failed, retrying in 5 seconds..."
-              sleep 5
-            fi
-            if [ $i -eq 3 ]; then
-              echo "❌ DNS resolution failed after 3 attempts"
-              echo "Trying with different DNS servers..."
-              timeout 10 nslookup ${{ secrets.FTP_SERVER }} 8.8.8.8 || echo "Failed with Google DNS"
-              timeout 10 nslookup ${{ secrets.FTP_SERVER }} 1.1.1.1 || echo "Failed with Cloudflare DNS"
-              exit 1
-            fi
-          done
-        else
-          echo "❌ FTP_SERVER secret is not set"
-          exit 1
-        fi
-
-        # Test basic connectivity if DNS resolution succeeds
-        echo "Testing basic connectivity to FTP server..."
-        if timeout 30 nc -zv ${{ secrets.FTP_SERVER }} 21 2>/dev/null; then
-          echo "✅ FTP port 21 is accessible"
-        else
-          echo "❌ Cannot connect to FTP port 21 - server may be down or blocked"
-        fi
-
-    - name: Deploy via FTP with retry
-      id: ftp-deploy
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.6
-      with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: ${{ secrets.FTP_PATH }}
-        local-dir: ./dist/converter-app/browser/
-        # Enhanced FTP settings for better reliability
-        timeout: 60000
-        log-level: verbose
-        security: strict
-        # Retry settings
-        dangerous-clean-slate: false
-        exclude: |
-          **/.git*
-          **/.git*/**
-          **/node_modules/**
-          **/.DS_Store
-      # Add timeout and continue-on-error for fallback handling
-      continue-on-error: true
-      timeout-minutes: 15
-
-    - name: Retry FTP deployment if failed
-      if: steps.ftp-deploy.outcome == 'failure'
-      run: |
-        echo "First FTP deployment attempt failed. Waiting 30 seconds before retry..."
-        sleep 30
-        echo "Retrying FTP deployment..."
-
-    - name: Deploy via FTP (Retry)
-      if: steps.ftp-deploy.outcome == 'failure'
-      id: ftp-deploy-retry
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.6
-      with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: ${{ secrets.FTP_PATH }}
-        local-dir: ./dist/converter-app/browser/
-        timeout: 90000
-        log-level: verbose
-        security: loose
-        dangerous-clean-slate: false
-        exclude: |
-          **/.git*
-          **/.git*/**
-          **/node_modules/**
-          **/.DS_Store
-      timeout-minutes: 20
-
-    - name: FTP Deployment Fallback and Diagnostics
-      if: steps.ftp-deploy.outcome == 'failure' && steps.ftp-deploy-retry.outcome == 'failure'
-      run: |
-        echo "❌ Both FTP deployment attempts failed."
-        echo ""
-        echo "=== DEPLOYMENT DIAGNOSTICS ==="
-        echo ""
-        echo "1. Checking network connectivity:"
-        echo "   - GitHub Actions runner IP and network info"
-        curl -s https://httpbin.org/ip || echo "   Cannot determine public IP"
-        
-        echo ""
-        echo "2. DNS Resolution Tests:"
-        echo "   Testing with multiple DNS servers..."
-        
-        # Test with system DNS
-        echo "   System DNS:"
-        timeout 10 nslookup ${{ secrets.FTP_SERVER }} || echo "   Failed with system DNS"
-        
-        # Test with Google DNS
-        echo "   Google DNS (8.8.8.8):"
-        timeout 10 nslookup ${{ secrets.FTP_SERVER }} 8.8.8.8 || echo "   Failed with Google DNS"
-        
-        # Test with Cloudflare DNS
-        echo "   Cloudflare DNS (1.1.1.1):"
-        timeout 10 nslookup ${{ secrets.FTP_SERVER }} 1.1.1.1 || echo "   Failed with Cloudflare DNS"
-        
-        echo ""
-        echo "3. Network Connectivity Tests:"
-        echo "   Testing FTP port 21..."
-        timeout 15 nc -zv ${{ secrets.FTP_SERVER }} 21 2>&1 || echo "   FTP port 21 not reachable"
-        
-        echo "   Testing HTTP port 80 (if web server)..."
-        timeout 15 nc -zv ${{ secrets.FTP_SERVER }} 80 2>&1 || echo "   HTTP port 80 not reachable"
-        
-        echo "   Testing HTTPS port 443 (if web server)..."
-        timeout 15 nc -zv ${{ secrets.FTP_SERVER }} 443 2>&1 || echo "   HTTPS port 443 not reachable"
-        
-        echo ""
-        echo "4. Ping Test:"
-        timeout 15 ping -c 3 ${{ secrets.FTP_SERVER }} 2>&1 || echo "   Server not pingable"
-        
-        echo ""
-        echo "=== RECOMMENDATIONS ==="
-        echo "1. Verify FTP server hostname is correct"
-        echo "2. Check if FTP server is online and accessible"
-        echo "3. Ensure FTP server allows connections from GitHub Actions IP ranges"
-        echo "4. Consider using SFTP instead of FTP if available"
-        echo "5. Check if server-side firewall is blocking the connection"
-        echo "6. Verify DNS records are properly configured"
-        
-        echo ""
-        echo "GitHub Actions IP ranges: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#ip-addresses"
-        
-        exit 1
-
-    - name: Deployment Success Notification
-      if: steps.ftp-deploy.outcome == 'success' || steps.ftp-deploy-retry.outcome == 'success'
-      run: |
-        echo "✅ FTP deployment completed successfully!"
-        if [ "${{ steps.ftp-deploy.outcome }}" == "success" ]; then
-          echo "   Succeeded on first attempt"
-        else
-          echo "   Succeeded on retry attempt"
-        fi
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_PATH }}
+          local-dir: ./dist/converter-app/browser/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
