@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Auth as AuthService } from '../../services/auth';
 import { Observable } from 'rxjs';
@@ -11,6 +11,7 @@ import { User } from 'firebase/auth';
   styleUrl: './auth.scss'
 })
 export class Auth implements OnInit {
+  @Input() mode: 'header' | 'login' = 'header';
   user$: Observable<User | null>;
   isLoading = false;
   isMobileMenuOpen = signal(false);

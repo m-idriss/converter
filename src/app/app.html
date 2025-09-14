@@ -4,7 +4,10 @@
       <h1>📅 File to Calendar Converter</h1>
       <p>Convert images and PDFs to ICS calendar files</p>
     </div>
-    <app-auth></app-auth>
+    <!-- Only show auth component in header when user is connected -->
+    <div *ngIf="user$ | async" class="header-auth">
+      <app-auth mode="header"></app-auth>
+    </div>
   </header>
 
   <main class="app-main" *ngIf="user$ | async">
@@ -130,6 +133,8 @@
     <div class="prompt-content">
       <h2>🔐 Authentication Required</h2>
       <p>Please sign in with Google to use the file converter</p>
+      <!-- Move sign-in component here when user is not authenticated -->
+      <app-auth mode="login"></app-auth>
     </div>
   </div>
 </div>
