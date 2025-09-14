@@ -169,10 +169,6 @@
   
   &:hover {
     background-color: var(--gray-25);
-    
-    .event-actions {
-      opacity: 1;
-    }
   }
 }
 
@@ -301,37 +297,7 @@
   }
 }
 
-// Event actions (shown on hover)
-.event-actions {
-  display: flex;
-  gap: var(--space-1);
-  margin-top: var(--space-2);
-  opacity: 0;
-  transition: opacity var(--transition-base);
-  
-  .quick-action {
-    background: var(--gray-100);
-    border: none;
-    border-radius: var(--radius-sm);
-    padding: var(--space-1) var(--space-2);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    font-size: var(--text-sm);
-    
-    &:hover {
-      background: var(--primary-100);
-      transform: scale(1.05);
-    }
 
-    &.copy-btn:hover {
-      background: var(--success-100);
-    }
-
-    &.share-btn:hover {
-      background: var(--info-100);
-    }
-  }
-}
 
 // Remove old styles that are no longer needed
 .events-list:not(.iphone-style) {
@@ -459,20 +425,27 @@
     }
     
     .event-main {
-      flex-direction: column;
-      align-items: stretch;
-      gap: var(--space-2);
+      flex-direction: row;
+      align-items: flex-start;
+      gap: var(--space-3);
+      justify-content: space-between;
+    }
+    
+    .event-info {
+      flex: 1;
+      min-width: 0;
+      
+      .event-title {
+        margin-bottom: var(--space-1);
+      }
     }
     
     .event-time {
-      align-items: flex-start;
-      text-align: left;
-      min-width: auto;
-    }
-    
-    .event-actions {
-      opacity: 1; // Always show on mobile
-      margin-top: var(--space-2);
+      align-items: flex-end;
+      text-align: right;
+      min-width: 60px;
+      flex-shrink: 0;
+      align-self: flex-start;
     }
   }
 }

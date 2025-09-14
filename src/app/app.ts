@@ -125,35 +125,6 @@ export class App implements OnInit, OnDestroy {
     return `${event.title}-${event.startDate.getTime()}`;
   }
 
-  async copyEventToClipboard(event: CalendarEvent): Promise<void> {
-    const eventText = `${event.title}\nDate: ${event.startDate.toLocaleDateString()} at ${event.startDate.toLocaleTimeString()}\n${event.description ? 'Description: ' + event.description + '\n' : ''}${event.location ? 'Location: ' + event.location : ''}`;
-    
-    try {
-      await navigator.clipboard.writeText(eventText);
-      this.downloadStatus = { message: 'Event copied to clipboard!', type: 'success' };
-      setTimeout(() => {
-        this.downloadStatus = null;
-      }, 3000);
-    } catch (error) {
-      console.error('Failed to copy to clipboard:', error);
-    }
-  }
-
-  shareEvent(event: CalendarEvent): void {
-    const eventText = `${event.title} - ${event.startDate.toLocaleDateString()} at ${event.startDate.toLocaleTimeString()}`;
-    
-    if (navigator.share) {
-      navigator.share({
-        title: event.title,
-        text: eventText,
-        url: window.location.href
-      }).catch(console.error);
-    } else {
-      // Fallback: copy to clipboard
-      this.copyEventToClipboard(event);
-    }
-  }
-
   getDayAbbreviation(date: Date): string {
     const days = ['DIM.', 'LUN.', 'MAR.', 'MER.', 'JEU.', 'VEN.', 'SAM.'];
     return days[date.getDay()];
