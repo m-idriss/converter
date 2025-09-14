@@ -56,8 +56,19 @@
           <div class="event-item" *ngFor="let event of parsedEvents; trackBy: trackEvent">
             <div class="event-header">
               <h3>{{ event.title }}</h3>
-              <div class="event-status" [class]="getEventStatus(event)">
-                {{ getEventStatusText(event) }}
+              <div class="event-header-right">
+                <div class="event-status" [class]="getEventStatus(event)">
+                  {{ getEventStatusText(event) }}
+                </div>
+                <!-- Inline event actions -->
+                <div class="event-actions inline-actions">
+                  <button class="quick-action copy-btn" (click)="copyEventToClipboard(event)" title="Copy event details">
+                    📋
+                  </button>
+                  <button class="quick-action share-btn" (click)="shareEvent(event)" title="Share event">
+                    📤
+                  </button>
+                </div>
               </div>
             </div>
             
@@ -77,15 +88,6 @@
                 <p class="event-location" *ngIf="event.location">📍 {{ event.location }}</p>
                 <p class="event-timezone" *ngIf="event.timezone">🌍 {{ event.timezone }}</p>
               </div>
-            </div>
-
-            <div class="event-actions">
-              <button class="quick-action" (click)="copyEventToClipboard(event)" title="Copy event details">
-                📋
-              </button>
-              <button class="quick-action" (click)="shareEvent(event)" title="Share event">
-                📤
-              </button>
             </div>
           </div>
         </div>
