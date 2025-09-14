@@ -449,9 +449,6 @@
 /* Enhanced Mobile Responsiveness */
 @media (max-width: 768px) {
   .app-header {
-    flex-direction: column;
-    gap: var(--space-2);
-    text-align: center;
     padding: var(--space-2) var(--space-3);
     min-height: 50px;
 
@@ -811,7 +808,7 @@
 /* Mobile adjustments for new components */
 @media (max-width: 768px) {
   .stats-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: var(--space-2);
   }
   
@@ -822,7 +819,7 @@
   }
   
   .view-toggle {
-    align-self: stretch;
+    display: none; /* Hide view toggle on mobile - force list view */
   }
   
   .toggle-btn {
@@ -842,12 +839,17 @@
     align-items: center;
   }
   
-  .events-list.list-view .event-item {
-    flex-direction: column;
-    align-items: stretch;
+  .events-list {
+    /* Force list view on mobile */
+    grid-template-columns: 1fr !important;
     
-    .event-header {
-      margin-bottom: var(--space-1);
+    .event-item {
+      flex-direction: column;
+      align-items: stretch;
+      
+      .event-header {
+        margin-bottom: var(--space-1);
+      }
     }
   }
 }

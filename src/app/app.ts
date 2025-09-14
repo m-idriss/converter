@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { Auth } from './components/auth/auth';
@@ -6,7 +6,8 @@ import { FileUpload } from './components/file-upload/file-upload';
 import { Auth as AuthService } from './services/auth';
 import { Calendar, CalendarEvent } from './services/calendar';
 import { ExtractedText } from './services/file-processor';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { User } from 'firebase/auth';
 
 @Component({
@@ -15,7 +16,7 @@ import { User } from 'firebase/auth';
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App {
+export class App implements OnInit, OnDestroy {
   protected readonly title = signal('converter-app');
   user$: Observable<User | null>;
   extractedText: ExtractedText | null = null;
@@ -24,12 +25,35 @@ export class App {
   downloadStatus: { message: string; type: 'success' | 'error' | 'info' } | null = null;
   isDownloading = false;
   viewMode: 'grid' | 'list' = 'grid';
+  isMobile = false;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private authService: AuthService,
     private calendarService: Calendar
   ) {
     this.user$ = this.authService.user$;
+  }
+
+  ngOnInit(): void {
+    this.checkScreenSize();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    this.checkScreenSize();
+  }
+
+  private checkScreenSize(): void {
+    this.isMobile = window.innerWidth <= 768;
+    if (this.isMobile) {
+      this.viewMode = 'list'; // Force list view on mobile
+    }
   }
 
   onTextExtracted(extractedText: ExtractedText): void {
@@ -74,32 +98,6 @@ export class App {
     this.showResults = false;
     this.downloadStatus = null;
     this.isDownloading = false;
-  }
-
-  getUpcomingEventsCount(): number {
-    const now = new Date();
-    return this.parsedEvents.filter(event => event.startDate > now).length;
-  }
-
-  getEventStatus(event: CalendarEvent): string {
-    const now = new Date();
-    if (event.startDate > now) {
-      return 'upcoming';
-    } else if (event.endDate > now) {
-      return 'ongoing';
-    } else {
-      return 'past';
-    }
-  }
-
-  getEventStatusText(event: CalendarEvent): string {
-    const status = this.getEventStatus(event);
-    switch (status) {
-      case 'upcoming': return 'Upcoming';
-      case 'ongoing': return 'Now';
-      case 'past': return 'Past';
-      default: return '';
-    }
   }
 
   getEventDuration(event: CalendarEvent): string {

@@ -21,10 +21,6 @@
             <span class="stat-label">{{ parsedEvents.length === 1 ? 'Event' : 'Events' }} Found</span>
           </div>
           <div class="stat-item">
-            <span class="stat-number">{{ getUpcomingEventsCount() }}</span>
-            <span class="stat-label">Upcoming</span>
-          </div>
-          <div class="stat-item">
             <span class="stat-number">{{ extractedText.confidence ? (extractedText.confidence * 100).toFixed(0) + '%' : 'N/A' }}</span>
             <span class="stat-label">Confidence</span>
           </div>
@@ -34,7 +30,7 @@
       <div class="events-card" *ngIf="parsedEvents.length > 0">
         <div class="events-header">
           <h2>📅 Calendar Events</h2>
-          <div class="view-toggle">
+          <div class="view-toggle" *ngIf="!isMobile">
             <button 
               class="toggle-btn" 
               [class.active]="viewMode === 'grid'" 
@@ -57,9 +53,6 @@
             <div class="event-header">
               <h3>{{ event.title }}</h3>
               <div class="event-header-right">
-                <div class="event-status" [class]="getEventStatus(event)">
-                  {{ getEventStatusText(event) }}
-                </div>
                 <!-- Inline event actions -->
                 <div class="event-actions inline-actions">
                   <button class="quick-action copy-btn" (click)="copyEventToClipboard(event)" title="Copy event details">
@@ -84,9 +77,8 @@
                 {{ event.description }}
               </p>
               
-              <div class="event-meta" *ngIf="event.location || event.timezone">
+              <div class="event-meta" *ngIf="event.location">
                 <p class="event-location" *ngIf="event.location">📍 {{ event.location }}</p>
-                <p class="event-timezone" *ngIf="event.timezone">🌍 {{ event.timezone }}</p>
               </div>
             </div>
           </div>
