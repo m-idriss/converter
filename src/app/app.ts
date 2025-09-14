@@ -153,4 +153,14 @@ export class App implements OnInit, OnDestroy {
       this.copyEventToClipboard(event);
     }
   }
+
+  getDayAbbreviation(date: Date): string {
+    const days = ['DIM.', 'LUN.', 'MAR.', 'MER.', 'JEU.', 'VEN.', 'SAM.'];
+    return days[date.getDay()];
+  }
+
+  getEventColor(index: number): string {
+    const colors = ['blue', 'green', 'orange'];
+    return colors[index % colors.length];
+  }
 }

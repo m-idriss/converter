@@ -33,55 +33,47 @@
       <div class="events-card" *ngIf="parsedEvents.length > 0">
         <div class="events-header">
           <h2>📅 Calendar Events</h2>
-          <div class="view-toggle" *ngIf="!isMobile">
-            <button 
-              class="toggle-btn" 
-              [class.active]="viewMode === 'grid'" 
-              (click)="viewMode = 'grid'"
-              title="Grid View">
-              ⊞
-            </button>
-            <button 
-              class="toggle-btn" 
-              [class.active]="viewMode === 'list'" 
-              (click)="viewMode = 'list'"
-              title="List View">
-              ☰
-            </button>
-          </div>
         </div>
         
-        <div class="events-list" [class.list-view]="viewMode === 'list'">
-          <div class="event-item" *ngFor="let event of parsedEvents; trackBy: trackEvent">
-            <div class="event-header">
-              <h3>{{ event.title }}</h3>
-              <div class="event-header-right">
-                <!-- Inline event actions -->
-                <div class="event-actions inline-actions">
-                  <button class="quick-action copy-btn" (click)="copyEventToClipboard(event)" title="Copy event details">
-                    📋
-                  </button>
-                  <button class="quick-action share-btn" (click)="shareEvent(event)" title="Share event">
-                    📤
-                  </button>
-                </div>
-              </div>
+        <div class="events-list iphone-style">
+          <div class="event-item" *ngFor="let event of parsedEvents; trackBy: trackEvent; let i = index" 
+               [attr.data-color-index]="i % 3">
+            <!-- Date card on the left -->
+            <div class="date-card">
+              <div class="day-abbreviation">{{ getDayAbbreviation(event.startDate) }}</div>
+              <div class="day-number">{{ event.startDate | date:'d' }}</div>
             </div>
             
-            <div class="event-details">
-              <p class="event-date">
-                📅 {{ event.startDate | date:'MMM d, y' }} at {{ event.startDate | date:'shortTime' }}
-                <span class="duration" *ngIf="getEventDuration(event)">
-                  ({{ getEventDuration(event) }})
-                </span>
-              </p>
+            <!-- Colored accent border -->
+            <div class="accent-border" [attr.data-color]="getEventColor(i)"></div>
+            
+            <!-- Event content -->
+            <div class="event-content">
+              <div class="event-main">
+                <div class="event-info">
+                  <h3 class="event-title">{{ event.title }}</h3>
+                  <p class="event-location" *ngIf="event.location">
+                    <span class="location-icon">📍</span>{{ event.location }}
+                  </p>
+                  <p class="event-description" *ngIf="event.description && event.description !== event.title">
+                    {{ event.description }}
+                  </p>
+                </div>
+                
+                <div class="event-time">
+                  <div class="time-start">{{ event.startDate | date:'HH:mm' }}</div>
+                  <div class="time-end">{{ event.endDate | date:'HH:mm' }}</div>
+                </div>
+              </div>
               
-              <p class="event-description" *ngIf="event.description && event.description !== event.title">
-                {{ event.description }}
-              </p>
-              
-              <div class="event-meta" *ngIf="event.location">
-                <p class="event-location" *ngIf="event.location">📍 {{ event.location }}</p>
+              <!-- Event actions (hidden by default, shown on hover) -->
+              <div class="event-actions">
+                <button class="quick-action copy-btn" (click)="copyEventToClipboard(event)" title="Copy event details">
+                  📋
+                </button>
+                <button class="quick-action share-btn" (click)="shareEvent(event)" title="Share event">
+                  📤
+                </button>
               </div>
             </div>
           </div>
