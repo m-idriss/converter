@@ -23,6 +23,7 @@ export class App {
   showResults = false;
   downloadStatus: { message: string; type: 'success' | 'error' | 'info' } | null = null;
   isDownloading = false;
+  viewMode: 'grid' | 'list' = 'grid';
 
   constructor(
     private authService: AuthService,
@@ -73,5 +74,85 @@ export class App {
     this.showResults = false;
     this.downloadStatus = null;
     this.isDownloading = false;
+  }
+
+  getUpcomingEventsCount(): number {
+    const now = new Date();
+    return this.parsedEvents.filter(event => event.startDate > now).length;
+  }
+
+  getEventStatus(event: CalendarEvent): string {
+    const now = new Date();
+    if (event.startDate > now) {
+      return 'upcoming';
+    } else if (event.endDate > now) {
+      return 'ongoing';
+    } else {
+      return 'past';
+    }
+  }
+
+  getEventStatusText(event: CalendarEvent): string {
+    const status = this.getEventStatus(event);
+    switch (status) {
+      case 'upcoming': return 'Upcoming';
+      case 'ongoing': return 'Now';
+      case 'past': return 'Past';
+      default: return '';
+    }
+  }
+
+  getEventDuration(event: CalendarEvent): string {
+    const diffMs = event.endDate.getTime() - event.startDate.getTime();
+    const diffHours = Math.round(diffMs / (1000 * 60 * 60) * 10) / 10;
+    
+    if (diffHours < 1) {
+      const diffMinutes = Math.round(diffMs / (1000 * 60));
+      return `${diffMinutes}min`;
+    } else if (diffHours >= 24) {
+      const diffDays = Math.round(diffHours / 24 * 10) / 10;
+      return `${diffDays}d`;
+    } else {
+      return `${diffHours}h`;
+    }
+  }
+
+  getConfidenceClass(confidence: number): string {
+    if (confidence >= 0.8) return 'high-confidence';
+    if (confidence >= 0.6) return 'medium-confidence';
+    return 'low-confidence';
+  }
+
+  trackEvent(index: number, event: CalendarEvent): string {
+    return `${event.title}-${event.startDate.getTime()}`;
+  }
+
+  async copyEventToClipboard(event: CalendarEvent): Promise<void> {
+    const eventText = `${event.title}\nDate: ${event.startDate.toLocaleDateString()} at ${event.startDate.toLocaleTimeString()}\n${event.description ? 'Description: ' + event.description + '\n' : ''}${event.location ? 'Location: ' + event.location : ''}`;
+    
+    try {
+      await navigator.clipboard.writeText(eventText);
+      this.downloadStatus = { message: 'Event copied to clipboard!', type: 'success' };
+      setTimeout(() => {
+        this.downloadStatus = null;
+      }, 3000);
+    } catch (error) {
+      console.error('Failed to copy to clipboard:', error);
+    }
+  }
+
+  shareEvent(event: CalendarEvent): void {
+    const eventText = `${event.title} - ${event.startDate.toLocaleDateString()} at ${event.startDate.toLocaleTimeString()}`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: event.title,
+        text: eventText,
+        url: window.location.href
+      }).catch(console.error);
+    } else {
+      // Fallback: copy to clipboard
+      this.copyEventToClipboard(event);
+    }
   }
 }

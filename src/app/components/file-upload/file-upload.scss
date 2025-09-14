@@ -6,8 +6,8 @@
 
 .drop-zone {
   border: 2px dashed var(--gray-300);
-  border-radius: var(--radius-2xl);
-  padding: var(--space-12) var(--space-8);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8) var(--space-6);
   text-align: center;
   transition: all var(--transition-base);
   background: rgba(255, 255, 255, 0.7);
@@ -69,8 +69,8 @@
 }
 
 .upload-icon {
-  font-size: 4rem;
-  margin-bottom: var(--space-4);
+  font-size: 3rem;
+  margin-bottom: var(--space-3);
   transition: transform var(--transition-base);
   background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
   -webkit-background-clip: text;
@@ -84,7 +84,7 @@
 h3 {
   margin: 0;
   color: var(--gray-900);
-  font-size: var(--text-2xl);
+  font-size: var(--text-xl);
   font-weight: 700;
   letter-spacing: -0.02em;
 }
@@ -92,24 +92,24 @@ h3 {
 p {
   margin: 0;
   color: var(--gray-600);
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
   font-weight: 500;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .browse-btn {
   background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
   color: white;
   border: none;
-  padding: var(--space-4) var(--space-8);
-  border-radius: var(--radius-lg);
-  font-size: var(--text-lg);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-base);
+  font-size: var(--text-base);
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-base);
   position: relative;
   overflow: hidden;
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-md);
   letter-spacing: -0.01em;
 
   /* Button shine effect */
@@ -127,7 +127,7 @@ p {
   &:hover {
     background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
     transform: translateY(-2px);
-    box-shadow: var(--shadow-xl);
+    box-shadow: var(--shadow-lg);
 
     &::before {
       left: 100%;
@@ -209,41 +209,13 @@ p {
 /* Enhanced Mobile Responsiveness */
 @media (max-width: 768px) {
   .drop-zone {
-    padding: var(--space-10) var(--space-6);
-  }
-
-  .upload-icon {
-    font-size: 3rem;
-    margin-bottom: var(--space-3);
-  }
-
-  h3 {
-    font-size: var(--text-xl);
-  }
-
-  p {
-    font-size: var(--text-base);
-  }
-
-  .browse-btn {
-    padding: var(--space-4) var(--space-6);
-    font-size: var(--text-base);
-    width: 100%;
-  }
-
-  .spinner {
-    width: 40px;
-    height: 40px;
-  }
-}
-
-@media (max-width: 480px) {
-  .drop-zone {
-    padding: var(--space-8) var(--space-4);
+    padding: var(--space-6) var(--space-4);
+    border-radius: var(--radius-lg);
   }
 
   .upload-icon {
     font-size: 2.5rem;
+    margin-bottom: var(--space-2);
   }
 
   h3 {
@@ -252,6 +224,46 @@ p {
 
   p {
     font-size: var(--text-sm);
+  }
+
+  .browse-btn {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-sm);
+    width: 100%;
+  }
+
+  .spinner {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .drop-zone {
+    padding: var(--space-4) var(--space-3);
+    border-radius: var(--radius-base);
+  }
+
+  .upload-icon {
+    font-size: 2rem;
+    margin-bottom: var(--space-1);
+  }
+
+  h3 {
+    font-size: var(--text-base);
+  }
+
+  p {
+    font-size: var(--text-xs);
+    line-height: 1.4;
+  }
+
+  .upload-content {
+    gap: var(--space-2);
+  }
+
+  .processing-indicator {
+    gap: var(--space-3);
   }
 }
 
