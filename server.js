@@ -23,12 +23,12 @@ fs.access(dir, fs.constants.F_OK, (err) => {
     }
     // Now write to file
     try {
-        fs.writeFileSync(dir + "/" + file, content);
-        fs.writeFileSync(dir + "/" + prodFile, content);
+        fs.writeFileSync(path.join(dir, file), content);
+        fs.writeFileSync(path.join(dir, prodFile), content);
         console.log("Created successfully in", process.cwd());
-        if (fs.existsSync(dir + "/" + file)) {
-            console.log("File is created", path.resolve(dir + "/" + file));
-            const str = fs.readFileSync(dir + "/" + file).toString();
+        if (fs.existsSync(path.join(dir, file))) {
+            console.log("File is created", path.resolve(path.join(dir, file)));
+            const str = fs.readFileSync(path.join(dir, file)).toString();
             console.log(str);
         }
     } catch (error) {
