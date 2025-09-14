@@ -65,16 +65,6 @@
                   <div class="time-end">{{ event.endDate | date:'HH:mm' }}</div>
                 </div>
               </div>
-              
-              <!-- Event actions (hidden by default, shown on hover) -->
-              <div class="event-actions">
-                <button class="quick-action copy-btn" (click)="copyEventToClipboard(event)" title="Copy event details">
-                  📋
-                </button>
-                <button class="quick-action share-btn" (click)="shareEvent(event)" title="Share event">
-                  📤
-                </button>
-              </div>
             </div>
           </div>
         </div>
