@@ -32,9 +32,14 @@ export const helloWorld = functions.https.onRequest(async (req, res) => {
         return;
       }
 
+      console.log("🚀 Function updated at", new Date().toISOString());
+
       // Préparer le contenu pour OpenAI
       const content: any[] = [];
-      let baseText = baseTextMessage.value().replace(/\$\{timeZone\}/g, timeZone);
+      let baseText = baseTextMessage.value().replace(/\$\{TIME_ZONE\}/g, timeZone);
+
+      const currentDate = new Date().toISOString().split('T')[0];
+      baseText = baseText.replace(/\$\{CURRENT_DATE\}/g, currentDate);
 
       if (extraContext) {
         baseText += ` Additional context: ${extraContext}`;
