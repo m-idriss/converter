@@ -16,23 +16,9 @@
     </div>
 
     <div class="results-section" *ngIf="showResults && extractedText">
-      <!-- Summary Stats -->
-      <div class="stats-card" *ngIf="parsedEvents.length > 0">
-        <div class="stats-grid">
-          <div class="stat-item">
-            <span class="stat-number">{{ parsedEvents.length }}</span>
-            <span class="stat-label">{{ parsedEvents.length === 1 ? 'Event' : 'Events' }} Found</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">{{ extractedText.confidence ? (extractedText.confidence * 100).toFixed(0) + '%' : 'N/A' }}</span>
-            <span class="stat-label">Confidence</span>
-          </div>
-        </div>
-      </div>
-
       <div class="events-card" *ngIf="parsedEvents.length > 0">
         <div class="events-header">
-          <h2>📅 Calendar Events</h2>
+          <h2>📅 Calendar Events ({{ parsedEvents.length }})</h2>
         </div>
         
         <div class="events-list iphone-style">
