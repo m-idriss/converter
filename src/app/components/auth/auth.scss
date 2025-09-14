@@ -145,6 +145,16 @@
   gap: var(--space-4);
 }
 
+/* Wrapper to ensure minimum touch target size for interactive profile images */
+.profile-image-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  /* If interactive, uncomment the next line */
+  /* cursor: pointer; */
+}
 .profile-image {
   width: 56px;
   height: 56px;
