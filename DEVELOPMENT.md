@@ -16,7 +16,7 @@ This is an Angular 2025+ application that converts images and PDFs into ICS cale
 - **Frontend**: Angular 20.2.2, TypeScript, SCSS
 - **Authentication**: Firebase Auth with Google provider
 - **File Processing**: Tesseract.js, PDF.js
-- **Calendar**: Custom ICS generation with moment.js
+- **Calendar**: Custom ICS generation with date-fns
 - **Backend**: Firebase Functions (optional server-side processing)
 
 ## Setup Instructions

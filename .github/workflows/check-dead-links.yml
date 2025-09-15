@@ -28,10 +28,10 @@ jobs:
       - name: 🚚 Checkout repository
         uses: actions/checkout@v5
 
-      - name: 🔍 Check links in structured data and HTML
+      - name: 🔍 Check links in documentation
         uses: lycheeverse/lychee-action@v2.6.1
         with:
-          # Check structured data and main HTML files
+          # Check documentation and configuration files
           args: >-
             --verbose
             --no-progress
@@ -41,12 +41,13 @@ jobs:
             --exclude-mail
             --exclude-private
             --exclude-link-local
-            --user-agent "Mozilla/5.0 (compatible; 3dime-link-checker/1.0)"
+            --user-agent "Mozilla/5.0 (compatible; converter-link-checker/1.0)"
             --cache
             --max-cache-age 86400sec
-            structured-data.jsonld
-            index.html
             README.md
+            DEPLOYMENT.md
+            DEVELOPMENT.md
+            FIREBASE_DEPLOYMENT_FIX.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -65,9 +66,10 @@ jobs:
 
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Checked files:**" >> $GITHUB_STEP_SUMMARY
-          echo "- structured-data.jsonld (content links)" >> $GITHUB_STEP_SUMMARY
-          echo "- index.html (CDN and social links)" >> $GITHUB_STEP_SUMMARY
           echo "- README.md (documentation links)" >> $GITHUB_STEP_SUMMARY
+          echo "- DEPLOYMENT.md (deployment documentation)" >> $GITHUB_STEP_SUMMARY
+          echo "- DEVELOPMENT.md (development documentation)" >> $GITHUB_STEP_SUMMARY
+          echo "- FIREBASE_DEPLOYMENT_FIX.md (Firebase deployment docs)" >> $GITHUB_STEP_SUMMARY
 
       - name: 🐛 Create issue for dead links
         if: >-
@@ -97,18 +99,17 @@ jobs:
 
             1. **Review each failed link** and determine if it should be
                updated or removed
-            2. **Update structured-data.jsonld** for content-related links
-            3. **Update index.html** for CDN or external resource links
-            4. **Check for alternative URLs** for organizations that may
+            2. **Update documentation files** with current links
+            3. **Check for alternative URLs** for resources that may
                have moved
-            5. **Consider removing outdated links** if no alternative exists
+            4. **Consider removing outdated links** if no alternative exists
 
             ### Files to Check
 
-            - \`structured-data.jsonld\` - Main content with social media,
-              technology, and organization links
-            - \`index.html\` - CDN resources and additional external links
-            - \`README.md\` - Documentation links
+            - \`README.md\` - Main documentation links
+            - \`DEPLOYMENT.md\` - Deployment-related links
+            - \`DEVELOPMENT.md\` - Development setup links
+            - \`FIREBASE_DEPLOYMENT_FIX.md\` - Firebase documentation links
 
             **Note:** This issue was automatically created by the dead link
             checker workflow.

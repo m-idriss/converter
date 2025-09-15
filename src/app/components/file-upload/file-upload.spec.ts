@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
 
 import { FileUpload } from './file-upload';
 
@@ -8,7 +9,8 @@ describe('FileUpload', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FileUpload]
+      imports: [FileUpload],
+      providers: [provideHttpClient()]
     })
     .compileComponents();
 
