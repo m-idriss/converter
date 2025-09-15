@@ -21,7 +21,7 @@
           <h2>📅 Calendar Events ({{ parsedEvents.length }})</h2>
         </div>
         
-        <div class="events-list iphone-style">
+        <div class="events-list iphone-style" #eventsList>
           <div class="event-item" *ngFor="let event of parsedEvents; trackBy: trackEvent; let i = index" 
                [attr.data-color-index]="i % 3">
             <!-- Date card on the left -->
@@ -52,6 +52,11 @@
                 </div>
               </div>
             </div>
+          </div>
+          
+          <!-- Scroll hint indicator when there are many events -->
+          <div class="scroll-hint" *ngIf="parsedEvents.length > 3">
+            <span class="hint-text">⬇️ Scroll to see more events</span>
           </div>
         </div>
 
