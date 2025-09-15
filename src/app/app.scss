@@ -150,64 +150,11 @@
   margin-bottom: var(--space-4);
   background: white;
   border-radius: var(--radius-lg);
-  overflow-y: auto;
-  overflow-x: hidden;
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--gray-200);
-  max-height: 60vh; /* Limit height to 60% of viewport to ensure buttons stay visible */
-  
-  /* Custom scrollbar styling for better UX */
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  &::-webkit-scrollbar-track {
-    background: var(--gray-100);
-    border-radius: var(--radius-sm);
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    background: var(--gray-400);
-    border-radius: var(--radius-sm);
-    
-    &:hover {
-      background: var(--gray-500);
-    }
-  }
-  
-  /* Firefox scrollbar styling */
-  scrollbar-width: thin;
-  scrollbar-color: var(--gray-400) var(--gray-100);
 }
 
-.scroll-hint {
-  position: sticky;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(255,255,255,0.95), transparent);
-  padding: var(--space-2) var(--space-3);
-  text-align: center;
-  border-top: 1px solid var(--gray-100);
-  backdrop-filter: blur(4px);
-  
-  .hint-text {
-    font-size: var(--text-xs);
-    color: var(--gray-500);
-    font-weight: 500;
-    animation: bounce 2s ease-in-out infinite;
-  }
-}
 
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-4px);
-  }
-  60% {
-    transform: translateY(-2px);
-  }
-}
 
 .event-item {
   display: flex;
@@ -464,7 +411,6 @@
 @media (max-width: 768px) {
   .events-list.iphone-style {
     border-radius: var(--radius-base);
-    max-height: 50vh; /* Reduce max height on tablets/mobile for better UX */
     
     .date-card {
       width: 60px;
@@ -787,20 +733,7 @@
   }
 
   .events-list.iphone-style {
-    max-height: 40vh; /* Further reduce on small screens for better button visibility */
-    
-    /* Make scrollbar more visible on mobile */
-    &::-webkit-scrollbar {
-      width: 12px; /* Slightly wider for better touch interaction */
-    }
-    
-    &::-webkit-scrollbar-thumb {
-      background: var(--primary-400); /* Make it more prominent */
-      
-      &:hover {
-        background: var(--primary-500);
-      }
-    }
+  
   }
 
   .event-item {
