@@ -752,43 +752,6 @@
 }
 
 /* New UI Component Styles */
-.stats-card {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  border-radius: var(--radius-base);
-  padding: var(--space-3);
-  box-shadow: var(--shadow-base);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  margin-bottom: var(--space-3);
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: var(--space-3);
-}
-
-.stat-item {
-  text-align: center;
-  
-  .stat-number {
-    display: block;
-    font-size: var(--text-xl);
-    font-weight: 700;
-    color: var(--primary-600);
-    line-height: 1;
-  }
-  
-  .stat-label {
-    display: block;
-    font-size: var(--text-xs);
-    color: var(--gray-600);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-top: var(--space-1);
-  }
-}
 
 .events-header {
   display: flex;
@@ -889,10 +852,6 @@
 
 /* Mobile adjustments for new components */
 @media (max-width: 768px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-2);
-  }
   
   .events-header {
     flex-direction: column;
