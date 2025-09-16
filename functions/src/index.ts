@@ -22,76 +22,6 @@ if (!process.env.OPENAI_API_KEY) {
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-// Helper function to parse ICS content and extract events as JSON objects
-function parseICSToJSON(icsContent: string): any[] {
-  if (!icsContent || typeof icsContent !== 'string') {
-    return [];
-  }
-
-  const events: any[] = [];
-  const lines = icsContent.split(/\r?\n/);
-  let currentEvent: any = {};
-  let inEvent = false;
-
-  for (const line of lines) {
-    const trimmedLine = line.trim();
-
-    if (trimmedLine === 'BEGIN:VEVENT') {
-      inEvent = true;
-      currentEvent = {};
-      continue;
-    }
-
-    if (trimmedLine === 'END:VEVENT' && inEvent) {
-      if (currentEvent.DTSTART) {
-        // Generate UID if not present
-        if (!currentEvent.UID) {
-          currentEvent.UID = `event-${events.length + 1}`;
-        }
-        // Set default timezone if not present
-        if (!currentEvent.TZID) {
-          currentEvent.TZID = 'Europe/Paris';
-        }
-        events.push(currentEvent);
-      }
-      inEvent = false;
-      currentEvent = {};
-      continue;
-    }
-
-    if (inEvent) {
-      // Parse iCalendar properties
-      if (trimmedLine.startsWith('UID:')) {
-        currentEvent.UID = trimmedLine.substring(4).trim();
-      } else if (trimmedLine.startsWith('DTSTAMP:')) {
-        currentEvent.DTSTAMP = trimmedLine.substring(8).trim();
-      } else if (trimmedLine.match(/^DTSTART[:;]/)) {
-        const colonIndex = trimmedLine.indexOf(':');
-        const semicolonIndex = trimmedLine.indexOf(';');
-        const separatorIndex = colonIndex !== -1 ? colonIndex : semicolonIndex;
-        if (separatorIndex !== -1) {
-          currentEvent.DTSTART = trimmedLine.substring(separatorIndex + 1).trim();
-        }
-      } else if (trimmedLine.match(/^DTEND[:;]/)) {
-        const colonIndex = trimmedLine.indexOf(':');
-        const semicolonIndex = trimmedLine.indexOf(';');
-        const separatorIndex = colonIndex !== -1 ? colonIndex : semicolonIndex;
-        if (separatorIndex !== -1) {
-          currentEvent.DTEND = trimmedLine.substring(separatorIndex + 1).trim();
-        }
-      } else if (trimmedLine.startsWith('SUMMARY:')) {
-        currentEvent.SUMMARY = trimmedLine.substring(8).trim();
-      } else if (trimmedLine.startsWith('DESCRIPTION:')) {
-        currentEvent.DESCRIPTION = trimmedLine.substring(12).trim();
-      } else if (trimmedLine.startsWith('LOCATION:')) {
-        currentEvent.LOCATION = trimmedLine.substring(9).trim();
-      }
-    }
-  }
-
-  return events;
-}
-
 export const helloWorld = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     try {
@@ -114,6 +44,10 @@ export const helloWorld = functions.https.onRequest(async (req, res) => {
       if (extraContext) {
         baseText += ` Additional context: ${extraContext}`;
       }
+
+      // Return json from API
+      baseText += '. Return structured json with list of events. Be consistent with all events.';
+
       content.push({ type: 'text', text: baseText });
 
      // ✅ Ajout: support URL ou base64
@@ -151,12 +85,8 @@ export const helloWorld = functions.https.onRequest(async (req, res) => {
       });
 
       const icsContent = completion.choices[0].message?.content?.trim();
-      
-      // Parse ICS content to extract events as JSON objects
-      const events = parseICSToJSON(icsContent || '');
-      
-      // Return JSON response instead of ICS
-      res.status(200).set('Content-Type', 'application/json').send({ events });
+      // type  "text/calendar"
+      res.status(200).set('Content-Type', 'application/json').send(icsContent);
     } catch (err: any) {
       console.error(err);
       res.status(500).send({ error: err.message || 'Failed to convert images' });
