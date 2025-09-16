@@ -20,6 +20,16 @@ export class Calendar {
   constructor() { }
 
   parseTextForEvents(text: string): CalendarEvent[] {
+    // First check if the text is JSON format (API response)
+    try {
+      const jsonData = JSON.parse(text);
+      if (jsonData && jsonData.events && Array.isArray(jsonData.events)) {
+        return this.parseJSONEvents(jsonData.events);
+      }
+    } catch (e) {
+      // Not JSON, continue with existing parsing logic
+    }
+
     const events: CalendarEvent[] = [];
     const lines = text.split('\n').filter(line => line.trim().length > 0);
 
@@ -144,6 +154,76 @@ export class Calendar {
     }
 
     return uniqueEvents;
+  }
+
+  private parseJSONEvents(jsonEvents: any[]): CalendarEvent[] {
+    const events: CalendarEvent[] = [];
+
+    for (const jsonEvent of jsonEvents) {
+      try {
+        let startDate: Date | null = null;
+        let endDate: Date | null = null;
+
+        // Parse DTSTART
+        if (jsonEvent.DTSTART) {
+          startDate = this.parseICSDateTime(jsonEvent.DTSTART);
+        }
+
+        // Parse DTEND
+        if (jsonEvent.DTEND) {
+          endDate = this.parseICSDateTime(jsonEvent.DTEND);
+        }
+
+        // If we don't have valid dates, skip this event
+        if (!startDate || !isValid(startDate)) {
+          continue;
+        }
+
+        // If no end date, add 1 hour to start date
+        if (!endDate || !isValid(endDate)) {
+          endDate = addHours(startDate, 1);
+        }
+
+        const event: CalendarEvent = {
+          title: jsonEvent.SUMMARY || 'Untitled Event',
+          description: jsonEvent.DESCRIPTION || '',
+          startDate: startDate,
+          endDate: endDate,
+          location: jsonEvent.LOCATION || '',
+          allDay: false,
+          timezone: jsonEvent.TZID || 'Europe/Paris'
+        };
+
+        events.push(event);
+      } catch (error) {
+        console.warn('Error parsing JSON event:', error, jsonEvent);
+        // Continue with other events
+      }
+    }
+
+    return events;
+  }
+
+  private parseICSDateTime(dateTimeStr: string): Date | null {
+    try {
+      // Handle ICS datetime format: 20250915T080000Z or 20250915T080000
+      if (/^\d{8}T\d{6}Z?$/.test(dateTimeStr)) {
+        const isoString = dateTimeStr.replace(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z?$/, '$1-$2-$3T$4:$5:$6Z');
+        const parsedDate = parseISO(isoString);
+        return isValid(parsedDate) ? parsedDate : null;
+      }
+      
+      // Handle date only format: 20250915
+      if (/^\d{8}$/.test(dateTimeStr)) {
+        const parsedDate = parse(dateTimeStr, 'yyyyMMdd', new Date());
+        return isValid(parsedDate) ? parsedDate : null;
+      }
+
+      return null;
+    } catch (error) {
+      console.warn('Error parsing ICS date time:', error, dateTimeStr);
+      return null;
+    }
   }
 
   private parseICalendarFormat(lines: string[]): CalendarEvent[] {

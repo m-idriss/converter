@@ -14,6 +14,42 @@ describe('Calendar', () => {
   });
 
   describe('parseTextForEvents', () => {
+    it('should parse JSON events format', () => {
+      const jsonText = JSON.stringify({
+        events: [
+          {
+            UID: 'event-1',
+            DTSTAMP: '20250916T000000Z',
+            DTSTART: '20250915T080000Z',
+            DTEND: '20250915T090000Z',
+            SUMMARY: 'PHYSIQUE-CHIMIE',
+            DESCRIPTION: '',
+            LOCATION: 'BASSE M.',
+            TZID: 'Europe/Paris'
+          },
+          {
+            UID: 'event-2',
+            DTSTAMP: '20250916T000000Z',
+            DTSTART: '20250915T090000Z',
+            DTEND: '20250915T100000Z',
+            SUMMARY: 'SC.NUMERO.TECNOL.',
+            DESCRIPTION: '',
+            LOCATION: 'BASSE M.',
+            TZID: 'Europe/Paris'
+          }
+        ]
+      });
+
+      const events = service.parseTextForEvents(jsonText);
+      
+      expect(events.length).toBe(2);
+      expect(events[0].title).toBe('PHYSIQUE-CHIMIE');
+      expect(events[0].location).toBe('BASSE M.');
+      expect(events[0].timezone).toBe('Europe/Paris');
+      expect(events[1].title).toBe('SC.NUMERO.TECNOL.');
+      expect(events[1].location).toBe('BASSE M.');
+    });
+
     it('should parse common date formats', () => {
       const text = 'Meeting on January 15, 2025 at 2:00 PM\nAppointment: 01/15/2025 14:00';
       const events = service.parseTextForEvents(text);
@@ -203,6 +239,118 @@ describe('Calendar', () => {
       const filename = (service as any).generateSmartFilename(events);
       
       expect(filename).toMatch(/calendar-events-1events-\d{4}-\d{2}-\d{2}\.ics/);
+    });
+
+    describe('parseJSONEvents', () => {
+      it('should parse JSON events correctly', () => {
+        const jsonEvents = [
+          {
+            UID: 'event-1',
+            DTSTART: '20250915T080000Z',
+            DTEND: '20250915T090000Z',
+            SUMMARY: 'Test Event',
+            DESCRIPTION: 'Test Description',
+            LOCATION: 'Test Location',
+            TZID: 'Europe/Paris'
+          }
+        ];
+
+        const events = (service as any).parseJSONEvents(jsonEvents);
+        
+        expect(events.length).toBe(1);
+        expect(events[0].title).toBe('Test Event');
+        expect(events[0].description).toBe('Test Description');
+        expect(events[0].location).toBe('Test Location');
+        expect(events[0].timezone).toBe('Europe/Paris');
+      });
+
+      it('should handle missing end date by adding 1 hour', () => {
+        const jsonEvents = [
+          {
+            UID: 'event-1',
+            DTSTART: '20250915T080000Z',
+            SUMMARY: 'Test Event'
+          }
+        ];
+
+        const events = (service as any).parseJSONEvents(jsonEvents);
+        
+        expect(events.length).toBe(1);
+        expect(events[0].endDate.getTime() - events[0].startDate.getTime()).toBe(60 * 60 * 1000); // 1 hour
+      });
+
+      it('should skip events with invalid dates', () => {
+        const jsonEvents = [
+          {
+            UID: 'event-1',
+            DTSTART: 'invalid-date',
+            SUMMARY: 'Invalid Event'
+          },
+          {
+            UID: 'event-2',
+            DTSTART: '20250915T080000Z',
+            SUMMARY: 'Valid Event'
+          }
+        ];
+
+        const events = (service as any).parseJSONEvents(jsonEvents);
+        
+        expect(events.length).toBe(1);
+        expect(events[0].title).toBe('Valid Event');
+      });
+
+      it('should use default values for missing properties', () => {
+        const jsonEvents = [
+          {
+            DTSTART: '20250915T080000Z'
+          }
+        ];
+
+        const events = (service as any).parseJSONEvents(jsonEvents);
+        
+        expect(events.length).toBe(1);
+        expect(events[0].title).toBe('Untitled Event');
+        expect(events[0].description).toBe('');
+        expect(events[0].location).toBe('');
+        expect(events[0].timezone).toBe('Europe/Paris');
+      });
+    });
+
+    describe('parseICSDateTime', () => {
+      it('should parse ICS datetime format with Z suffix', () => {
+        const dateTime = '20250915T080000Z';
+        const parsed = (service as any).parseICSDateTime(dateTime);
+        
+        expect(parsed).toBeTruthy();
+        expect(parsed.getFullYear()).toBe(2025);
+        expect(parsed.getMonth()).toBe(8); // September (0-indexed)
+        expect(parsed.getDate()).toBe(15);
+        expect(parsed.getHours()).toBe(8);
+      });
+
+      it('should parse ICS datetime format without Z suffix', () => {
+        const dateTime = '20250915T080000';
+        const parsed = (service as any).parseICSDateTime(dateTime);
+        
+        expect(parsed).toBeTruthy();
+        expect(parsed.getFullYear()).toBe(2025);
+      });
+
+      it('should parse date-only format', () => {
+        const date = '20250915';
+        const parsed = (service as any).parseICSDateTime(date);
+        
+        expect(parsed).toBeTruthy();
+        expect(parsed.getFullYear()).toBe(2025);
+        expect(parsed.getMonth()).toBe(8); // September
+        expect(parsed.getDate()).toBe(15);
+      });
+
+      it('should return null for invalid formats', () => {
+        expect((service as any).parseICSDateTime('invalid-date')).toBeNull();
+        expect((service as any).parseICSDateTime('')).toBeNull();
+        expect((service as any).parseICSDateTime('20250915T')).toBeNull();
+      });
     });
   });
 });

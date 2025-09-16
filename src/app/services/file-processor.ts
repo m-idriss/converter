@@ -56,11 +56,14 @@ export class FileProcessor {
       };
 
       const response = await firstValueFrom(
-        this.http.post(this.functionUrl, body, { responseType: 'text' })
+        this.http.post<{ events: any[] }>(this.functionUrl, body)
       );
 
+      // Convert JSON events back to text format for calendar parsing
+      const eventText = JSON.stringify(response);
+
       return {
-        content: response ?? '',
+        content: eventText,
         confidence: 0.85 // Mock confidence value since Firebase OCR doesn't return confidence
       };
     } catch (error) {
