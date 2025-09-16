@@ -97,12 +97,12 @@
 .events-card,
 .no-events-card {
   background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
   box-shadow: var(--shadow-xl);
-  border: 1px solid rgba(255, 255, 255, 0.3);
   position: relative;
   overflow: hidden;
 
@@ -458,10 +458,10 @@
 }
 
 .download-status {
+  animation: slideIn var(--transition-base) ease-out;
   margin-top: var(--space-4);
   padding: var(--space-4);
   border-radius: var(--radius-lg);
-  animation: slideIn var(--transition-base) ease-out;
 
   .status-message {
     display: flex;
@@ -493,19 +493,12 @@
   }
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+// Centralized button styles with shine effect
 .download-btn,
 .reset-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   padding: var(--space-3) var(--space-6);
   border: none;
   border-radius: var(--radius-base);
@@ -513,14 +506,11 @@
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-base);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
+  letter-spacing: -0.01em;
   position: relative;
   overflow: hidden;
-  letter-spacing: -0.01em;
 
-  /* Button hover effect */
+  /* Button hover shine effect */
   &::before {
     content: '';
     position: absolute;
@@ -532,8 +522,22 @@
     transition: left var(--transition-slow);
   }
 
-  &:hover::before {
+  &:hover:not(:disabled)::before {
     left: 100%;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  &:not(:disabled):hover {
+    transform: translateY(-2px);
+  }
+
+  &:not(:disabled):active {
+    transform: translateY(0);
   }
 }
 
@@ -544,32 +548,12 @@
 
   &:hover:not(:disabled) {
     background: linear-gradient(135deg, var(--success-600), var(--success-700));
-    transform: translateY(-2px);
     box-shadow: var(--shadow-xl);
   }
 
-  &:active {
-    transform: translateY(0);
-  }
-
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    transform: none;
-  }
-
   &.downloading {
-    background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
     animation: pulse 2s infinite;
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.8;
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
   }
 }
 
@@ -579,14 +563,9 @@
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--gray-300);
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: linear-gradient(135deg, var(--gray-200), var(--gray-300));
-    transform: translateY(-2px);
     box-shadow: var(--shadow-md);
-  }
-
-  &:active {
-    transform: translateY(0);
   }
 }
 
@@ -773,6 +752,7 @@
   padding: var(--space-1);
 }
 
+// Toggle buttons now use centralized styles
 .toggle-btn {
   background: transparent;
   border: none;
