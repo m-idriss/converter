@@ -1,67 +1,113 @@
-# converter
-An Angular 2025+ project that converts images or PDFs into ICS calendar files
+# 📅 File to Calendar Converter
 
-## Features
-- Upload images or PDF files
-- Extract text and event information
-- Generate ICS calendar files
-- Firebase Google authentication
-- Server-side processing with Firebase Functions
+An Angular 2025+ application that intelligently converts images and PDFs into ICS calendar files using advanced OCR technology and smart event detection.
+
+## ✨ Features
+- **📤 File Upload**: Drag-and-drop interface for images (JPG, PNG) and PDF files
+- **🔍 Text Extraction**: Advanced OCR with Tesseract.js and PDF.js processing
+- **🧠 Smart Parsing**: Automatic detection of dates, times, and event information
+- **📅 ICS Generation**: Creates downloadable calendar files with proper formatting
+- **🔐 Firebase Integration**: Google authentication and optional cloud functions
+- **📱 Responsive Design**: Mobile-optimized interface with modern UI
+- **⚡ Performance**: Fast processing with confidence scoring
+
+## 🗺️ Project Roadmap
+
+For detailed development plans, feature priorities, and future enhancements, see our [**Product Roadmap**](./ROADMAP.md).
+
+**Current Focus Areas:**
+- 🚀 Bundle size optimization (currently 847KB → target <500KB)
+- ♿ Accessibility improvements (WCAG 2.1 AA compliance)
+- 📄 Additional file format support (DOCX, TXT, Excel)
+- 📲 Direct calendar integration (Google, Outlook, Apple)
+
+## 🚀 Quick Start
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.2.
 
-## Development server
+### Prerequisites
+- Node.js 20+ and npm
+- Chrome/Chromium browser for testing
 
-To start a local development server, run:
+### Development server
 
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+To start a local development server:
 
 ```bash
-ng generate component component-name
+npm install  # Install dependencies (takes ~30 seconds)
+npm start    # Start development server
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Once the server is running, navigate to `http://localhost:4200/`. The application will automatically reload when you modify source files.
+
+## 🛠️ Development
+
+### Code scaffolding
+
+Angular CLI includes powerful code scaffolding tools. To generate a new component:
+
+```bash
+ng generate component component-name --style=scss
+```
+
+For a complete list of available schematics (components, services, directives, pipes):
 
 ```bash
 ng generate --help
 ```
 
-## Building
+### Building
 
-To build the project run:
-
+Build for development:
 ```bash
-ng build
+npm run build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
+Build for production:
 ```bash
-ng test
+npm run build -- --configuration=production
 ```
 
-## Running end-to-end tests
+Built artifacts are stored in the `dist/` directory with optimizations for performance and speed.
 
-For end-to-end (e2e) testing, run:
+### Testing
+
+Execute unit tests with the [Karma](https://karma-runner.github.io) test runner:
+
+```bash
+npm test  # Interactive mode
+# OR for CI/headless testing:
+CHROME_BIN=/usr/bin/google-chrome-stable npx ng test --browsers=ChromeHeadless --watch=false
+```
+
+### End-to-end testing
+
+For end-to-end (e2e) testing:
 
 ```bash
 ng e2e
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+*Note: Angular CLI does not include an e2e framework by default. Choose one that suits your needs.*
 
-## Additional Resources
+## 📚 Documentation & Resources
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- 📖 [Development Guide](./DEVELOPMENT.md) - Detailed setup and architecture information
+- 🚀 [Deployment Guide](./DEPLOYMENT.md) - Production deployment instructions
+- 🗺️ [Product Roadmap](./ROADMAP.md) - Future features and development plans
+- 📖 [Angular CLI Reference](https://angular.dev/tools/cli) - Official Angular CLI documentation
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [roadmap](./ROADMAP.md) for current priorities and development guidelines.
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes and add tests
+4. Commit your changes (`git commit -m 'Add amazing feature'`)
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
