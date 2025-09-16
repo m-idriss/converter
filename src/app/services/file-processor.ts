@@ -21,7 +21,7 @@ export class FileProcessor {
 
   constructor() {
     // Configure PDF.js worker
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@5.4.149/build/pdf.worker.min.js`;
   }
 
 /**
@@ -69,11 +69,48 @@ export class FileProcessor {
     }
   }
 
+  /**
+   * Extract text from PDF file using PDF.js
+   */
+  async processPDF(file: File): Promise<ExtractedText> {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      const pdf = await loadingTask.promise;
+      
+      let fullText = '';
+      const numPages = pdf.numPages;
+      
+      // Extract text from all pages
+      for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const textContent = await page.getTextContent();
+        
+        // Combine all text items with spaces
+        const pageText = textContent.items
+          .map((item: any) => item.str)
+          .join(' ');
+        
+        fullText += pageText + '\n';
+      }
+      
+      return {
+        content: fullText.trim(),
+        confidence: 1.0 // PDF text extraction is deterministic
+      };
+    } catch (error) {
+      console.error('Error processing PDF:', error);
+      throw new Error('Failed to extract text from PDF file');
+    }
+  }
+
   async processFile(file: File): Promise<ExtractedText> {
     const fileType = file.type;
 
     if (fileType.startsWith('image/')) {
       return this.processFileWithFirebase(file);
+    } else if (fileType === 'application/pdf') {
+      return this.processPDF(file);
     } else {
       throw new Error('Unsupported file type. Please upload an image or PDF file.');
     }
