@@ -84,9 +84,32 @@ export const helloWorld = functions.https.onRequest(async (req, res) => {
         max_tokens: 4096,
       });
 
-      const icsContent = completion.choices[0].message?.content?.trim();
-      // type  "text/calendar"
-      res.status(200).set('Content-Type', 'application/json').send(icsContent);
+      const rawContent = completion.choices[0].message?.content?.trim();
+      
+      // Parse and clean the OpenAI response to extract valid JSON
+      let jsonContent = rawContent || '';
+      
+      // Remove markdown code block formatting if present
+      if (jsonContent.startsWith('```json')) {
+        jsonContent = jsonContent.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+      } else if (jsonContent.startsWith('```')) {
+        jsonContent = jsonContent.replace(/^```[^\n]*\n/, '').replace(/\n```$/, '');
+      }
+      
+      try {
+        // Try to parse as JSON to validate it
+        const parsedJson = JSON.parse(jsonContent);
+        res.status(200).set('Content-Type', 'application/json').send(parsedJson);
+      } catch (parseError) {
+        console.error('Failed to parse OpenAI response as JSON:', parseError);
+        console.error('Raw content:', rawContent);
+        
+        // Fallback: return a default structure
+        res.status(200).set('Content-Type', 'application/json').send({ 
+          events: [],
+          error: 'Failed to parse calendar data'
+        });
+      }
     } catch (err: any) {
       console.error(err);
       res.status(500).send({ error: err.message || 'Failed to convert images' });
