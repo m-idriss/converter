@@ -20,6 +20,48 @@ export class Calendar {
   constructor() {}
 
   /**
+   * Extract location information from text using common patterns
+   */
+  private extractLocationFromText(text: string): string | null {
+    const locationPatterns = [
+      // "at Location Name" patterns - but not "at time" patterns
+      /(?:^|[^:])at\s+(?!\d+:\d+\s*(?:AM|PM)?)([A-Za-z][^,\n\r]*?)(?=\s+on\s+\w+\s+\d+|\s+\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}|\s+\d{4}-\d{2}-\d{2}|\s*$)/i,
+      // "in Location Name" patterns - after time, not instead of time
+      /\d+:\d+\s*(?:AM|PM)?\s+in\s+([A-Za-z][^,\n\r]*?)(?=\s+on\s+\w+\s+\d+|\s+\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}|\s+\d{4}-\d{2}-\d{2}|\s*$)/i,
+      // "@ Location Name" patterns  
+      /\s*@\s*([A-Za-z][^,\n\r]*?)(?=\s+on\s+\w+\s+\d+|\s+\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}|\s+\d{4}-\d{2}-\d{2}|\s*$)/i,
+      // "Location: Address" patterns
+      /(?:location|venue|where|place)[:]\s*([^,\n\r-]+?)(?=\s*[-]\s*|\s+on\s+\w+\s+\d+|\s+\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}|\s+\d{4}-\d{2}-\d{2}|\s*$)/i,
+      // Address-like patterns (simple detection) - specifically after "at" when not time
+      /(?:^|[^:])\bat\s+(\d+\s+[A-Za-z\s]+(?:street|st|avenue|ave|road|rd|boulevard|blvd|drive|dr|lane|ln|way|place|pl))/i,
+      // Common venue patterns
+      /\b(conference\s+room\s+\w+|room\s+\w+|building\s+\w+|office\s+\w+)\b/i,
+    ];
+
+    for (const pattern of locationPatterns) {
+      const match = pattern.exec(text);
+      if (match && match[1]) {
+        let location = match[1].trim();
+        
+        // Clean up common suffixes that might be captured
+        location = location.replace(/\s+(at|on|tomorrow|today|tonight)\s*$/i, '');
+        
+        // Filter out time-looking strings
+        if (/^\d+:\d+\s*(?:AM|PM)?$/i.test(location)) {
+          continue;
+        }
+        
+        // Only return if location seems meaningful (more than 2 chars, not just numbers/punctuation)
+        if (location.length > 2 && /[a-zA-Z]/.test(location)) {
+          return location;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  /**
    * Simple relative date parsing for common expressions
    */
   private parseSimpleRelativeDate(text: string): Date | null {
@@ -199,11 +241,15 @@ export class Calendar {
               title = 'Calendar Event';
             }
 
+            // Extract location information from the original line
+            const location = this.extractLocationFromText(line);
+
             events.push({
               title,
               description: `Extracted from: ${line}`,
               startDate: eventDate,
               endDate: addHours(eventDate, 1),
+              location: location || '',
               allDay: false,
               timezone: 'Europe/London',
               confidence,
@@ -232,6 +278,7 @@ export class Calendar {
           description: text,
           startDate: now,
           endDate: new Date(now.getTime() + 60 * 60 * 1000),
+          location: this.extractLocationFromText(text) || '',
           allDay: false,
           timezone: 'Europe/London',
           confidence: 0.3, // Low confidence for fallback events
@@ -276,6 +323,7 @@ export class Calendar {
             description: 'Extracted from JSON format',
             startDate: new Date(),
             endDate: new Date(Date.now() + 60 * 60 * 1000),
+            location: '',
             allDay: false,
             timezone: 'Europe/London',
           },
@@ -335,6 +383,7 @@ export class Calendar {
             startDate: currentEvent.startDate,
             endDate:
               currentEvent.endDate || new Date(currentEvent.startDate.getTime() + 60 * 60 * 1000),
+            location: currentEvent.location || '',
             allDay: currentEvent.allDay || false,
             timezone: currentEvent.timezone || 'Europe/London',
           });
@@ -351,6 +400,8 @@ export class Calendar {
           currentEvent.title = trimmedLine.substring(8).trim();
         } else if (trimmedLine.startsWith('DESCRIPTION:')) {
           currentEvent.description = trimmedLine.substring(12).trim();
+        } else if (trimmedLine.startsWith('LOCATION:')) {
+          currentEvent.location = trimmedLine.substring(9).trim();
         } else if (trimmedLine.match(/^DTSTART[:;]/)) {
           const dateValue = this.extractICalendarDate(trimmedLine);
           if (dateValue) {
@@ -381,6 +432,7 @@ export class Calendar {
         startDate: currentEvent.startDate,
         endDate:
           currentEvent.endDate || new Date(currentEvent.startDate.getTime() + 60 * 60 * 1000),
+        location: currentEvent.location || '',
         allDay: currentEvent.allDay || false,
         timezone: currentEvent.timezone || 'Europe/London',
       });
@@ -394,6 +446,7 @@ export class Calendar {
             description: 'Extracted from iCalendar format',
             startDate: new Date(),
             endDate: new Date(Date.now() + 60 * 60 * 1000),
+            location: '',
             allDay: false,
             timezone: 'Europe/London',
           },
