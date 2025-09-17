@@ -46,8 +46,8 @@ export const helloWorld = functions.https.onRequest(async (req, res) => {
 
       const currentYear = new Date().getFullYear();
       baseText += `. If a year is explicitly written in the image, use it.
-      If no year is visible, assume all events happen in ${currentYear}.
-      Return structured json with list of events. Be consistent with all events.`;
+If no year is visible, assume all events happen in ${currentYear}.
+Return structured json with list of events. Be consistent with all events.`;
 
       content.push({ type: 'text', text: baseText });
 
