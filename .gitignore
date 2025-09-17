@@ -44,3 +44,4 @@ Thumbs.db
 src/environments/environment.local.ts
 
 functions/.env.local
+functions/.env.image-to-ics
