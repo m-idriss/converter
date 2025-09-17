@@ -25,8 +25,14 @@ setGlobalOptions({ maxInstances: 10 });
 admin.initializeApp();
 
 // Determine OpenAI API key: use local env or Firebase parameter
-const openaiKey =
-  process.env.OPENAI_API_KEY || OPENAI_API_KEY.value();
+let openaiKey = process.env.OPENAI_API_KEY;
+if (!openaiKey) {
+  try {
+    openaiKey = OPENAI_API_KEY.value();
+  } catch (e) {
+    openaiKey = undefined;
+  }
+}
 
 if (!openaiKey) {
   throw new Error(
