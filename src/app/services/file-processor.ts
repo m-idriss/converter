@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 export interface ExtractedText {
   content: string;
   confidence?: number;
+  processingTime?: number; // Add processing time tracking
 }
 
 @Injectable({
@@ -91,6 +92,9 @@ export class FileProcessor {
    * Send file (converted to image) to server for processing
    */
   async processFile(file: File): Promise<ExtractedText> {
+    const fileId = `${file.name}-${Date.now()}`;
+    const startTime = performance.now();
+    
     try {
       const imageBase64 = await this.convertFileToImage(file);
 
@@ -104,9 +108,12 @@ export class FileProcessor {
         this.http.post(this.functionUrl, body, { responseType: 'text' }),
       );
 
+      const processingTime = performance.now() - startTime;
+
       return {
         content: response ?? '',
         confidence: 0.9, // Server-side processing confidence
+        processingTime: processingTime,
       };
     } catch (error) {
       console.error('Error processing file:', error);

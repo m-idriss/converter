@@ -6,6 +6,7 @@ import { FileUpload } from './components/file-upload/file-upload';
 import { Auth as AuthService } from './services/auth';
 import { Calendar, CalendarEvent } from './services/calendar';
 import { ExtractedText } from './services/file-processor';
+import { PerformanceService } from './services/performance';
 import { Observable, Subject } from 'rxjs';
 
 @Component({
@@ -29,12 +30,21 @@ export class App implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private calendarService: Calendar,
+    private performanceService: PerformanceService,
   ) {
     this.user$ = this.authService.user$;
   }
 
   ngOnInit(): void {
     this.checkScreenSize();
+    
+    // Log performance metrics after app initialization (development mode only)
+    if (!this.isProduction()) {
+      // Delay to allow initial rendering to complete
+      setTimeout(() => {
+        this.performanceService.logPerformanceReport();
+      }, 2000);
+    }
   }
 
   ngOnDestroy(): void {
@@ -131,5 +141,13 @@ export class App implements OnInit, OnDestroy {
   getEventColor(index: number): string {
     const colors = ['blue', 'green', 'orange'];
     return colors[index % colors.length];
+  }
+
+  /**
+   * Check if app is running in production mode
+   */
+  private isProduction(): boolean {
+    // Simple check for production - can be enhanced with environment import if needed
+    return !window.location.hostname.includes('localhost');
   }
 }
