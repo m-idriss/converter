@@ -145,10 +145,15 @@ export class FileProcessor {
     }
   }
 
-  async processFile(file: File): Promise<ExtractedText> {
+  async processFile(file: File, forceLocal: boolean = false): Promise<ExtractedText> {
     const fileType = file.type;
 
     if (fileType.startsWith('image/')) {
+      // In anonymous mode or if forced, use local processing only
+      if (forceLocal) {
+        return await this.processImageWithTesseract(file);
+      }
+      
       // Try Firebase first (faster), fallback to local Tesseract
       try {
         return await this.processFileWithFirebase(file);

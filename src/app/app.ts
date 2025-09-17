@@ -8,7 +8,6 @@ import { Calendar, CalendarEvent } from './services/calendar';
 import { ExtractedText } from './services/file-processor';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { User } from 'firebase/auth';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +17,7 @@ import { User } from 'firebase/auth';
 })
 export class App implements OnInit, OnDestroy {
   protected readonly title = signal('converter-app');
-  user$: Observable<User | null>;
+  user$: Observable<any | null>;
   extractedText: ExtractedText | null = null;
   parsedEvents: CalendarEvent[] = [];
   showResults = false;
@@ -26,6 +25,9 @@ export class App implements OnInit, OnDestroy {
   isDownloading = false;
   viewMode: 'grid' | 'list' = 'grid';
   isMobile = false;
+  
+  // Anonymous mode support
+  isAnonymousMode = false;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -42,6 +44,20 @@ export class App implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  /**
+   * Enable anonymous mode - allows users to try the app without signing in
+   */
+  enableAnonymousMode(): void {
+    this.isAnonymousMode = true;
+  }
+
+  /**
+   * Check if user can access the main features (authenticated or anonymous mode)
+   */
+  canAccessMainFeatures(): boolean {
+    return this.isAnonymousMode || !!this.authService.getCurrentUser();
   }
 
   @HostListener('window:resize', ['$event'])
