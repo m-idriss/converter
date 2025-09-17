@@ -34,7 +34,6 @@ export const helloWorld = functions.https.onRequest(async (req, res) => {
 
       console.log("🚀 Function updated at", new Date().toISOString());
 
-      // Préparer le contenu pour OpenAI
       const content: any[] = [];
       let baseText = baseTextMessage.value().replace(/\$\{TIME_ZONE\}/g, timeZone);
 
@@ -44,18 +43,18 @@ export const helloWorld = functions.https.onRequest(async (req, res) => {
       if (extraContext) {
         baseText += ` Additional context: ${extraContext}`;
       }
+
+      baseText += '. Return structured json with list of events. Be consistent with all events.';
+
       content.push({ type: 'text', text: baseText });
 
-     // ✅ Ajout: support URL ou base64
       for (const img of imageUrls) {
         if (typeof img === "string" && img.startsWith("http")) {
-          // Si c’est une URL
           content.push({
             type: "image_url",
             image_url: {url: img},
           });
         } else {
-          // Sinon, on suppose du base64
           content.push({
             type: "image_url",
             image_url: {url: `data:image/jpeg;base64,${img}`},
@@ -63,7 +62,6 @@ export const helloWorld = functions.https.onRequest(async (req, res) => {
         }
       }
 
-      // Appel OpenAI
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [
@@ -81,13 +79,11 @@ export const helloWorld = functions.https.onRequest(async (req, res) => {
       });
 
       const icsContent = completion.choices[0].message?.content?.trim();
-      // type  "text/calendar"
-      res.status(200).set('Content-Type', 'text/calendar').send(icsContent);
+      res.status(200).set('Content-Type', 'application/json').send(icsContent);
     } catch (err: any) {
       console.error(err);
       res.status(500).send({ error: err.message || 'Failed to convert images' });
     }
-
 
   });
 });
