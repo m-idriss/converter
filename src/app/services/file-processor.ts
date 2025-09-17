@@ -62,7 +62,8 @@ export class FileProcessor {
   private async renderPdfToCanvas(file: File, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): Promise<void> {
     // Load PDF.js dynamically only for rendering to canvas
     const pdfjsLib = await import('pdfjs-dist');
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.4.149/pdf.worker.min.js`;
+    // Use the correct worker URL - the file is actually called pdf.worker.mjs in newer versions
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@5.4.149/build/pdf.worker.mjs`;
     
     const arrayBuffer = await file.arrayBuffer();
     const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
