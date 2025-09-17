@@ -63,6 +63,155 @@ describe('Calendar', () => {
       expect(events[0].title).toBe('Extracted Text Event');
       expect(events[0].description).toBe(text);
     });
+
+    describe('JSON format parsing', () => {
+      it('should parse JSON events with complete data', () => {
+        const jsonText = JSON.stringify({
+          events: [
+            {
+              "UID": "event-1",
+              "DTSTAMP": "20250916T000000Z",
+              "DTSTART": "20250915T080000Z",
+              "DTEND": "20250915T090000Z",
+              "SUMMARY": "PHYSIQUE-CHIMIE",
+              "DESCRIPTION": "Test description",
+              "LOCATION": "BASSE M.",
+              "TZID": "Europe/Paris"
+            },
+            {
+              "UID": "event-2",
+              "DTSTAMP": "20250916T000000Z",
+              "DTSTART": "20250915T090000Z",
+              "DTEND": "20250915T100000Z",
+              "SUMMARY": "SC.NUMERO.TECNOL.",
+              "DESCRIPTION": "",
+              "LOCATION": "BASSE M.",
+              "TZID": "Europe/Paris"
+            }
+          ]
+        });
+
+        const events = service.parseTextForEvents(jsonText);
+        
+        expect(events.length).toBe(2);
+        
+        // Check first event
+        expect(events[0].title).toBe('PHYSIQUE-CHIMIE');
+        expect(events[0].description).toBe('Test description');
+        expect(events[0].location).toBe('BASSE M.');
+        expect(events[0].timezone).toBe('Europe/Paris');
+        expect(events[0].startDate.getUTCHours()).toBe(8);
+        expect(events[0].endDate.getUTCHours()).toBe(9);
+        
+        // Check second event
+        expect(events[1].title).toBe('SC.NUMERO.TECNOL.');
+        expect(events[1].description).toBe('');
+        expect(events[1].location).toBe('BASSE M.');
+      });
+
+      it('should handle JSON events with minimal data', () => {
+        const jsonText = JSON.stringify({
+          events: [
+            {
+              "DTSTART": "20250915T140000Z",
+              "SUMMARY": "Minimal Event"
+            }
+          ]
+        });
+
+        const events = service.parseTextForEvents(jsonText);
+        
+        expect(events.length).toBe(1);
+        expect(events[0].title).toBe('Minimal Event');
+        expect(events[0].description).toBe('');
+        expect(events[0].location).toBe('');
+        expect(events[0].timezone).toBe('Europe/Paris'); // default
+        expect(events[0].startDate.getUTCHours()).toBe(14);
+        // End date should default to 1 hour after start
+        expect(events[0].endDate.getUTCHours()).toBe(15);
+      });
+
+      it('should handle empty events array', () => {
+        const jsonText = JSON.stringify({
+          events: []
+        });
+
+        const events = service.parseTextForEvents(jsonText);
+        
+        expect(events.length).toBe(1);
+        expect(events[0].title).toBe('Calendar Event');
+        expect(events[0].description).toBe('Extracted from JSON format');
+      });
+
+      it('should handle invalid JSON gracefully', () => {
+        const invalidJson = '{"events": [{"invalid": }]}';
+        
+        const events = service.parseTextForEvents(invalidJson);
+        
+        // Should fall back to text parsing and create default event
+        expect(events.length).toBe(1);
+        expect(events[0].title).toBe('Extracted Text Event');
+      });
+
+      it('should handle JSON without events property', () => {
+        const jsonText = JSON.stringify({
+          data: "some other data"
+        });
+
+        const events = service.parseTextForEvents(jsonText);
+        
+        // Should fall back to text parsing and create default event
+        expect(events.length).toBe(1);
+        expect(events[0].title).toBe('Extracted Text Event');
+      });
+
+      it('should extract JSON from text with additional content', () => {
+        const textWithJson = `Here's the structured JSON for your calendar events:
+
+{
+    "events": [
+        {
+            "UID": "event-1",
+            "DTSTAMP": "20250916T000000Z",
+            "DTSTART": "20250915T080000Z",
+            "DTEND": "20250915T090000Z",
+            "SUMMARY": "PHYSIQUE-CHIMIE",
+            "DESCRIPTION": "Test description",
+            "LOCATION": "BASSE M.",
+            "TZID": "Europe/Paris"
+        }
+    ]
+}
+
+This includes all the events found in the image.`;
+
+        const events = service.parseTextForEvents(textWithJson);
+        
+        expect(events.length).toBe(1);
+        expect(events[0].title).toBe('PHYSIQUE-CHIMIE');
+        expect(events[0].description).toBe('Test description');
+        expect(events[0].location).toBe('BASSE M.');
+        expect(events[0].timezone).toBe('Europe/Paris');
+      });
+
+      it('should handle malformed dates in JSON events', () => {
+        const jsonText = JSON.stringify({
+          events: [
+            {
+              "DTSTART": "invalid-date",
+              "SUMMARY": "Event with bad date"
+            }
+          ]
+        });
+
+        const events = service.parseTextForEvents(jsonText);
+        
+        // Should create default event when no valid events can be parsed
+        expect(events.length).toBe(1);
+        expect(events[0].title).toBe('Calendar Event');
+        expect(events[0].description).toBe('Extracted from JSON format');
+      });
+    });
   });
 
   describe('generateICS', () => {

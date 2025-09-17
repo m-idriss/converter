@@ -21,6 +21,28 @@ export class Calendar {
 
   parseTextForEvents(text: string): CalendarEvent[] {
     const events: CalendarEvent[] = [];
+    
+    // Check if text is JSON format with events array
+    try {
+      const jsonData = JSON.parse(text.trim());
+      if (jsonData && jsonData.events && Array.isArray(jsonData.events)) {
+        return this.parseJsonEvents(jsonData.events);
+      }
+    } catch (error) {
+      // Try to extract JSON from text that might contain additional content
+      const jsonMatch = text.match(/\{[\s\S]*"events"[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          const jsonData = JSON.parse(jsonMatch[0]);
+          if (jsonData && jsonData.events && Array.isArray(jsonData.events)) {
+            return this.parseJsonEvents(jsonData.events);
+          }
+        } catch (innerError) {
+          // Still not valid JSON, continue with other parsing methods
+        }
+      }
+    }
+
     const lines = text.split('\n').filter(line => line.trim().length > 0);
 
     // Check if text contains iCalendar format data
@@ -144,6 +166,65 @@ export class Calendar {
     }
 
     return uniqueEvents;
+  }
+
+  private parseJsonEvents(jsonEvents: any[]): CalendarEvent[] {
+    const events: CalendarEvent[] = [];
+
+    for (const jsonEvent of jsonEvents) {
+      try {
+        // Parse start date from DTSTART field
+        const startDate = this.parseJsonDate(jsonEvent.DTSTART, jsonEvent.TZID);
+        const endDate = this.parseJsonDate(jsonEvent.DTEND, jsonEvent.TZID);
+
+        if (startDate) {
+          events.push({
+            title: jsonEvent.SUMMARY || 'Calendar Event',
+            description: jsonEvent.DESCRIPTION || '',
+            startDate: startDate,
+            endDate: endDate || new Date(startDate.getTime() + 60 * 60 * 1000), // Default 1 hour duration
+            location: jsonEvent.LOCATION || '',
+            allDay: false,
+            timezone: jsonEvent.TZID || 'Europe/Paris'
+          });
+        }
+      } catch (error) {
+        console.warn('Failed to parse JSON event:', jsonEvent, error);
+        // Continue processing other events
+      }
+    }
+
+    return events.length > 0 ? events : [{
+      title: 'Calendar Event', 
+      description: 'Extracted from JSON format',
+      startDate: new Date(),
+      endDate: new Date(Date.now() + 60 * 60 * 1000),
+      allDay: false,
+      timezone: 'Europe/Paris'
+    }];
+  }
+
+  private parseJsonDate(dateString: string, timeZone?: string): Date | null {
+    if (!dateString) return null;
+
+    try {
+      // Handle ISO-like format: 20250915T080000Z
+      if (/^\d{8}T\d{6}Z?$/.test(dateString)) {
+        const isoString = dateString.replace(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z?$/, '$1-$2-$3T$4:$5:$6Z');
+        const date = parseISO(isoString);
+        
+        // If timezone is specified and different from UTC, we may need to adjust
+        // For now, we'll treat the parsed date as is since it should be in the correct timezone
+        return isValid(date) ? date : null;
+      }
+      
+      // Try direct ISO parsing
+      const date = parseISO(dateString);
+      return isValid(date) ? date : null;
+    } catch (error) {
+      console.warn('Failed to parse date:', dateString, error);
+      return null;
+    }
   }
 
   private parseICalendarFormat(lines: string[]): CalendarEvent[] {
