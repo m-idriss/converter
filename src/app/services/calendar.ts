@@ -251,7 +251,7 @@ export class Calendar {
               endDate: addHours(eventDate, 1),
               location: location || '',
               allDay: false,
-              timezone: 'Europe/Paris',
+              timezone: 'Europe/London',
               confidence,
             });
           }
@@ -280,7 +280,7 @@ export class Calendar {
           endDate: new Date(now.getTime() + 60 * 60 * 1000),
           location: this.extractLocationFromText(text) || '',
           allDay: false,
-          timezone: 'Europe/Paris',
+          timezone: 'Europe/London',
           confidence: 0.3, // Low confidence for fallback events
         },
       ];
@@ -306,7 +306,7 @@ export class Calendar {
             endDate: endDate || new Date(startDate.getTime() + 60 * 60 * 1000), // Default 1 hour duration
             location: jsonEvent.LOCATION || '',
             allDay: false,
-            timezone: jsonEvent.TZID || 'Europe/Paris',
+            timezone: jsonEvent.TZID || 'Europe/London',
           });
         }
       } catch (error) {
@@ -325,7 +325,7 @@ export class Calendar {
             endDate: new Date(Date.now() + 60 * 60 * 1000),
             location: '',
             allDay: false,
-            timezone: 'Europe/Paris',
+            timezone: 'Europe/London',
           },
         ];
   }
@@ -385,7 +385,7 @@ export class Calendar {
               currentEvent.endDate || new Date(currentEvent.startDate.getTime() + 60 * 60 * 1000),
             location: currentEvent.location || '',
             allDay: currentEvent.allDay || false,
-            timezone: currentEvent.timezone || 'Europe/Paris',
+            timezone: currentEvent.timezone || 'Europe/London',
           });
         }
         inEvent = false;
@@ -434,7 +434,7 @@ export class Calendar {
           currentEvent.endDate || new Date(currentEvent.startDate.getTime() + 60 * 60 * 1000),
         location: currentEvent.location || '',
         allDay: currentEvent.allDay || false,
-        timezone: currentEvent.timezone || 'Europe/Paris',
+        timezone: currentEvent.timezone || 'Europe/London',
       });
     }
 
@@ -448,7 +448,7 @@ export class Calendar {
             endDate: new Date(Date.now() + 60 * 60 * 1000),
             location: '',
             allDay: false,
-            timezone: 'Europe/Paris',
+            timezone: 'Europe/London',
           },
         ];
   }
