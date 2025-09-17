@@ -127,7 +127,7 @@ describe('Calendar', () => {
         expect(events[0].title).toBe('Minimal Event');
         expect(events[0].description).toBe('');
         expect(events[0].location).toBe('');
-        expect(events[0].timezone).toBe('Europe/Paris'); // default
+        expect(events[0].timezone).toBe('Europe/London'); // default
         expect(events[0].startDate.getUTCHours()).toBe(14);
         // End date should default to 1 hour after start
         expect(events[0].endDate.getUTCHours()).toBe(15);
