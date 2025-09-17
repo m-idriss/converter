@@ -27,7 +27,7 @@ describe('App', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     // Verify that the extracted text card is not present in the DOM
     expect(compiled.querySelector('.extracted-text-card')).toBeNull();
-    // Verify that the text content div is not present in the DOM  
+    // Verify that the text content div is not present in the DOM
     expect(compiled.querySelector('.text-content')).toBeNull();
   });
 });

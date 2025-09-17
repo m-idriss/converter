@@ -50,14 +50,14 @@ export const environment = {
 export const environment = {
   production: true,
   firebase: {
-    apiKey: "AIzaSyDvQ4aCcWtSxGmTXefINTcsdb0O5zheYzE",      // Properly quoted
-    authDomain: "image-to-ics.firebaseapp.com",             // Properly quoted
-    projectId: "image-to-ics",                              // Properly quoted
-    storageBucket: "image-to-ics.firebasestorage.app",      // Properly quoted
-    messagingSenderId: "345022501803",                      // Quoted as string
-    appId: "1:345022501803:web:3515e39c6c5962806678ee",     // Properly quoted
-    measurementId: "G-LEY4E6R8Q5"                           // Properly quoted
-  }
+    apiKey: 'AIzaSyDvQ4aCcWtSxGmTXefINTcsdb0O5zheYzE', // Properly quoted
+    authDomain: 'image-to-ics.firebaseapp.com', // Properly quoted
+    projectId: 'image-to-ics', // Properly quoted
+    storageBucket: 'image-to-ics.firebasestorage.app', // Properly quoted
+    messagingSenderId: '345022501803', // Quoted as string
+    appId: '1:345022501803:web:3515e39c6c5962806678ee', // Properly quoted
+    measurementId: 'G-LEY4E6R8Q5', // Properly quoted
+  },
 };
 ```
 
@@ -68,6 +68,7 @@ export const environment = {
 The repository maintainer needs to update the `ENV_PROD_TS` GitHub secret with properly quoted Firebase configuration values.
 
 **Steps:**
+
 1. Go to GitHub repository Settings → Secrets and variables → Actions
 2. Edit the `ENV_PROD_TS` secret
 3. Replace the content with the correct format shown above
@@ -86,8 +87,9 @@ Use the provided validation script to test your configuration:
 ```
 
 The script will detect:
+
 - Unquoted string values
-- Invalid TypeScript syntax  
+- Invalid TypeScript syntax
 - Missing required Firebase fields
 - Compatibility issues with the GitHub Actions workflow
 
@@ -127,12 +129,12 @@ To prevent this issue in the future:
 
 ### Error Messages Explained
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `Cannot find name 'AIzaSy...'` | API key not quoted | Wrap in quotes: `"AIzaSy..."` |
-| `Cannot find name 'image'` | Domain not quoted | Wrap in quotes: `"image-to-ics.firebaseapp.com"` |
-| `Type 'number' is not assignable to type 'string'` | messagingSenderId not quoted | Wrap in quotes: `"345022501803"` |
-| `Expected "}" but found ":"` | Invalid appId syntax | Quote entire appId: `"1:345..."` |
+| Error                                              | Cause                        | Solution                                         |
+| -------------------------------------------------- | ---------------------------- | ------------------------------------------------ |
+| `Cannot find name 'AIzaSy...'`                     | API key not quoted           | Wrap in quotes: `"AIzaSy..."`                    |
+| `Cannot find name 'image'`                         | Domain not quoted            | Wrap in quotes: `"image-to-ics.firebaseapp.com"` |
+| `Type 'number' is not assignable to type 'string'` | messagingSenderId not quoted | Wrap in quotes: `"345022501803"`                 |
+| `Expected "}" but found ":"`                       | Invalid appId syntax         | Quote entire appId: `"1:345..."`                 |
 
 ## Files Changed
 
@@ -150,7 +152,7 @@ To verify the fix is working:
 # 1. Validate your environment configuration
 ./scripts/validate-environment.sh
 
-# 2. Test build locally with production configuration  
+# 2. Test build locally with production configuration
 npm run build -- --configuration=production
 
 # 3. Check the generated environment file contains quoted values

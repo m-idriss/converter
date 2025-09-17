@@ -17,6 +17,7 @@ The workflow uses FTP deployment to upload files to the server. You need to conf
 ### FTP Deployment
 
 Required secrets in your GitHub repository:
+
 - `FTP_SERVER`: The FTP server hostname or IP address (e.g., `3dime.com` or `ftp.3dime.com`)
 - `FTP_USERNAME`: FTP username for the server
 - `FTP_PASSWORD`: FTP password for authentication
@@ -36,14 +37,14 @@ The `ENV_PROD_TS` secret must contain properly formatted TypeScript code with **
 export const environment = {
   production: true,
   firebase: {
-    apiKey: "your-api-key-here",
-    authDomain: "your-project-id.firebaseapp.com",
-    projectId: "your-project-id", 
-    storageBucket: "your-project-id.firebasestorage.app",
-    messagingSenderId: "your-messaging-sender-id",
-    appId: "1:your-messaging-sender-id:web:your-app-id-here",
-    measurementId: "G-your-measurement-id"
-  }
+    apiKey: 'your-api-key-here',
+    authDomain: 'your-project-id.firebaseapp.com',
+    projectId: 'your-project-id',
+    storageBucket: 'your-project-id.firebasestorage.app',
+    messagingSenderId: 'your-messaging-sender-id',
+    appId: '1:your-messaging-sender-id:web:your-app-id-here',
+    measurementId: 'G-your-measurement-id',
+  },
 };
 ```
 
@@ -58,6 +59,7 @@ export const environment = {
 ## Server Configuration
 
 The workflow deploys files to the `/converter/` directory on your FTP server. Make sure:
+
 - The FTP user has write permissions to the target directory
 - The web server is configured to serve files from the correct location
 - The target directory path matches your web server document root structure
@@ -70,16 +72,16 @@ If using Nginx, add this location block to serve the converter app:
 server {
     server_name 3dime.com;
     root /var/www/html;  # or your document root
-    
+
     location /converter/ {
         try_files $uri $uri/ /converter/index.html;
-        
+
         # Handle Angular routing
         location ~ ^/converter/.*$ {
             try_files $uri /converter/index.html;
         }
     }
-    
+
     # Your other server configuration...
 }
 ```
@@ -93,7 +95,7 @@ If using Apache, add this to your virtual host or `.htaccess` in the `/converter
     Options Indexes FollowSymLinks
     AllowOverride All
     Require all granted
-    
+
     # Handle Angular routing
     RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} !-f
@@ -107,14 +109,16 @@ If using Apache, add this to your virtual host or `.htaccess` in the `/converter
 ### SSH Deployment
 
 If you prefer SSH deployment, you can modify the workflow to use SSH instead of FTP by adding these secrets:
+
 - `SSH_HOST`: The server hostname or IP address
-- `SSH_USERNAME`: SSH username for the server  
+- `SSH_USERNAME`: SSH username for the server
 - `SSH_PRIVATE_KEY`: Private SSH key for authentication
 - `SSH_PORT`: SSH port (optional, defaults to 22)
 
 ## Troubleshooting
 
 ### Build Issues
+
 - Ensure Node.js 20+ is available on your local environment
 - Check that all dependencies install correctly with `npm ci`
 - Verify the build works locally: `npm run build -- --configuration=production --base-href=/converter/`
@@ -122,6 +126,7 @@ If you prefer SSH deployment, you can modify the workflow to use SSH instead of 
 #### Firebase Configuration Errors
 
 If you see TypeScript compilation errors like:
+
 - `Cannot find name 'AIzaSyDvQ4aCcWtSxGmTXefINTcsdb0O5zheYzE'`
 - `Cannot find name 'image'`
 - `Types of property 'authDomain' are incompatible. Type 'number' is not assignable to type 'string'`
@@ -141,6 +146,7 @@ authDomain: "your-project.firebaseapp.com",
 ### Deployment Issues
 
 #### DNS Resolution Errors (ENOTFOUND)
+
 If you encounter "getaddrinfo ENOTFOUND" errors in GitHub Actions:
 
 1. **Verify FTP server hostname**: Ensure the `FTP_SERVER` secret contains the correct hostname
@@ -151,12 +157,14 @@ If you encounter "getaddrinfo ENOTFOUND" errors in GitHub Actions:
 6. **Check server availability**: Ensure the FTP server is online and accessible
 
 The deployment workflow now includes:
+
 - Automatic DNS resolution validation with multiple DNS servers
 - Retry mechanism with 30-second delay between attempts
 - Comprehensive diagnostics if deployment fails
 - Timeout and error handling for network issues
 
 #### General FTP Issues
+
 - Verify FTP connectivity and credentials: test with an FTP client like FileZilla
 - Check that the target directory has proper write permissions
 - Verify the FTP server path is correct (usually relative to FTP user's home directory)
@@ -164,6 +172,7 @@ The deployment workflow now includes:
 - Ensure GitHub Actions IP ranges are allowed on your server firewall
 
 ### Routing Issues
+
 - Ensure the web server is configured to serve the Angular app correctly
 - Verify that the base href is set to `/converter/` in the built index.html
 - Check that the web server handles Angular's client-side routing
@@ -186,14 +195,16 @@ Before setting up deployment, you can test your Firebase environment configurati
 ```
 
 The validation script will:
+
 - Check TypeScript syntax
-- Verify all required Firebase fields are present  
+- Verify all required Firebase fields are present
 - Detect unquoted configuration values that cause deployment failures
 - Simulate the GitHub Actions environment replacement process
 
 ### Deployment Testing
 
 After a successful deployment:
+
 1. Visit `http://3dime.com/converter`
 2. Verify the application loads correctly
 3. Test navigation and file upload functionality

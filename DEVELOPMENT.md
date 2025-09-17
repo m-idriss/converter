@@ -1,9 +1,11 @@
 # Converter App - Development Guide
 
 ## Overview
+
 This is an Angular 2025+ application that converts images and PDFs into ICS calendar files using Firebase Google authentication and Firebase Functions.
 
 ## Features
+
 - **Modern UI**: Built with Angular 20+ and custom SCSS styling
 - **File Upload**: Drag-and-drop interface for images and PDFs
 - **Text Extraction**: Uses Tesseract.js for OCR and PDF.js for PDF text extraction
@@ -13,6 +15,7 @@ This is an Angular 2025+ application that converts images and PDFs into ICS cale
 - **Firebase Functions**: Server-side processing capabilities
 
 ## Technology Stack
+
 - **Frontend**: Angular 20.2.2, TypeScript, SCSS
 - **Authentication**: Firebase Auth with Google provider
 - **File Processing**: Tesseract.js, PDF.js
@@ -22,13 +25,16 @@ This is an Angular 2025+ application that converts images and PDFs into ICS cale
 ## Setup Instructions
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - npm 10+
 - Firebase project (optional)
 
 ### Installation
+
 1. Clone the repository
 2. Install dependencies:
+
    ```bash
    npm install
    ```
@@ -38,6 +44,7 @@ This is an Angular 2025+ application that converts images and PDFs into ICS cale
    - Update `.firebaserc` with your project ID
 
 ### Development
+
 ```bash
 # Start development server
 npm start
@@ -50,6 +57,7 @@ npm run build
 ```
 
 ### Firebase Functions (Optional)
+
 ```bash
 # Install function dependencies
 cd functions && npm install
@@ -59,6 +67,7 @@ npm run deploy
 ```
 
 ## Project Structure
+
 ```
 src/
 ├── app/
@@ -75,6 +84,7 @@ src/
 ```
 
 ## Usage
+
 1. Open the application in a web browser
 2. Sign in with Google (if Firebase is configured)
 3. Upload an image or PDF file
@@ -84,48 +94,59 @@ src/
 ## Configuration
 
 ### Firebase Setup
+
 To enable Firebase features:
+
 1. Create a Firebase project
 2. Enable Authentication with Google provider
 3. Update environment files with your Firebase config
 4. Deploy Firebase Functions (optional)
 
 ### Environment Variables
+
 Update `src/environments/environment.ts`:
+
 ```typescript
 export const environment = {
   firebase: {
-    apiKey: "your-api-key",
-    authDomain: "your-project.firebaseapp.com",
-    projectId: "your-project-id",
+    apiKey: 'your-api-key',
+    authDomain: 'your-project.firebaseapp.com',
+    projectId: 'your-project-id',
     // ... other config
-  }
+  },
 };
 ```
 
 ## Testing
+
 The application includes comprehensive tests:
+
 - Component tests for all UI components
 - Service tests for business logic
 - Integration tests for the complete workflow
 
 Run tests with:
+
 ```bash
 npm test
 ```
 
 ## Deployment
+
 Build for production:
+
 ```bash
 npm run build
 ```
 
 Deploy to Firebase Hosting (if configured):
+
 ```bash
 firebase deploy
 ```
 
 ## Contributing
+
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes

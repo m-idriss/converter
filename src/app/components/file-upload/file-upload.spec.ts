@@ -10,9 +10,8 @@ describe('FileUpload', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FileUpload],
-      providers: [provideHttpClient()]
-    })
-    .compileComponents();
+      providers: [provideHttpClient()],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(FileUpload);
     component = fixture.componentInstance;

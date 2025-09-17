@@ -7,13 +7,12 @@ import { Auth as AuthService } from './services/auth';
 import { Calendar, CalendarEvent } from './services/calendar';
 import { ExtractedText } from './services/file-processor';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   imports: [CommonModule, RouterOutlet, Auth, FileUpload],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
 export class App implements OnInit, OnDestroy {
   protected readonly title = signal('converter-app');
@@ -29,7 +28,7 @@ export class App implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
-    private calendarService: Calendar
+    private calendarService: Calendar,
   ) {
     this.user$ = this.authService.user$;
   }
@@ -65,22 +64,22 @@ export class App implements OnInit, OnDestroy {
     if (this.parsedEvents.length > 0) {
       this.isDownloading = true;
       this.downloadStatus = { message: 'Preparing download...', type: 'info' };
-      
+
       try {
         const result = await this.calendarService.downloadICS(this.parsedEvents);
-        this.downloadStatus = { 
-          message: result.message, 
-          type: result.success ? 'success' : 'error' 
+        this.downloadStatus = {
+          message: result.message,
+          type: result.success ? 'success' : 'error',
         };
-        
+
         // Clear status after 5 seconds
         setTimeout(() => {
           this.downloadStatus = null;
         }, 5000);
       } catch (error) {
-        this.downloadStatus = { 
-          message: 'Unexpected error occurred while downloading', 
-          type: 'error' 
+        this.downloadStatus = {
+          message: 'Unexpected error occurred while downloading',
+          type: 'error',
         };
         setTimeout(() => {
           this.downloadStatus = null;
@@ -101,13 +100,13 @@ export class App implements OnInit, OnDestroy {
 
   getEventDuration(event: CalendarEvent): string {
     const diffMs = event.endDate.getTime() - event.startDate.getTime();
-    const diffHours = Math.round(diffMs / (1000 * 60 * 60) * 10) / 10;
-    
+    const diffHours = Math.round((diffMs / (1000 * 60 * 60)) * 10) / 10;
+
     if (diffHours < 1) {
       const diffMinutes = Math.round(diffMs / (1000 * 60));
       return `${diffMinutes}min`;
     } else if (diffHours >= 24) {
-      const diffDays = Math.round(diffHours / 24 * 10) / 10;
+      const diffDays = Math.round((diffHours / 24) * 10) / 10;
       return `${diffDays}d`;
     } else {
       return `${diffHours}h`;

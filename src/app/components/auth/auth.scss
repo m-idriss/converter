@@ -5,7 +5,7 @@
 
 .sign-in-container {
   text-align: center;
-  
+
   .google-sign-in-btn {
     display: flex;
     align-items: center;
@@ -57,7 +57,7 @@
       background: linear-gradient(135deg, var(--gray-400), var(--gray-500));
       cursor: not-allowed;
       transform: none;
-      
+
       &::before {
         display: none;
       }
@@ -255,7 +255,7 @@
     background: linear-gradient(135deg, var(--gray-400), var(--gray-500));
     cursor: not-allowed;
     transform: none;
-    
+
     &::before {
       display: none;
     }
@@ -345,7 +345,7 @@
     background: linear-gradient(135deg, var(--gray-400), var(--gray-500));
     cursor: not-allowed;
     transform: none;
-    
+
     &::before {
       display: none;
     }

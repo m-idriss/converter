@@ -3,12 +3,12 @@
 ## Supported Versions
 
 The following table lists which versions of this project are currently supported with security updates.
-| Version | Supported          |
+| Version | Supported |
 | ------- | ------------------ |
-| 2.3.x   | :white_check_mark: |
-| 2.2.x   | :white_check_mark: |
-| 2.1.x   | :x:                |
-| < 2.1   | :x:                |
+| 2.3.x | :white_check_mark: |
+| 2.2.x | :white_check_mark: |
+| 2.1.x | :x: |
+| < 2.1 | :x: |
 
 ## Reporting a Vulnerability
 

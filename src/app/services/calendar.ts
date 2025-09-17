@@ -14,11 +14,10 @@ export interface CalendarEvent {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class Calendar {
-
-  constructor() { }
+  constructor() {}
 
   /**
    * Simple relative date parsing for common expressions
@@ -26,9 +25,9 @@ export class Calendar {
   private parseSimpleRelativeDate(text: string): Date | null {
     const lowerText = text.toLowerCase().trim();
     const now = new Date();
-    
+
     if (/\b(today|tonight)\b/.test(lowerText)) {
-      return startOfDay(now); 
+      return startOfDay(now);
     }
     if (/\btomorrow\b/.test(lowerText)) {
       return startOfDay(addDays(now, 1));
@@ -36,13 +35,13 @@ export class Calendar {
     if (/\bnext\s+friday\b/.test(lowerText)) {
       return startOfDay(addDays(now, (5 - now.getDay() + 7) % 7 || 7));
     }
-    
+
     return null;
   }
 
   parseTextForEvents(text: string): CalendarEvent[] {
     const events: CalendarEvent[] = [];
-    
+
     // Check if text is JSON format with events array
     try {
       const jsonData = JSON.parse(text.trim());
@@ -64,11 +63,11 @@ export class Calendar {
       }
     }
 
-    const lines = text.split('\n').filter(line => line.trim().length > 0);
+    const lines = text.split('\n').filter((line) => line.trim().length > 0);
 
     // Check if text contains iCalendar format data
-    const hasICalendarData = lines.some(line => 
-      line.match(/^(DTSTART|DTEND|DTSTAMP|SUMMARY|DESCRIPTION)[:;]/i)
+    const hasICalendarData = lines.some((line) =>
+      line.match(/^(DTSTART|DTEND|DTSTAMP|SUMMARY|DESCRIPTION)[:;]/i),
     );
 
     if (hasICalendarData) {
@@ -78,25 +77,42 @@ export class Calendar {
     // Enhanced regex patterns for natural text with dates
     const dateTimePatterns = [
       {
-        regex: /^(.+?)\s+(?:on\s+)?(\w+\s+\d{1,2},?\s+\d{4})(?:\s+at\s+)?(\d{1,2}:\d{2}\s*(?:AM|PM)?)/i,
-        titleGroup: 1, dateGroup: 2, timeGroup: 3, confidence: 0.9
+        regex:
+          /^(.+?)\s+(?:on\s+)?(\w+\s+\d{1,2},?\s+\d{4})(?:\s+at\s+)?(\d{1,2}:\d{2}\s*(?:AM|PM)?)/i,
+        titleGroup: 1,
+        dateGroup: 2,
+        timeGroup: 3,
+        confidence: 0.9,
       }, // ex: "Meeting on January 15, 2025 at 2:00 PM"
       {
         regex: /^(.+?)[:,]\s*(\d{1,2}\/\d{1,2}\/\d{4})\s+(\d{1,2}:\d{2})/i,
-        titleGroup: 1, dateGroup: 2, timeGroup: 3, confidence: 0.85
+        titleGroup: 1,
+        dateGroup: 2,
+        timeGroup: 3,
+        confidence: 0.85,
       }, // ex: "Appointment: 01/15/2025 14:00"
       {
         regex: /^(.+?)\s+(\d{4}-\d{2}-\d{2})\s+(\d{1,2}:\d{2}\s*(?:AM|PM)?)/i,
-        titleGroup: 1, dateGroup: 2, timeGroup: 3, confidence: 0.9
+        titleGroup: 1,
+        dateGroup: 2,
+        timeGroup: 3,
+        confidence: 0.9,
       }, // ex: "Team Meeting 2025-01-15 2:00 PM"
       {
-        regex: /^(.+?)\s+(tomorrow|today|tonight|next\s+friday)(?:\s+at\s+(\d{1,2}:\d{2}\s*(?:AM|PM)?))?/i,
-        titleGroup: 1, dateGroup: 2, timeGroup: 3, confidence: 0.8
+        regex:
+          /^(.+?)\s+(tomorrow|today|tonight|next\s+friday)(?:\s+at\s+(\d{1,2}:\d{2}\s*(?:AM|PM)?))?/i,
+        titleGroup: 1,
+        dateGroup: 2,
+        timeGroup: 3,
+        confidence: 0.8,
       }, // ex: "Meeting tomorrow at 2 PM"
       {
         regex: /(\d{8}T\d{6}Z?)/i,
-        titleGroup: null, dateGroup: 1, timeGroup: null, confidence: 0.95
-      } // ex: 20231001T090000Z (standalone timestamp)
+        titleGroup: null,
+        dateGroup: 1,
+        timeGroup: null,
+        confidence: 0.95,
+      }, // ex: 20231001T090000Z (standalone timestamp)
     ];
 
     for (const line of lines) {
@@ -124,10 +140,10 @@ export class Calendar {
                 let hours = parseInt(timeMatch[1]);
                 const minutes = parseInt(timeMatch[2]);
                 const ampm = timeMatch[3]?.toUpperCase();
-                
+
                 if (ampm === 'PM' && hours !== 12) hours += 12;
                 if (ampm === 'AM' && hours === 12) hours = 0;
-                
+
                 eventDate.setHours(hours, minutes, 0, 0);
               } else {
                 eventDate.setHours(9, 0, 0, 0); // Default 9 AM
@@ -139,13 +155,16 @@ export class Calendar {
             }
           } else if (/^\d{8}T\d{6}Z?$/.test(dateStr)) {
             // Parse ISO-like format: 20231001T090000Z
-            const isoString = dateStr.replace(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z?$/, '$1-$2-$3T$4:$5:$6Z');
+            const isoString = dateStr.replace(
+              /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z?$/,
+              '$1-$2-$3T$4:$5:$6Z',
+            );
             eventDate = parseISO(isoString);
             confidence = 0.95;
           } else if (dateStr) {
             // Try various date formats with native parsing and date-fns
             const dateTimeCombined = `${dateStr} ${timeStr}`.trim();
-            
+
             // Use a single reference date for all format attempts
             const referenceDate = new Date();
             // Try parsing with different formats
@@ -154,7 +173,7 @@ export class Calendar {
               () => parse(dateTimeCombined, 'MM/dd/yyyy H:mm', referenceDate),
               () => parse(dateTimeCombined, 'yyyy-MM-dd h:mm a', referenceDate),
               () => parse(dateTimeCombined, 'yyyy-MM-dd H:mm', referenceDate),
-              () => new Date(dateTimeCombined) // Native parsing as fallback
+              () => new Date(dateTimeCombined), // Native parsing as fallback
             ];
             for (const formatAttempt of formatAttempts) {
               try {
@@ -171,10 +190,10 @@ export class Calendar {
 
           if (eventDate && isValid(eventDate)) {
             let title = titleText ? titleText.trim() : '';
-            
+
             // Clean up common prefixes
             title = title.replace(/^(meeting|appointment|event)[:]\s*/i, '');
-            
+
             // If no meaningful title found, generate one
             if (!title || title.length < 2) {
               title = 'Calendar Event';
@@ -187,7 +206,7 @@ export class Calendar {
               endDate: addHours(eventDate, 1),
               allDay: false,
               timezone: 'Europe/Paris',
-              confidence
+              confidence,
             });
           }
 
@@ -197,24 +216,27 @@ export class Calendar {
     }
 
     // Remove exact duplicates (same title + same date)
-    const uniqueEvents = events.filter((event, index, self) =>
-      index === self.findIndex(e =>
-        e.title === event.title &&
-        e.startDate.getTime() === event.startDate.getTime()
-      )
+    const uniqueEvents = events.filter(
+      (event, index, self) =>
+        index ===
+        self.findIndex(
+          (e) => e.title === event.title && e.startDate.getTime() === event.startDate.getTime(),
+        ),
     );
 
     if (uniqueEvents.length === 0) {
       const now = new Date();
-      return [{
-        title: 'Extracted Text Event',
-        description: text,
-        startDate: now,
-        endDate: new Date(now.getTime() + 60 * 60 * 1000),
-        allDay: false,
-        timezone: 'Europe/Paris',
-        confidence: 0.3 // Low confidence for fallback events
-      }];
+      return [
+        {
+          title: 'Extracted Text Event',
+          description: text,
+          startDate: now,
+          endDate: new Date(now.getTime() + 60 * 60 * 1000),
+          allDay: false,
+          timezone: 'Europe/Paris',
+          confidence: 0.3, // Low confidence for fallback events
+        },
+      ];
     }
 
     return uniqueEvents;
@@ -237,7 +259,7 @@ export class Calendar {
             endDate: endDate || new Date(startDate.getTime() + 60 * 60 * 1000), // Default 1 hour duration
             location: jsonEvent.LOCATION || '',
             allDay: false,
-            timezone: jsonEvent.TZID || 'Europe/Paris'
+            timezone: jsonEvent.TZID || 'Europe/Paris',
           });
         }
       } catch (error) {
@@ -246,14 +268,18 @@ export class Calendar {
       }
     }
 
-    return events.length > 0 ? events : [{
-      title: 'Calendar Event', 
-      description: 'Extracted from JSON format',
-      startDate: new Date(),
-      endDate: new Date(Date.now() + 60 * 60 * 1000),
-      allDay: false,
-      timezone: 'Europe/Paris'
-    }];
+    return events.length > 0
+      ? events
+      : [
+          {
+            title: 'Calendar Event',
+            description: 'Extracted from JSON format',
+            startDate: new Date(),
+            endDate: new Date(Date.now() + 60 * 60 * 1000),
+            allDay: false,
+            timezone: 'Europe/Paris',
+          },
+        ];
   }
 
   private parseJsonDate(dateString: string, timeZone?: string): Date | null {
@@ -262,14 +288,17 @@ export class Calendar {
     try {
       // Handle ISO-like format: 20250915T080000Z
       if (/^\d{8}T\d{6}Z?$/.test(dateString)) {
-        const isoString = dateString.replace(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z?$/, '$1-$2-$3T$4:$5:$6Z');
+        const isoString = dateString.replace(
+          /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z?$/,
+          '$1-$2-$3T$4:$5:$6Z',
+        );
         const date = parseISO(isoString);
-        
+
         // If timezone is specified and different from UTC, we may need to adjust
         // For now, we'll treat the parsed date as is since it should be in the correct timezone
         return isValid(date) ? date : null;
       }
-      
+
       // Try direct ISO parsing
       const date = parseISO(dateString);
       return isValid(date) ? date : null;
@@ -304,9 +333,10 @@ export class Calendar {
             title: currentEvent.title || 'Calendar Event',
             description: currentEvent.description || '',
             startDate: currentEvent.startDate,
-            endDate: currentEvent.endDate || new Date(currentEvent.startDate.getTime() + 60 * 60 * 1000),
+            endDate:
+              currentEvent.endDate || new Date(currentEvent.startDate.getTime() + 60 * 60 * 1000),
             allDay: currentEvent.allDay || false,
-            timezone: currentEvent.timezone || 'Europe/Paris'
+            timezone: currentEvent.timezone || 'Europe/Paris',
           });
         }
         inEvent = false;
@@ -314,7 +344,8 @@ export class Calendar {
         continue;
       }
 
-      if (inEvent || !inEvent) { // Process iCalendar properties even outside VEVENT blocks
+      if (inEvent || !inEvent) {
+        // Process iCalendar properties even outside VEVENT blocks
         // Parse iCalendar properties
         if (trimmedLine.startsWith('SUMMARY:')) {
           currentEvent.title = trimmedLine.substring(8).trim();
@@ -348,20 +379,25 @@ export class Calendar {
         title: currentEvent.title || 'Calendar Event',
         description: currentEvent.description || '',
         startDate: currentEvent.startDate,
-        endDate: currentEvent.endDate || new Date(currentEvent.startDate.getTime() + 60 * 60 * 1000),
+        endDate:
+          currentEvent.endDate || new Date(currentEvent.startDate.getTime() + 60 * 60 * 1000),
         allDay: currentEvent.allDay || false,
-        timezone: currentEvent.timezone || 'Europe/Paris'
+        timezone: currentEvent.timezone || 'Europe/Paris',
       });
     }
 
-    return events.length > 0 ? events : [{
-      title: 'Calendar Event',
-      description: 'Extracted from iCalendar format',
-      startDate: new Date(),
-      endDate: new Date(Date.now() + 60 * 60 * 1000),
-      allDay: false,
-      timezone: 'Europe/Paris'
-    }];
+    return events.length > 0
+      ? events
+      : [
+          {
+            title: 'Calendar Event',
+            description: 'Extracted from iCalendar format',
+            startDate: new Date(),
+            endDate: new Date(Date.now() + 60 * 60 * 1000),
+            allDay: false,
+            timezone: 'Europe/Paris',
+          },
+        ];
   }
 
   private extractICalendarDate(line: string): Date | null {
@@ -370,11 +406,14 @@ export class Calendar {
     if (colonIndex === -1) return null;
 
     const dateStr = line.substring(colonIndex + 1).trim();
-    
+
     // Handle different iCalendar date formats
     if (/^\d{8}T\d{6}Z?$/.test(dateStr)) {
       // 20231003T120000Z format
-      const isoString = dateStr.replace(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z?$/, '$1-$2-$3T$4:$5:$6Z');
+      const isoString = dateStr.replace(
+        /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z?$/,
+        '$1-$2-$3T$4:$5:$6Z',
+      );
       const parsedDate = parseISO(isoString);
       return isValid(parsedDate) ? parsedDate : null;
     } else if (/^\d{8}$/.test(dateStr)) {
@@ -395,7 +434,7 @@ export class Calendar {
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
       'PRODID:-//Converter App//Calendar//EN',
-      'CALSCALE:GREGORIAN'
+      'CALSCALE:GREGORIAN',
     ];
 
     events.forEach((event, index) => {
@@ -413,12 +452,12 @@ export class Calendar {
         `SUMMARY:${this.escapeText(event.title)}`,
         event.description ? `DESCRIPTION:${this.escapeText(event.description)}` : '',
         event.location ? `LOCATION:${this.escapeText(event.location)}` : '',
-        'END:VEVENT'
+        'END:VEVENT',
       );
     });
 
     lines.push('END:VCALENDAR');
-    return lines.filter(line => line).join('\r\n');
+    return lines.filter((line) => line).join('\r\n');
   }
 
   private formatDate(date: Date, allDay: boolean): string {
@@ -444,48 +483,48 @@ export class Calendar {
       .replace(/\n/g, '\\n');
   }
 
-  downloadICS(events: CalendarEvent[], filename?: string): Promise<{ success: boolean; message: string; filename?: string }> {
+  downloadICS(
+    events: CalendarEvent[],
+    filename?: string,
+  ): Promise<{ success: boolean; message: string; filename?: string }> {
     return new Promise((resolve) => {
       try {
-
         // Validate events
         if (!events || events.length === 0) {
           resolve({ success: false, message: 'No events to download' });
           return;
         }
 
-
         // Generate ICS content
         const icsContent = this.generateICS(events);
-        
+
         // Validate ICS content
         if (!this.validateICSContent(icsContent)) {
           resolve({ success: false, message: 'Generated calendar content is invalid' });
           return;
         }
 
-
         // Generate smart filename if not provided
         const finalFilename = filename || this.generateSmartFilename(events);
 
         // Create blob with proper MIME type
-        const blob = new Blob([icsContent], { 
-          type: 'text/calendar;charset=utf-8;component=vevent' 
+        const blob = new Blob([icsContent], {
+          type: 'text/calendar;charset=utf-8;component=vevent',
         });
 
         // Download file
         saveAs(blob, finalFilename);
-        
-        resolve({ 
-          success: true, 
-          message: `Downloaded ${events.length} event${events.length > 1 ? 's' : ''} successfully`, 
-          filename: finalFilename 
+
+        resolve({
+          success: true,
+          message: `Downloaded ${events.length} event${events.length > 1 ? 's' : ''} successfully`,
+          filename: finalFilename,
         });
       } catch (error) {
         console.error('Error downloading ICS file:', error);
-        resolve({ 
-          success: false, 
-          message: 'Failed to download calendar file. Please try again.' 
+        resolve({
+          success: false,
+          message: 'Failed to download calendar file. Please try again.',
         });
       }
     });
@@ -496,13 +535,16 @@ export class Calendar {
 
     const timestamp = now.toISOString().split('T')[0]; // YYYY-MM-DD format
     const eventCount = events.length;
-    
+
     // Try to get a meaningful name from the first event
     let baseName = 'calendar-events';
     if (events.length > 0) {
       const firstEvent = events[0];
-      if (firstEvent.title && firstEvent.title !== 'Calendar Event' && firstEvent.title !== 'Extracted Text Event') {
-
+      if (
+        firstEvent.title &&
+        firstEvent.title !== 'Calendar Event' &&
+        firstEvent.title !== 'Extracted Text Event'
+      ) {
         // Clean the title for filename use
         baseName = firstEvent.title
           .toLowerCase()
@@ -517,25 +559,24 @@ export class Calendar {
 
   private validateICSContent(icsContent: string): boolean {
     try {
-
       // Basic ICS validation
       const lines = icsContent.split('\r\n');
-      
+
       // Check required headers
       if (!lines.includes('BEGIN:VCALENDAR') || !lines.includes('END:VCALENDAR')) {
         return false;
       }
-      
+
       // Check for at least one event
-      const hasEvent = lines.some(line => line === 'BEGIN:VEVENT');
+      const hasEvent = lines.some((line) => line === 'BEGIN:VEVENT');
       if (!hasEvent) {
         return false;
       }
-      
+
       // Check for required properties
-      const hasVersion = lines.some(line => line.startsWith('VERSION:'));
-      const hasProdId = lines.some(line => line.startsWith('PRODID:'));
-      
+      const hasVersion = lines.some((line) => line.startsWith('VERSION:'));
+      const hasProdId = lines.some((line) => line.startsWith('PRODID:'));
+
       return hasVersion && hasProdId;
     } catch (error) {
       console.error('ICS validation error:', error);
