@@ -165,6 +165,35 @@ describe('Calendar', () => {
         expect(events[0].title).toBe('Extracted Text Event');
       });
 
+      it('should extract JSON from text with additional content', () => {
+        const textWithJson = `Here's the structured JSON for your calendar events:
+
+{
+    "events": [
+        {
+            "UID": "event-1",
+            "DTSTAMP": "20250916T000000Z",
+            "DTSTART": "20250915T080000Z",
+            "DTEND": "20250915T090000Z",
+            "SUMMARY": "PHYSIQUE-CHIMIE",
+            "DESCRIPTION": "Test description",
+            "LOCATION": "BASSE M.",
+            "TZID": "Europe/Paris"
+        }
+    ]
+}
+
+This includes all the events found in the image.`;
+
+        const events = service.parseTextForEvents(textWithJson);
+        
+        expect(events.length).toBe(1);
+        expect(events[0].title).toBe('PHYSIQUE-CHIMIE');
+        expect(events[0].description).toBe('Test description');
+        expect(events[0].location).toBe('BASSE M.');
+        expect(events[0].timezone).toBe('Europe/Paris');
+      });
+
       it('should handle malformed dates in JSON events', () => {
         const jsonText = JSON.stringify({
           events: [

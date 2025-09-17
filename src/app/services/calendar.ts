@@ -29,7 +29,18 @@ export class Calendar {
         return this.parseJsonEvents(jsonData.events);
       }
     } catch (error) {
-      // Not JSON, continue with other parsing methods
+      // Try to extract JSON from text that might contain additional content
+      const jsonMatch = text.match(/\{[\s\S]*"events"[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          const jsonData = JSON.parse(jsonMatch[0]);
+          if (jsonData && jsonData.events && Array.isArray(jsonData.events)) {
+            return this.parseJsonEvents(jsonData.events);
+          }
+        } catch (innerError) {
+          // Still not valid JSON, continue with other parsing methods
+        }
+      }
     }
 
     const lines = text.split('\n').filter(line => line.trim().length > 0);
