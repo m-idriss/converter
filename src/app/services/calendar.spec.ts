@@ -24,6 +24,45 @@ describe('Calendar', () => {
       expect(events[1].title).toContain('Appointment');
     });
 
+    it('should extract location information from text', () => {
+      const testCases = [
+        {
+          text: 'Meeting on January 15, 2025 at 2:00 PM at Conference Room A',
+          expectedLocation: 'Conference Room A'
+        },
+        {
+          text: 'Team Standup tomorrow at 9:00 AM in Building B',
+          expectedLocation: 'Building B'
+        },
+        {
+          text: 'Project Review @ Main Office on January 20, 2025',
+          expectedLocation: 'Main Office'
+        },
+        {
+          text: 'Location: 123 Main Street - Company Meeting on Dec 15, 2024',
+          expectedLocation: '123 Main Street'
+        },
+        {
+          text: 'Training session at 123 Oak Street tomorrow',
+          expectedLocation: '123 Oak Street'
+        }
+      ];
+
+      testCases.forEach(testCase => {
+        const events = service.parseTextForEvents(testCase.text);
+        expect(events.length).toBeGreaterThan(0);
+        expect(events[0].location).toBe(testCase.expectedLocation);
+      });
+    });
+
+    it('should handle text without location information', () => {
+      const text = 'Meeting on January 15, 2025 at 2:00 PM';
+      const events = service.parseTextForEvents(text);
+
+      expect(events.length).toBe(1);
+      expect(events[0].location).toBe('');
+    });
+
     it('should parse date formats correctly with date-fns', () => {
       const text =
         'Team Meeting 2025-01-15 2:00 PM\nProject Review on December 25, 2024 at 10:30 AM';
