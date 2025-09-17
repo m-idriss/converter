@@ -25,9 +25,6 @@ export class App implements OnInit, OnDestroy {
   isDownloading = false;
   viewMode: 'grid' | 'list' = 'grid';
   isMobile = false;
-  
-  // Anonymous mode support
-  isAnonymousMode = false;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -44,20 +41,6 @@ export class App implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  /**
-   * Enable anonymous mode - allows users to try the app without signing in
-   */
-  enableAnonymousMode(): void {
-    this.isAnonymousMode = true;
-  }
-
-  /**
-   * Check if user can access the main features (authenticated or anonymous mode)
-   */
-  canAccessMainFeatures(): boolean {
-    return this.isAnonymousMode || !!this.authService.getCurrentUser();
   }
 
   @HostListener('window:resize', ['$event'])

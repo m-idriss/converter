@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, Input } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FileProcessor, ExtractedText } from '../../services/file-processor';
 
@@ -10,7 +10,6 @@ import { FileProcessor, ExtractedText } from '../../services/file-processor';
 })
 export class FileUpload {
   @Output() textExtracted = new EventEmitter<ExtractedText>();
-  @Input() isAnonymousMode = false;
   
   isProcessing = false;
   errorMessage = '';
@@ -50,7 +49,7 @@ export class FileUpload {
     this.errorMessage = '';
 
     try {
-      const extractedText = await this.fileProcessor.processFile(file, this.isAnonymousMode);
+      const extractedText = await this.fileProcessor.processFile(file);
       this.textExtracted.emit(extractedText);
     } catch (error) {
       this.errorMessage = error instanceof Error ? error.message : 'An error occurred while processing the file.';

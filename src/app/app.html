@@ -3,9 +3,6 @@
     <div class="header-content">
       <h1>📅 File to Calendar Converter</h1>
       <p>Convert images and PDFs to ICS calendar files</p>
-      <div *ngIf="isAnonymousMode" class="anonymous-badge">
-        🌟 Anonymous Mode - Local Processing
-      </div>
     </div>
     <!-- Only show auth component in header when user is connected -->
     <div *ngIf="user$ | async" class="header-auth">
@@ -13,11 +10,9 @@
     </div>
   </header>
 
-  <main class="app-main" *ngIf="canAccessMainFeatures()">
+  <main class="app-main" *ngIf="user$ | async">
     <div class="converter-section" *ngIf="!showResults">
-      <app-file-upload 
-        [isAnonymousMode]="isAnonymousMode" 
-        (textExtracted)="onTextExtracted($event)">
+      <app-file-upload (textExtracted)="onTextExtracted($event)">
       </app-file-upload>
     </div>
 
@@ -107,29 +102,11 @@
     </div>
   </main>
 
-  <div class="login-prompt" *ngIf="!canAccessMainFeatures()">
+  <div class="login-prompt" *ngIf="!(user$ | async)">
     <div class="prompt-content">
-      <h2>🔐 Get Started</h2>
-      <p>Choose how you'd like to use the File to Calendar Converter</p>
-      
-      <!-- Primary option: Sign in with Google -->
-      <div class="auth-option primary">
-        <h3>🔐 Full Experience</h3>
-        <p>Sign in with Google for cloud processing and enhanced features</p>
-        <app-auth mode="login"></app-auth>
-      </div>
-      
-      <!-- Secondary option: Try without signing in -->
-      <div class="auth-option secondary">
-        <h3>🌟 Try It Out</h3>
-        <p>Test the converter with local processing (no account required)</p>
-        <button class="try-anonymous-btn" (click)="enableAnonymousMode()">
-          🚀 Try without signing in
-        </button>
-        <div class="anonymous-features">
-          <small>✓ Local OCR processing  ✓ PDF text extraction  ✓ Calendar generation</small>
-        </div>
-      </div>
+      <h2>🔐 Authentication Required</h2>
+      <p>Please sign in with Google to use the file converter</p>
+      <app-auth mode="login"></app-auth>
     </div>
   </div>
 </div>

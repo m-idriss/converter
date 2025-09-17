@@ -42,8 +42,9 @@ export class FileProcessor {
   private async loadPdfjs(): Promise<any> {
     if (!this.pdfjsPromise) {
       this.pdfjsPromise = import('pdfjs-dist').then(pdfjsLib => {
-        // Configure worker when library is loaded
-        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@5.4.149/build/pdf.worker.min.js`;
+        // Configure worker when library is loaded - use local worker file
+        const pdfjsVersion = '5.4.149';
+        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsVersion}/pdf.worker.min.js`;
         return pdfjsLib;
       });
     }
@@ -76,27 +77,67 @@ export class FileProcessor {
    */
   private async processPdfWithPdfjs(file: File): Promise<ExtractedText> {
     try {
+      console.log('Loading PDF.js for file:', file.name, 'Type:', file.type, 'Size:', file.size);
       const pdfjsLib = await this.loadPdfjs();
       
       const arrayBuffer = await file.arrayBuffer();
-      const loadingTask = pdfjsLib.getDocument({data: arrayBuffer});
+      console.log('PDF ArrayBuffer loaded, size:', arrayBuffer.byteLength);
+      
+      const loadingTask = pdfjsLib.getDocument({
+        data: arrayBuffer,
+        // Add some configuration options for better compatibility
+        verbosity: pdfjsLib.VerbosityLevel.ERRORS,
+        cMapPacked: true
+      });
+      
       const pdf = await loadingTask.promise;
+      console.log('PDF loaded successfully, pages:', pdf.numPages);
       
       let fullText = '';
       for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-        const page = await pdf.getPage(pageNum);
-        const textContent = await page.getTextContent();
-        const pageText = textContent.items.map((item: any) => item.str).join(' ');
-        fullText += pageText + '\n';
+        try {
+          const page = await pdf.getPage(pageNum);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items
+            .map((item: any) => item.str)
+            .filter((str: string) => str.trim().length > 0)
+            .join(' ');
+          if (pageText.trim()) {
+            fullText += pageText + '\n';
+          }
+          console.log(`Page ${pageNum} processed, text length:`, pageText.length);
+        } catch (pageError) {
+          console.warn(`Error processing page ${pageNum}:`, pageError);
+          // Continue with other pages
+        }
+      }
+
+      const trimmedText = fullText.trim();
+      console.log('PDF processing complete, total text length:', trimmedText.length);
+      
+      if (!trimmedText) {
+        throw new Error('No text content found in the PDF file. The PDF might be image-based or encrypted.');
       }
 
       return {
-        content: fullText.trim(),
+        content: trimmedText,
         confidence: 0.95 // PDF text extraction is highly reliable
       };
     } catch (error) {
       console.error('Error processing PDF:', error);
-      throw new Error('Failed to process PDF file');
+      
+      // Provide more specific error messages
+      if (error instanceof Error) {
+        if (error.message.includes('Invalid PDF')) {
+          throw new Error('Invalid PDF file. Please ensure the file is not corrupted.');
+        } else if (error.message.includes('Password')) {
+          throw new Error('Password-protected PDFs are not supported.');
+        } else if (error.message.includes('No text content')) {
+          throw error; // Re-throw our custom message
+        }
+      }
+      
+      throw new Error('Failed to process PDF file. The file might be corrupted or use an unsupported format.');
     }
   }
 
@@ -145,15 +186,10 @@ export class FileProcessor {
     }
   }
 
-  async processFile(file: File, forceLocal: boolean = false): Promise<ExtractedText> {
+  async processFile(file: File): Promise<ExtractedText> {
     const fileType = file.type;
 
     if (fileType.startsWith('image/')) {
-      // In anonymous mode or if forced, use local processing only
-      if (forceLocal) {
-        return await this.processImageWithTesseract(file);
-      }
-      
       // Try Firebase first (faster), fallback to local Tesseract
       try {
         return await this.processFileWithFirebase(file);
