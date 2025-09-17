@@ -7,7 +7,6 @@ import { Auth as AuthService } from './services/auth';
 import { Calendar, CalendarEvent } from './services/calendar';
 import { ExtractedText } from './services/file-processor';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',

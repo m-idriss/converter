@@ -92,7 +92,6 @@ export class FileProcessor {
    */
   async processFile(file: File): Promise<ExtractedText> {
     try {
-      console.log('Converting file to image for server processing:', file.name);
       const imageBase64 = await this.convertFileToImage(file);
 
       const body = {
@@ -101,7 +100,6 @@ export class FileProcessor {
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       };
 
-      console.log('Sending image to server for text extraction');
       const response = await firstValueFrom(
         this.http.post(this.functionUrl, body, { responseType: 'text' }),
       );

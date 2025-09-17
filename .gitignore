@@ -41,6 +41,13 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# Temporary files
+*.tmp
+*.bak
+*.backup
+*.swp
+*~
+
 src/environments/environment.local.ts
 
 functions/.env.local
