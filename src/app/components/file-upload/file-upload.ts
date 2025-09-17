@@ -6,11 +6,11 @@ import { FileProcessor, ExtractedText } from '../../services/file-processor';
   selector: 'app-file-upload',
   imports: [CommonModule],
   templateUrl: './file-upload.html',
-  styleUrl: './file-upload.scss'
+  styleUrl: './file-upload.scss',
 })
 export class FileUpload {
   @Output() textExtracted = new EventEmitter<ExtractedText>();
-  
+
   isProcessing = false;
   errorMessage = '';
   dragOver = false;
@@ -30,7 +30,7 @@ export class FileUpload {
   onDrop(event: DragEvent): void {
     event.preventDefault();
     this.dragOver = false;
-    
+
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       this.processFile(files[0]);
@@ -52,7 +52,8 @@ export class FileUpload {
       const extractedText = await this.fileProcessor.processFile(file);
       this.textExtracted.emit(extractedText);
     } catch (error) {
-      this.errorMessage = error instanceof Error ? error.message : 'An error occurred while processing the file.';
+      this.errorMessage =
+        error instanceof Error ? error.message : 'An error occurred while processing the file.';
     } finally {
       this.isProcessing = false;
     }

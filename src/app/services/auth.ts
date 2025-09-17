@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class Auth {
   private firebasePromise: Promise<any> | null = null;
@@ -25,19 +25,17 @@ export class Auth {
     if (this.authInitialized) return;
 
     if (!this.firebasePromise) {
-      this.firebasePromise = Promise.all([
-        import('firebase/app'),
-        import('firebase/auth')
-      ]);
+      this.firebasePromise = Promise.all([import('firebase/app'), import('firebase/auth')]);
     }
 
     try {
-      const [{ initializeApp }, { getAuth, GoogleAuthProvider, onAuthStateChanged }] = await this.firebasePromise;
-      
+      const [{ initializeApp }, { getAuth, GoogleAuthProvider, onAuthStateChanged }] =
+        await this.firebasePromise;
+
       this.app = initializeApp(environment.firebase);
       this.auth = getAuth(this.app);
       this.provider = new GoogleAuthProvider();
-      
+
       onAuthStateChanged(this.auth, (user: any) => {
         this.userSubject.next(user);
       });

@@ -8,14 +8,14 @@ export interface ExtractedText {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FileProcessor {
   /**
    * URL of the deployed Firebase function
    * (set in environment.ts for flexibility)
    */
-  readonly functionUrl = "https://api.3dime.com";
+  readonly functionUrl = 'https://api.3dime.com';
   private http = inject(HttpClient);
 
   constructor() {
@@ -29,7 +29,7 @@ export class FileProcessor {
     return new Promise((resolve, reject) => {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      
+
       if (file.type === 'application/pdf') {
         // For PDFs, we'll render the first page to canvas
         this.renderPdfToCanvas(file, canvas, ctx!)
@@ -59,27 +59,31 @@ export class FileProcessor {
   /**
    * Render PDF to canvas (simplified version)
    */
-  private async renderPdfToCanvas(file: File, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): Promise<void> {
+  private async renderPdfToCanvas(
+    file: File,
+    canvas: HTMLCanvasElement,
+    ctx: CanvasRenderingContext2D,
+  ): Promise<void> {
     // Load PDF.js dynamically only for rendering to canvas
     const pdfjsLib = await import('pdfjs-dist');
     // Use the correct worker URL - the file is actually called pdf.worker.mjs in newer versions
     pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@5.4.149/build/pdf.worker.mjs`;
-    
+
     const arrayBuffer = await file.arrayBuffer();
     const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
     const pdf = await loadingTask.promise;
-    
+
     // Render only the first page
     const page = await pdf.getPage(1);
     const viewport = page.getViewport({ scale: 1.5 });
-    
+
     canvas.width = viewport.width;
     canvas.height = viewport.height;
-    
+
     await page.render({
       canvasContext: ctx,
       viewport: viewport,
-      canvas: canvas
+      canvas: canvas,
     }).promise;
   }
 
@@ -90,31 +94,31 @@ export class FileProcessor {
     try {
       console.log('Converting file to image for server processing:', file.name);
       const imageBase64 = await this.convertFileToImage(file);
-      
+
       const body = {
         imageUrls: [imageBase64],
         extraContext: `File processing: ${file.name} (${file.type})`,
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       };
 
       console.log('Sending image to server for text extraction');
       const response = await firstValueFrom(
-        this.http.post(this.functionUrl, body, { responseType: 'text' })
+        this.http.post(this.functionUrl, body, { responseType: 'text' }),
       );
 
       return {
         content: response ?? '',
-        confidence: 0.9 // Server-side processing confidence
+        confidence: 0.9, // Server-side processing confidence
       };
     } catch (error) {
       console.error('Error processing file:', error);
-      
+
       if (error instanceof Error) {
         if (error.message.includes('Unsupported file type')) {
           throw new Error('Unsupported file type. Please upload an image (JPG, PNG) or PDF file.');
         }
       }
-      
+
       throw new Error('Failed to process file. Please try again or contact support.');
     }
   }

@@ -31,7 +31,8 @@
     pointer-events: none;
   }
 
-  &:hover, &.drag-over {
+  &:hover,
+  &.drag-over {
     border-color: var(--primary-400);
     background: rgba(255, 255, 255, 0.9);
     transform: translateY(-2px);

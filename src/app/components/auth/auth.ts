@@ -8,7 +8,7 @@ import { User } from 'firebase/auth';
   selector: 'app-auth',
   imports: [CommonModule],
   templateUrl: './auth.html',
-  styleUrl: './auth.scss'
+  styleUrl: './auth.scss',
 })
 export class Auth implements OnInit {
   @Input() mode: 'header' | 'login' = 'header';
@@ -23,7 +23,7 @@ export class Auth implements OnInit {
   ngOnInit(): void {}
 
   toggleMobileMenu(): void {
-    this.isMobileMenuOpen.update(value => !value);
+    this.isMobileMenuOpen.update((value) => !value);
   }
 
   closeMobileMenu(): void {

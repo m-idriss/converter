@@ -1,5 +1,5 @@
 <div class="file-upload-container">
-  <div 
+  <div
     class="drop-zone"
     [class.drag-over]="dragOver"
     [class.processing]="isProcessing"
@@ -9,20 +9,18 @@
   >
     <div class="upload-content">
       <div class="upload-icon">📁</div>
-      
+
       <div *ngIf="!isProcessing; else processingTemplate">
         <h3>Upload Image or PDF</h3>
         <p>Drag and drop your file here, or click to browse</p>
-        <input 
-          type="file" 
-          #fileInput 
-          accept="image/*,.pdf" 
+        <input
+          type="file"
+          #fileInput
+          accept="image/*,.pdf"
           (change)="onFileSelected($event)"
           style="display: none"
-        >
-        <button class="browse-btn" (click)="fileInput.click()">
-          Browse Files
-        </button>
+        />
+        <button class="browse-btn" (click)="fileInput.click()">Browse Files</button>
       </div>
 
       <ng-template #processingTemplate>

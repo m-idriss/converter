@@ -12,8 +12,7 @@
 
   <main class="app-main" *ngIf="user$ | async">
     <div class="converter-section" *ngIf="!showResults">
-      <app-file-upload (textExtracted)="onTextExtracted($event)">
-      </app-file-upload>
+      <app-file-upload (textExtracted)="onTextExtracted($event)"> </app-file-upload>
     </div>
 
     <div class="results-section" *ngIf="showResults && extractedText">
@@ -21,19 +20,22 @@
         <div class="events-header">
           <h2>📅 Calendar Events ({{ parsedEvents.length }})</h2>
         </div>
-        
+
         <div class="events-list iphone-style" #eventsList>
-          <div class="event-item" *ngFor="let event of parsedEvents; trackBy: trackEvent; let i = index" 
-               [attr.data-color-index]="i % 3">
+          <div
+            class="event-item"
+            *ngFor="let event of parsedEvents; trackBy: trackEvent; let i = index"
+            [attr.data-color-index]="i % 3"
+          >
             <!-- Date card on the left -->
             <div class="date-card">
               <div class="day-abbreviation">{{ getDayAbbreviation(event.startDate) }}</div>
-              <div class="day-number">{{ event.startDate | date:'d' }}</div>
+              <div class="day-number">{{ event.startDate | date: 'd' }}</div>
             </div>
-            
+
             <!-- Colored accent border -->
             <div class="accent-border" [attr.data-color]="getEventColor(i)"></div>
-            
+
             <!-- Event content -->
             <div class="event-content">
               <div class="event-main">
@@ -42,16 +44,22 @@
                   <p class="event-location" *ngIf="event.location">
                     <span class="location-icon">📍</span>{{ event.location }}
                   </p>
-                  <p class="event-description" *ngIf="event.description && event.description !== event.title">
+                  <p
+                    class="event-description"
+                    *ngIf="event.description && event.description !== event.title"
+                  >
                     {{ event.description }}
                   </p>
                 </div>
-                
+
                 <div class="event-time">
-                  <div class="time-start">{{ event.startDate | date:'HH:mm' }}</div>
-                  <div class="time-end">{{ event.endDate | date:'HH:mm' }}</div>
-                  <div class="confidence-badge" *ngIf="event.confidence" 
-                       [class]="getConfidenceClass(event.confidence)">
+                  <div class="time-start">{{ event.startDate | date: 'HH:mm' }}</div>
+                  <div class="time-end">{{ event.endDate | date: 'HH:mm' }}</div>
+                  <div
+                    class="confidence-badge"
+                    *ngIf="event.confidence"
+                    [class]="getConfidenceClass(event.confidence)"
+                  >
                     {{ (event.confidence * 100).toFixed(0) }}%
                   </div>
                 </div>
@@ -65,19 +73,28 @@
             class="download-btn"
             (click)="downloadCalendar()"
             [disabled]="isDownloading"
-            [class.downloading]="isDownloading">
+            [class.downloading]="isDownloading"
+          >
             <span *ngIf="!isDownloading">📥 Download Calendar (.ics)</span>
             <span *ngIf="isDownloading">⏳ Preparing Download...</span>
           </button>
-          <button class="reset-btn" (click)="resetConverter()">
-            🔄 Convert Another File
-          </button>
+          <button class="reset-btn" (click)="resetConverter()">🔄 Convert Another File</button>
         </div>
 
-        <div class="download-status" *ngIf="downloadStatus" [class]="'status-' + downloadStatus.type">
+        <div
+          class="download-status"
+          *ngIf="downloadStatus"
+          [class]="'status-' + downloadStatus.type"
+        >
           <div class="status-message">
             <span class="status-icon">
-              {{ downloadStatus.type === 'success' ? '✅' : downloadStatus.type === 'error' ? '❌' : 'ℹ️' }}
+              {{
+                downloadStatus.type === 'success'
+                  ? '✅'
+                  : downloadStatus.type === 'error'
+                    ? '❌'
+                    : 'ℹ️'
+              }}
             </span>
             {{ downloadStatus.message }}
           </div>
@@ -86,7 +103,10 @@
 
       <div class="no-events-card" *ngIf="parsedEvents.length === 0">
         <h2>⚠️ No Events Found</h2>
-        <p>We couldn't detect any calendar events in the extracted text. Try uploading a file with clear date/time information.</p>
+        <p>
+          We couldn't detect any calendar events in the extracted text. Try uploading a file with
+          clear date/time information.
+        </p>
         <div class="extraction-info" *ngIf="extractedText.confidence">
           <p class="confidence-info">
             <span class="confidence-label">Text Extraction Confidence:</span>
@@ -95,9 +115,7 @@
             </span>
           </p>
         </div>
-        <button class="reset-btn" (click)="resetConverter()">
-          🔄 Try Another File
-        </button>
+        <button class="reset-btn" (click)="resetConverter()">🔄 Try Another File</button>
       </div>
     </div>
   </main>

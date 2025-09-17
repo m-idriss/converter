@@ -3,6 +3,7 @@
 An Angular 2025+ application that intelligently converts images and PDFs into ICS calendar files using advanced OCR technology and smart event detection.
 
 ## ✨ Features
+
 - **📤 File Upload**: Drag-and-drop interface for images (JPG, PNG) and PDF files
 - **🔍 Text Extraction**: Advanced OCR with Tesseract.js and PDF.js processing
 - **🧠 Smart Parsing**: Automatic detection of dates, times, and event information
@@ -16,6 +17,7 @@ An Angular 2025+ application that intelligently converts images and PDFs into IC
 For detailed development plans, feature priorities, and future enhancements, see our [**Product Roadmap**](./ROADMAP.md).
 
 **Current Focus Areas:**
+
 - 🚀 Bundle size optimization (currently 847KB → target <500KB)
 - ♿ Accessibility improvements (WCAG 2.1 AA compliance)
 - 📄 Additional file format support (DOCX, TXT, Excel)
@@ -26,6 +28,7 @@ For detailed development plans, feature priorities, and future enhancements, see
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.2.
 
 ### Prerequisites
+
 - Node.js 20+ and npm
 - Chrome/Chromium browser for testing
 
@@ -59,11 +62,13 @@ ng generate --help
 ### Building
 
 Build for development:
+
 ```bash
 npm run build
 ```
 
 Build for production:
+
 ```bash
 npm run build -- --configuration=production
 ```
@@ -88,7 +93,7 @@ For end-to-end (e2e) testing:
 ng e2e
 ```
 
-*Note: Angular CLI does not include an e2e framework by default. Choose one that suits your needs.*
+_Note: Angular CLI does not include an e2e framework by default. Choose one that suits your needs._
 
 ## 📚 Documentation & Resources
 
