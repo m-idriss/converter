@@ -12,7 +12,8 @@
 
   <main class="app-main" *ngIf="user$ | async">
     <div class="converter-section" *ngIf="!showResults">
-      <app-file-upload (textExtracted)="onTextExtracted($event)"></app-file-upload>
+      <app-file-upload (textExtracted)="onTextExtracted($event)">
+      </app-file-upload>
     </div>
 
     <div class="results-section" *ngIf="showResults && extractedText">
@@ -49,6 +50,10 @@
                 <div class="event-time">
                   <div class="time-start">{{ event.startDate | date:'HH:mm' }}</div>
                   <div class="time-end">{{ event.endDate | date:'HH:mm' }}</div>
+                  <div class="confidence-badge" *ngIf="event.confidence" 
+                       [class]="getConfidenceClass(event.confidence)">
+                    {{ (event.confidence * 100).toFixed(0) }}%
+                  </div>
                 </div>
               </div>
             </div>
@@ -101,7 +106,6 @@
     <div class="prompt-content">
       <h2>🔐 Authentication Required</h2>
       <p>Please sign in with Google to use the file converter</p>
-      <!-- Move sign-in component here when user is not authenticated -->
       <app-auth mode="login"></app-auth>
     </div>
   </div>

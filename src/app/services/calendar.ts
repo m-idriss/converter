@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
-import { parse, parseISO, isValid, addHours } from 'date-fns';
+import { parse, parseISO, isValid, addHours, addDays, startOfDay } from 'date-fns';
 
 export interface CalendarEvent {
   title: string;
@@ -10,6 +10,7 @@ export interface CalendarEvent {
   location?: string;
   allDay?: boolean;
   timezone?: string;
+  confidence?: number; // 0-1 scale for parsing confidence
 }
 
 @Injectable({
@@ -18,6 +19,26 @@ export interface CalendarEvent {
 export class Calendar {
 
   constructor() { }
+
+  /**
+   * Simple relative date parsing for common expressions
+   */
+  private parseSimpleRelativeDate(text: string): Date | null {
+    const lowerText = text.toLowerCase().trim();
+    const now = new Date();
+    
+    if (/\b(today|tonight)\b/.test(lowerText)) {
+      return startOfDay(now); 
+    }
+    if (/\btomorrow\b/.test(lowerText)) {
+      return startOfDay(addDays(now, 1));
+    }
+    if (/\bnext\s+friday\b/.test(lowerText)) {
+      return startOfDay(addDays(now, (5 - now.getDay() + 7) % 7 || 7));
+    }
+    
+    return null;
+  }
 
   parseTextForEvents(text: string): CalendarEvent[] {
     const events: CalendarEvent[] = [];
@@ -54,23 +75,27 @@ export class Calendar {
       return this.parseICalendarFormat(lines);
     }
 
-    // Regex patterns for natural text with dates
+    // Enhanced regex patterns for natural text with dates
     const dateTimePatterns = [
       {
         regex: /^(.+?)\s+(?:on\s+)?(\w+\s+\d{1,2},?\s+\d{4})(?:\s+at\s+)?(\d{1,2}:\d{2}\s*(?:AM|PM)?)/i,
-        titleGroup: 1, dateGroup: 2, timeGroup: 3
+        titleGroup: 1, dateGroup: 2, timeGroup: 3, confidence: 0.9
       }, // ex: "Meeting on January 15, 2025 at 2:00 PM"
       {
         regex: /^(.+?)[:,]\s*(\d{1,2}\/\d{1,2}\/\d{4})\s+(\d{1,2}:\d{2})/i,
-        titleGroup: 1, dateGroup: 2, timeGroup: 3
+        titleGroup: 1, dateGroup: 2, timeGroup: 3, confidence: 0.85
       }, // ex: "Appointment: 01/15/2025 14:00"
       {
         regex: /^(.+?)\s+(\d{4}-\d{2}-\d{2})\s+(\d{1,2}:\d{2}\s*(?:AM|PM)?)/i,
-        titleGroup: 1, dateGroup: 2, timeGroup: 3
+        titleGroup: 1, dateGroup: 2, timeGroup: 3, confidence: 0.9
       }, // ex: "Team Meeting 2025-01-15 2:00 PM"
       {
+        regex: /^(.+?)\s+(tomorrow|today|tonight|next\s+friday)(?:\s+at\s+(\d{1,2}:\d{2}\s*(?:AM|PM)?))?/i,
+        titleGroup: 1, dateGroup: 2, timeGroup: 3, confidence: 0.8
+      }, // ex: "Meeting tomorrow at 2 PM"
+      {
         regex: /(\d{8}T\d{6}Z?)/i,
-        titleGroup: null, dateGroup: 1, timeGroup: null
+        titleGroup: null, dateGroup: 1, timeGroup: null, confidence: 0.95
       } // ex: 20231001T090000Z (standalone timestamp)
     ];
 
@@ -83,16 +108,41 @@ export class Calendar {
           matched = true;
 
           const titleText = pattern.titleGroup ? match[pattern.titleGroup] : '';
-          const dateStr = match[pattern.dateGroup];
+          const dateStr = match[pattern.dateGroup] || '';
           const timeStr = pattern.timeGroup ? match[pattern.timeGroup] || '' : '';
+          let confidence = pattern.confidence || 0.7;
 
           let eventDate: Date | null = null;
 
-          if (/^\d{8}T\d{6}Z?$/.test(dateStr)) {
+          // Handle relative dates first
+          if (dateStr && /\b(tomorrow|today|tonight|next\s+friday)\b/i.test(dateStr)) {
+            eventDate = this.parseSimpleRelativeDate(dateStr);
+            if (eventDate && timeStr) {
+              // Apply time if provided for relative dates
+              const timeMatch = timeStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
+              if (timeMatch) {
+                let hours = parseInt(timeMatch[1]);
+                const minutes = parseInt(timeMatch[2]);
+                const ampm = timeMatch[3]?.toUpperCase();
+                
+                if (ampm === 'PM' && hours !== 12) hours += 12;
+                if (ampm === 'AM' && hours === 12) hours = 0;
+                
+                eventDate.setHours(hours, minutes, 0, 0);
+              } else {
+                eventDate.setHours(9, 0, 0, 0); // Default 9 AM
+                confidence *= 0.8;
+              }
+            } else if (eventDate) {
+              eventDate.setHours(9, 0, 0, 0); // Default 9 AM
+              confidence *= 0.8;
+            }
+          } else if (/^\d{8}T\d{6}Z?$/.test(dateStr)) {
             // Parse ISO-like format: 20231001T090000Z
             const isoString = dateStr.replace(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z?$/, '$1-$2-$3T$4:$5:$6Z');
             eventDate = parseISO(isoString);
-          } else {
+            confidence = 0.95;
+          } else if (dateStr) {
             // Try various date formats with native parsing and date-fns
             const dateTimeCombined = `${dateStr} ${timeStr}`.trim();
             
@@ -136,7 +186,8 @@ export class Calendar {
               startDate: eventDate,
               endDate: addHours(eventDate, 1),
               allDay: false,
-              timezone: 'Europe/Paris'
+              timezone: 'Europe/Paris',
+              confidence
             });
           }
 
@@ -161,7 +212,8 @@ export class Calendar {
         startDate: now,
         endDate: new Date(now.getTime() + 60 * 60 * 1000),
         allDay: false,
-        timezone: 'Europe/Paris'
+        timezone: 'Europe/Paris',
+        confidence: 0.3 // Low confidence for fallback events
       }];
     }
 

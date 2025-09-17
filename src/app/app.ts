@@ -8,7 +8,6 @@ import { Calendar, CalendarEvent } from './services/calendar';
 import { ExtractedText } from './services/file-processor';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { User } from 'firebase/auth';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +17,7 @@ import { User } from 'firebase/auth';
 })
 export class App implements OnInit, OnDestroy {
   protected readonly title = signal('converter-app');
-  user$: Observable<User | null>;
+  user$: Observable<any | null>;
   extractedText: ExtractedText | null = null;
   parsedEvents: CalendarEvent[] = [];
   showResults = false;
