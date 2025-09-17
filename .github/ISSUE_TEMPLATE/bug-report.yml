@@ -1,0 +1,159 @@
+name: 🐛 Bug Report
+description: Report a bug or issue with the File to Calendar Converter
+title: "[Bug]: "
+labels: ["bug", "triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a bug! Please provide as much detail as possible to help us reproduce and fix the issue.
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity Level
+      description: How severely does this bug impact the application?
+      options:
+        - "Critical: Application crashes or data loss"
+        - "High: Major feature not working, blocking user workflow"
+        - "Medium: Feature works but with significant issues"
+        - "Low: Minor issue or cosmetic problem"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Bug Category
+      description: Which area of the application is affected?
+      options:
+        - "File Upload & Processing"
+        - "OCR / Text Extraction"
+        - "PDF Processing"
+        - "Calendar Generation (ICS)"
+        - "Authentication (Google Sign-in)"
+        - "User Interface / Design"
+        - "Performance"
+        - "Accessibility"
+        - "Mobile Responsiveness"
+        - "Firebase Integration"
+        - "Build / Deployment"
+        - "Other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-behavior
+    attributes:
+      label: Current Behavior
+      description: Describe what is currently happening (the bug)
+      placeholder: "When I do X, Y happens instead of Z"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: Describe what should happen instead
+      placeholder: "I expected Z to happen"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Steps to Reproduce
+      description: Provide step-by-step instructions to reproduce the bug
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Upload file '...'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Information
+      description: Please provide details about your environment
+      placeholder: |
+        - Browser: Chrome 120.0 / Firefox 121.0 / Safari 17.0
+        - OS: Windows 11 / macOS 14 / Ubuntu 22.04
+        - Device: Desktop / Mobile
+        - Screen size: 1920x1080 / Mobile viewport
+        - Authentication status: Signed in / Anonymous
+    validations:
+      required: true
+
+  - type: textarea
+    id: file-details
+    attributes:
+      label: File Details (if applicable)
+      description: If the bug involves file processing, provide file information
+      placeholder: |
+        - File type: PDF / JPG / PNG
+        - File size: ~2MB
+        - File characteristics: Scanned document / Photo / Screenshot
+        - Sample file (if shareable): [attach or describe]
+
+  - type: textarea
+    id: console-errors
+    attributes:
+      label: Console Errors
+      description: Any errors in the browser console? (Press F12 → Console tab)
+      render: text
+      placeholder: |
+        Paste any error messages from the browser console here
+
+  - type: textarea
+    id: network-errors
+    attributes:
+      label: Network Errors
+      description: Any failed network requests? (Press F12 → Network tab)
+      render: text
+      placeholder: |
+        If you see failed requests, paste the details here
+
+  - type: checkboxes
+    id: impact-areas
+    attributes:
+      label: Impact Areas
+      description: Which features or user flows are affected? (Select all that apply)
+      options:
+        - label: "New user onboarding"
+        - label: "File upload process"
+        - label: "Text extraction accuracy"
+        - label: "Calendar event generation"
+        - label: "File download"
+        - label: "Mobile usage"
+        - label: "Accessibility features"
+
+  - type: dropdown
+    id: frequency
+    attributes:
+      label: Frequency
+      description: How often does this bug occur?
+      options:
+        - "Always (100% of the time)"
+        - "Often (more than 50% of the time)"
+        - "Sometimes (less than 50% of the time)"
+        - "Rarely (hard to reproduce)"
+        - "Once (happened only once)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Workaround
+      description: Have you found any way to work around this issue?
+      placeholder: "I can avoid this by..."
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here (screenshots, videos, etc.)

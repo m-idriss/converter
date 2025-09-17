@@ -1,0 +1,185 @@
+name: ♿ Accessibility Issue
+description: Report accessibility barriers or WCAG compliance issues (P1 Priority)
+title: "[Accessibility]: "
+labels: ["accessibility", "P1", "WCAG", "a11y"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Accessibility is a **P1 priority** in our roadmap! We're committed to WCAG 2.1 AA compliance.
+        
+        **Accessibility Goals:**
+        - WCAG 2.1 AA compliance score: 100%
+        - Proper ARIA labels and roles
+        - Full keyboard navigation support
+        - Screen reader compatibility
+        - Color contrast compliance
+
+  - type: dropdown
+    id: wcag-level
+    attributes:
+      label: WCAG Compliance Level
+      description: Which WCAG level does this issue affect?
+      options:
+        - "WCAG 2.1 Level A (Basic)"
+        - "WCAG 2.1 Level AA (Standard - Our Target)"
+        - "WCAG 2.1 Level AAA (Enhanced)"
+        - "Not sure / General accessibility issue"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: wcag-principle
+    attributes:
+      label: WCAG Principle
+      description: Which WCAG principle does this relate to?
+      options:
+        - "Perceivable (users must be able to perceive information)"
+        - "Operable (interface components must be operable)"
+        - "Understandable (information and UI operation must be understandable)"
+        - "Robust (content must be robust enough for various assistive technologies)"
+        - "Not sure / Multiple principles"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: accessibility-category
+    attributes:
+      label: Accessibility Category
+      description: What type of accessibility issue are you reporting?
+      options:
+        - "Screen Reader Compatibility"
+        - "Keyboard Navigation"
+        - "Color Contrast / Visual Design"
+        - "ARIA Labels / Roles"
+        - "Focus Management"
+        - "Alternative Text / Images"
+        - "Form Labels / Instructions"
+        - "Error Messages / Feedback"
+        - "Semantic HTML Structure"
+        - "Mobile Accessibility"
+        - "Cognitive Accessibility"
+        - "Motor Accessibility"
+    validations:
+      required: true
+
+  - type: textarea
+    id: accessibility-barrier
+    attributes:
+      label: Accessibility Barrier
+      description: Describe the specific accessibility barrier or issue
+      placeholder: |
+        Example: "File upload area has no ARIA label for screen readers"
+        Example: "Processing status is only communicated visually"
+        Example: "Cannot navigate through events using keyboard only"
+    validations:
+      required: true
+
+  - type: textarea
+    id: user-impact
+    attributes:
+      label: User Impact
+      description: How does this affect users with disabilities?
+      placeholder: |
+        - Screen reader users cannot understand file upload status
+        - Keyboard-only users cannot access the download button
+        - Users with low vision cannot read text due to poor contrast
+        - Users with motor disabilities cannot use drag-and-drop
+    validations:
+      required: true
+
+  - type: textarea
+    id: assistive-technology
+    attributes:
+      label: Assistive Technology Details
+      description: What assistive technologies were you using when you encountered this issue?
+      placeholder: |
+        - Screen Reader: NVDA 2023.3 / JAWS 2024 / VoiceOver macOS
+        - Browser: Chrome 120 + screen reader / Safari + VoiceOver
+        - Input method: Keyboard only / Switch control / Voice control
+        - Zoom level: 200% / High contrast mode
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this accessibility issue?
+      placeholder: |
+        1. Enable screen reader (NVDA/JAWS/VoiceOver)
+        2. Navigate to the file upload area using tab key
+        3. Try to understand the current state
+        4. Notice lack of proper announcement
+        5. Upload a file using keyboard only
+        6. Observe accessibility barrier at step X
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Accessible Behavior
+      description: What should happen to make this accessible?
+      placeholder: |
+        - Screen reader should announce "File upload area, drag and drop files here or click to browse"
+        - Processing status should be announced to screen readers
+        - All interactive elements should be keyboard accessible
+        - Focus should be managed properly throughout the workflow
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: roadmap-items
+    attributes:
+      label: Related Roadmap Items
+      description: Which accessibility roadmap items does this relate to?
+      options:
+        - label: "WCAG 2.1 AA Compliance (High Impact P1)"
+        - label: "Proper ARIA labels and roles"
+        - label: "Keyboard navigation implementation"
+        - label: "Color contrast compliance"
+        - label: "Screen reader announcements for file processing states"
+
+  - type: dropdown
+    id: testing-tools
+    attributes:
+      label: Accessibility Testing Tools Used
+      description: What tools did you use to identify this issue?
+      multiple: true
+      options:
+        - "Manual screen reader testing"
+        - "Keyboard-only navigation testing"
+        - "axe DevTools browser extension"
+        - "Lighthouse accessibility audit"
+        - "WAVE (Web Accessibility Evaluation Tool)"
+        - "Colour Contrast Analyser"
+        - "Manual visual inspection"
+        - "Other automated tool"
+
+  - type: textarea
+    id: suggested-solution
+    attributes:
+      label: Suggested Solution
+      description: Do you have specific suggestions for fixing this accessibility issue?
+      placeholder: |
+        - Add aria-label="Upload files by dragging and dropping or clicking to browse"
+        - Use aria-live region for processing status announcements
+        - Implement focus trap during file processing
+        - Add skip link navigation
+        - Use semantic HTML elements instead of divs
+
+  - type: textarea
+    id: wcag-reference
+    attributes:
+      label: WCAG Reference
+      description: If known, which specific WCAG success criteria does this relate to?
+      placeholder: |
+        Example: "1.3.1 Info and Relationships (Level A)"
+        Example: "2.1.1 Keyboard (Level A)"
+        Example: "1.4.3 Contrast (Minimum) (Level AA)"
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other context about this accessibility issue (screenshots, videos, audit reports)
