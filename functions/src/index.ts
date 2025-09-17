@@ -1,43 +1,63 @@
 import * as functions from "firebase-functions";
-import {setGlobalOptions} from "firebase-functions";
-const cors = require("cors")({origin: true});
-const { defineString } = require('firebase-functions/params');
+import { setGlobalOptions } from "firebase-functions";
+import { defineString } from "firebase-functions/params";
+import * as admin from "firebase-admin";
+import OpenAI from "openai";
+import corsLib from "cors";
+import dotenv from "dotenv";
 
-const admin = require('firebase-admin');
-const OpenAI = require('openai');
-const baseTextMessage = defineString('BASE_TEXT_MESSAGE');
-const prompt = defineString('PROMPT');
+const cors = corsLib({ origin: true });
 
-require('dotenv').config();
+// Load .env.local in local development
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config({ path: ".env.local" });
+}
 
+// Define Firebase function parameters
+const OPENAI_API_KEY = defineString("OPENAI_API_KEY");
+const BASE_TEXT_MESSAGE = defineString("BASE_TEXT_MESSAGE");
+const PROMPT = defineString("PROMPT");
+
+// Set global options for all functions
 setGlobalOptions({ maxInstances: 10 });
 
+// Initialize Firebase Admin SDK
 admin.initializeApp();
 
-if (!process.env.OPENAI_API_KEY) {
+// Determine OpenAI API key: use local env or Firebase parameter
+const openaiKey =
+  process.env.OPENAI_API_KEY || OPENAI_API_KEY.value();
+
+if (!openaiKey) {
   throw new Error(
-    "OpenAI API key is not set. Please set it using `firebase functions:config:set openai.key"
+    "OpenAI API key is not set. Configure it via `.env.local` (local) or Firebase Functions Parameters (prod)."
   );
 }
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+// Initialize OpenAI client
+const openai = new OpenAI({ apiKey: openaiKey });
 
+// Main HTTPS function
 export const helloWorld = functions.https.onRequest(async (req, res) => {
   cors(req, res, async () => {
     try {
       const { imageUrls, extraContext, timeZone } = req.body;
 
+      // Validate input
       if (!imageUrls || !Array.isArray(imageUrls)) {
-        res.status(400).send({ error: 'No images provided' });
+        res.status(400).send({ error: "No images provided" });
         return;
       }
 
-      console.log("🚀 Function updated at", new Date().toISOString());
+      console.log("🚀 Function invoked at", new Date().toISOString());
 
-      const content: any[] = [];
-      let baseText = baseTextMessage.value().replace(/\$\{TIME_ZONE\}/g, timeZone);
+      // Prepare the base text message, replacing placeholders
+      let baseText = BASE_TEXT_MESSAGE.value().replace(
+        /\$\{TIME_ZONE\}/g,
+        timeZone || ""
+      );
 
-      const currentDate = new Date().toISOString().split('T')[0];
+      const currentDate = new Date().toISOString().split("T")[0];
       baseText = baseText.replace(/\$\{CURRENT_DATE\}/g, currentDate);
 
       if (extraContext) {
@@ -49,44 +69,38 @@ export const helloWorld = functions.https.onRequest(async (req, res) => {
 If no year is visible, assume all events happen in ${currentYear}.
 Return structured json with list of events. Be consistent with all events.`;
 
-      content.push({ type: 'text', text: baseText });
+      // Build content array including text and images
+      const content: any[] = [{ type: "text", text: baseText }];
 
       for (const img of imageUrls) {
         if (typeof img === "string" && img.startsWith("http")) {
-          content.push({
-            type: "image_url",
-            image_url: {url: img},
-          });
+          content.push({ type: "image_url", image_url: { url: img } });
         } else {
           content.push({
             type: "image_url",
-            image_url: {url: `data:image/jpeg;base64,${img}`},
+            image_url: { url: `data:image/jpeg;base64,${img}` },
           });
         }
       }
 
+      // Call OpenAI API
       const completion = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+        model: "gpt-4o-mini",
         messages: [
-          {
-            role: 'system',
-            content: prompt,
-          },
-          {
-            role: 'user',
-            content: content,
-          },
+          { role: "system", content: PROMPT.value() },
+          { role: "user", content: content },
         ],
         temperature: 0.2,
         max_tokens: 4096,
       });
 
       const icsContent = completion.choices[0].message?.content?.trim();
-      res.status(200).set('Content-Type', 'application/json').send(icsContent);
+
+      // Return JSON result
+      res.status(200).set("Content-Type", "application/json").send(icsContent);
     } catch (err: any) {
       console.error(err);
-      res.status(500).send({ error: err.message || 'Failed to convert images' });
+      res.status(500).send({ error: err.message || "Failed to convert images" });
     }
-
   });
 });
