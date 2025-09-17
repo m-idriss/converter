@@ -55,6 +55,10 @@
                 <div class="event-time">
                   <div class="time-start">{{ event.startDate | date:'HH:mm' }}</div>
                   <div class="time-end">{{ event.endDate | date:'HH:mm' }}</div>
+                  <div class="confidence-badge" *ngIf="event.confidence" 
+                       [class]="getConfidenceClass(event.confidence)">
+                    {{ (event.confidence * 100).toFixed(0) }}%
+                  </div>
                 </div>
               </div>
             </div>
