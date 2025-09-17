@@ -1,0 +1,142 @@
+name: ⚡ Performance Issue
+description: Report performance problems or optimization opportunities (P1 Priority)
+title: "[Performance]: "
+labels: ["performance", "P1", "optimization"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Performance is a **P1 priority** in our roadmap! Help us identify bottlenecks and optimization opportunities.
+        
+        **Current Performance Targets:**
+        - Bundle Size: < 500KB (currently 847KB)
+        - First Contentful Paint: < 1.5s
+        - Build Time: < 30 seconds
+        - Core Web Vitals: Green scores
+
+  - type: dropdown
+    id: performance-category
+    attributes:
+      label: Performance Category
+      description: What type of performance issue are you reporting?
+      options:
+        - "Bundle Size / Loading Performance"
+        - "Runtime Performance / Slow Processing"
+        - "Memory Usage / Memory Leaks"
+        - "Build Performance"
+        - "Core Web Vitals (LCP, FID, CLS)"
+        - "Network Performance / API Calls"
+        - "File Processing Speed (OCR/PDF)"
+        - "UI Responsiveness"
+    validations:
+      required: true
+
+  - type: textarea
+    id: performance-issue
+    attributes:
+      label: Performance Problem
+      description: Describe the specific performance issue you've encountered
+      placeholder: |
+        Example: "Bundle size is 847KB, exceeding our 500KB target by 69%"
+        Example: "OCR processing takes 30+ seconds for a simple image"
+        Example: "Page load time is 5+ seconds on 3G connection"
+    validations:
+      required: true
+
+  - type: textarea
+    id: measurements
+    attributes:
+      label: Performance Measurements
+      description: Provide specific metrics, measurements, or benchmarks
+      placeholder: |
+        - Current bundle size: 847KB
+        - Target bundle size: <500KB
+        - Load time measured: 4.2s
+        - Processing time: 25s
+        - Chrome DevTools Performance tab results
+        - Lighthouse scores: Performance: 65, Accessibility: 89
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Test Environment
+      description: Describe the environment where you measured this performance issue
+      placeholder: |
+        - Device: MacBook Pro M1 / iPhone 13 / Desktop PC
+        - Network: WiFi / 4G / 3G / Slow 3G
+        - Browser: Chrome 120 / Safari 17 / Firefox 121
+        - Memory: 8GB / 16GB available
+        - CPU: Load during test (idle / busy)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: impact-level
+    attributes:
+      label: User Impact Level
+      description: How significantly does this impact user experience?
+      options:
+        - "Critical: Blocks primary user workflows"
+        - "High: Significantly degrades user experience"
+        - "Medium: Noticeable but manageable impact"
+        - "Low: Minor impact on user experience"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Steps to Reproduce Performance Issue
+      description: How can we reproduce this performance problem?
+      placeholder: |
+        1. Open Chrome DevTools → Performance tab
+        2. Navigate to the application
+        3. Upload a 2MB PDF file
+        4. Start performance recording
+        5. Process the file
+        6. Observe slow performance during X step
+    validations:
+      required: true
+
+  - type: textarea
+    id: optimization-suggestions
+    attributes:
+      label: Optimization Suggestions
+      description: Do you have ideas for how to improve this performance issue?
+      placeholder: |
+        - Implement lazy loading for Tesseract.js (roadmap item)
+        - Use Web Workers for OCR processing
+        - Optimize bundle splitting
+        - Add service worker caching
+        - Implement progressive loading
+
+  - type: checkboxes
+    id: roadmap-alignment
+    attributes:
+      label: Roadmap Alignment
+      description: Which roadmap performance items does this relate to?
+      options:
+        - label: "Bundle Size Reduction (Critical P1 item)"
+        - label: "Performance Monitoring (Web Vitals tracking)"
+        - label: "Lazy Loading Implementation"
+        - label: "Vendor Chunk Optimization"
+        - label: "Core Web Vitals Improvement"
+
+  - type: textarea
+    id: profiling-data
+    attributes:
+      label: Profiling Data
+      description: If available, paste profiling data, flame graphs, or performance analysis
+      render: text
+      placeholder: |
+        Paste Chrome DevTools profiling data, bundle analyzer output, 
+        or performance monitoring results here
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other context about this performance issue (screenshots, videos, comparisons)

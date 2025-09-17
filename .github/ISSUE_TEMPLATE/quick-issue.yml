@@ -1,11 +1,54 @@
-name: Quick Issue
-description: Minimal issue template
-title: "[Issue]"
-labels: []
+name: 💬 Quick Issue
+description: Simple template for quick issues, questions, or general feedback
+title: "[Quick]: "
+labels: ["triage"]
+assignees: []
 body:
+  - type: markdown
+    attributes:
+      value: |
+        For more detailed issues, please use our specific templates:
+        - 🐛 **Bug Report** - for application bugs
+        - 🚀 **Feature Request** - for new features  
+        - ⚡ **Performance Issue** - for performance problems
+        - ♿ **Accessibility Issue** - for accessibility barriers
+        - 🗺️ **Roadmap Task** - for roadmap implementation tasks
+
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Issue Type
+      description: What type of issue is this?
+      options:
+        - "General Question"
+        - "Documentation Issue"
+        - "Configuration Help"
+        - "Usage Support"
+        - "Feedback / Suggestion"
+        - "Other"
+    validations:
+      required: true
+
   - type: textarea
     id: description
     attributes:
       label: "Description"
-      description: "Briefly describe the issue or request."
-      placeholder: "Describe the issue here..."
+      description: "Briefly describe the issue, question, or feedback."
+      placeholder: |
+        Please provide:
+        - What you're trying to do
+        - What's not working or unclear
+        - Any specific questions you have
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: "Additional Context"
+      description: "Any other context that might be helpful (optional)"
+      placeholder: |
+        - Environment details (if relevant)
+        - Links to documentation you've checked
+        - Screenshots (if helpful)
+        - Related issues or discussions
