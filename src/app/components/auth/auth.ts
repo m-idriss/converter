@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, Input } from '@angular/core';
+import { Component, OnInit, signal, Input, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Auth as AuthService } from '../../services/auth';
 import { Observable } from 'rxjs';
@@ -21,6 +21,24 @@ export class Auth implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  @HostListener('document:keydown.escape', ['$event'])
+  onEscapeKey(event: Event): void {
+    if (this.isMobileMenuOpen()) {
+      this.closeMobileMenu();
+      event.preventDefault();
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    const mobileAuth = target.closest('.mobile-auth');
+    
+    if (!mobileAuth && this.isMobileMenuOpen()) {
+      this.closeMobileMenu();
+    }
+  }
 
   toggleMobileMenu(): void {
     this.isMobileMenuOpen.update((value) => !value);

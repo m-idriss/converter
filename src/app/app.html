@@ -1,5 +1,8 @@
 <div class="app-container">
-  <header class="app-header">
+  <!-- Skip to main content link for screen readers -->
+  <a href="#main-content" class="skip-to-main">Skip to main content</a>
+  
+  <header class="app-header" role="banner">
     <div class="header-content">
       <h1>📅 File to Calendar Converter</h1>
       <p>Convert images and PDFs to ICS calendar files</p>
@@ -10,31 +13,72 @@
     </div>
   </header>
 
-  <main class="app-main" *ngIf="user$ | async">
+  <main 
+    id="main-content" 
+    class="app-main" 
+    role="main"
+    tabindex="-1"
+    *ngIf="(user$ | async) || isAnonymousMode"
+  >
     <div class="converter-section" *ngIf="!showResults">
+      <!-- Anonymous mode banner -->
+      <div 
+        class="anonymous-banner" 
+        *ngIf="isAnonymousMode && !(user$ | async)"
+        role="status"
+        aria-live="polite"
+      >
+        <div class="banner-content">
+          <span class="banner-icon" role="img" aria-label="Rocket">🚀</span>
+          <span class="banner-text">
+            Anonymous Mode: Limited features. 
+            <a 
+              href="#" 
+              (click)="signIn()" 
+              class="sign-in-link"
+              aria-label="Sign in to access full features"
+            >Sign in for full access</a>
+          </span>
+        </div>
+      </div>
+      
       <app-file-upload (textExtracted)="onTextExtracted($event)"> </app-file-upload>
     </div>
 
     <div class="results-section" *ngIf="showResults && extractedText">
       <div class="events-card" *ngIf="parsedEvents.length > 0">
         <div class="events-header">
-          <h2>📅 Calendar Events ({{ parsedEvents.length }})</h2>
+          <h2 id="events-heading">📅 Calendar Events ({{ parsedEvents.length }})</h2>
         </div>
 
-        <div class="events-list iphone-style" #eventsList>
+        <div 
+          class="events-list iphone-style" 
+          #eventsList
+          role="list"
+          aria-labelledby="events-heading"
+          aria-describedby="events-description"
+        >
+          <div class="sr-only" id="events-description">
+            List of {{ parsedEvents.length }} calendar events extracted from your file. 
+            Each event shows date, time, title, and confidence score.
+          </div>
+          
           <div
             class="event-item"
             *ngFor="let event of parsedEvents; trackBy: trackEvent; let i = index"
             [attr.data-color-index]="i % 3"
+            role="listitem"
+            [attr.aria-label]="getEventAriaLabel(event, i + 1)"
+            tabindex="0"
           >
             <!-- Date card on the left -->
-            <div class="date-card">
+            <div class="date-card" role="img" [attr.aria-label]="getDateAriaLabel(event.startDate)">
               <div class="day-abbreviation">{{ getDayAbbreviation(event.startDate) }}</div>
               <div class="day-number">{{ event.startDate | date: 'd' }}</div>
             </div>
 
             <!-- Colored accent border -->
-            <div class="accent-border" [attr.data-color]="getEventColor(i)"></div>
+            <div class="accent-border" [attr.data-color]="getEventColor(i)" aria-hidden="true"></div>
 
             <!-- Event content -->
             <div class="event-content">
@@ -42,7 +86,7 @@
                 <div class="event-info">
                   <h3 class="event-title">{{ event.title }}</h3>
                   <p class="event-location" *ngIf="event.location">
-                    <span class="location-icon">📍</span>{{ event.location }}
+                    <span class="location-icon" role="img" aria-label="Location">📍</span>{{ event.location }}
                   </p>
                   <p
                     class="event-description"
@@ -53,12 +97,18 @@
                 </div>
 
                 <div class="event-time">
-                  <div class="time-start">{{ event.startDate | date: 'HH:mm' }}</div>
-                  <div class="time-end">{{ event.endDate | date: 'HH:mm' }}</div>
+                  <div class="time-start" [attr.aria-label]="'Start time: ' + (event.startDate | date: 'HH:mm')">
+                    {{ event.startDate | date: 'HH:mm' }}
+                  </div>
+                  <div class="time-end" [attr.aria-label]="'End time: ' + (event.endDate | date: 'HH:mm')">
+                    {{ event.endDate | date: 'HH:mm' }}
+                  </div>
                   <div
                     class="confidence-badge"
                     *ngIf="event.confidence"
                     [class]="getConfidenceClass(event.confidence)"
+                    [attr.aria-label]="'Detection confidence: ' + (event.confidence * 100).toFixed(0) + ' percent'"
+                    role="img"
                   >
                     {{ (event.confidence * 100).toFixed(0) }}%
                   </div>
@@ -68,26 +118,36 @@
           </div>
         </div>
 
-        <div class="action-buttons">
+        <div class="action-buttons" role="group" aria-label="Calendar actions">
           <button
             class="download-btn"
             (click)="downloadCalendar()"
             [disabled]="isDownloading"
             [class.downloading]="isDownloading"
+            [attr.aria-describedby]="downloadStatus ? 'download-status' : null"
           >
             <span *ngIf="!isDownloading">📥 Download Calendar (.ics)</span>
-            <span *ngIf="isDownloading">⏳ Preparing Download...</span>
+            <span *ngIf="isDownloading" aria-live="polite">⏳ Preparing Download...</span>
           </button>
-          <button class="reset-btn" (click)="resetConverter()">🔄 Convert Another File</button>
+          <button 
+            class="reset-btn" 
+            (click)="resetConverter()"
+            aria-label="Reset converter and upload a new file"
+          >
+            🔄 Convert Another File
+          </button>
         </div>
 
         <div
           class="download-status"
           *ngIf="downloadStatus"
           [class]="'status-' + downloadStatus.type"
+          id="download-status"
+          role="status"
+          aria-live="polite"
         >
           <div class="status-message">
-            <span class="status-icon">
+            <span class="status-icon" role="img" [attr.aria-label]="getStatusIconLabel(downloadStatus.type)">
               {{
                 downloadStatus.type === 'success'
                   ? '✅'
@@ -101,7 +161,7 @@
         </div>
       </div>
 
-      <div class="no-events-card" *ngIf="parsedEvents.length === 0">
+      <div class="no-events-card" *ngIf="parsedEvents.length === 0" role="alert">
         <h2>⚠️ No Events Found</h2>
         <p>
           We couldn't detect any calendar events in the extracted text. Try uploading a file with
@@ -110,21 +170,49 @@
         <div class="extraction-info" *ngIf="extractedText.confidence">
           <p class="confidence-info">
             <span class="confidence-label">Text Extraction Confidence:</span>
-            <span class="confidence-value" [class]="getConfidenceClass(extractedText.confidence)">
+            <span 
+              class="confidence-value" 
+              [class]="getConfidenceClass(extractedText.confidence)"
+              [attr.aria-label]="'Text extraction confidence: ' + (extractedText.confidence * 100).toFixed(0) + ' percent'"
+            >
               {{ (extractedText.confidence * 100).toFixed(0) }}%
             </span>
           </p>
         </div>
-        <button class="reset-btn" (click)="resetConverter()">🔄 Try Another File</button>
+        <button 
+          class="reset-btn" 
+          (click)="resetConverter()"
+          aria-label="Reset converter and try uploading another file"
+        >
+          🔄 Try Another File
+        </button>
       </div>
     </div>
   </main>
 
-  <div class="login-prompt" *ngIf="!(user$ | async)">
+  <div class="login-prompt" *ngIf="!(user$ | async) && !isAnonymousMode" role="complementary">
     <div class="prompt-content">
       <h2>🔐 Authentication Required</h2>
       <p>Please sign in with Google to use the file converter</p>
       <app-auth mode="login"></app-auth>
+      
+      <!-- Optional Authentication: Try without signing in -->
+      <div class="anonymous-option">
+        <p class="anonymous-description">
+          <span class="info-icon" role="img" aria-label="Information">ℹ️</span>
+          Want to try first? You can use basic features without signing in.
+        </p>
+        <button 
+          class="try-anonymous-btn" 
+          (click)="enableAnonymousMode()"
+          aria-label="Try the converter without signing in - limited features available"
+        >
+          🚀 Try without signing in
+        </button>
+        <p class="feature-note">
+          <small>Anonymous mode: Single file processing only. Sign in for full features.</small>
+        </p>
+      </div>
     </div>
   </div>
 </div>

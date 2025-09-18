@@ -25,6 +25,7 @@ export class App implements OnInit, OnDestroy {
   isDownloading = false;
   viewMode: 'grid' | 'list' = 'grid';
   isMobile = false;
+  isAnonymousMode = false;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -149,5 +150,59 @@ export class App implements OnInit, OnDestroy {
   private isProduction(): boolean {
     // Simple check for production - can be enhanced with environment import if needed
     return !window.location.hostname.includes('localhost');
+  }
+
+  /**
+   * Enable anonymous mode for users who want to try without signing in
+   */
+  enableAnonymousMode(): void {
+    this.isAnonymousMode = true;
+    this.downloadStatus = {
+      message: 'Anonymous mode enabled. Limited to single file processing.',
+      type: 'info'
+    };
+    
+    // Clear status after 3 seconds
+    setTimeout(() => {
+      this.downloadStatus = null;
+    }, 3000);
+  }
+
+  /**
+   * Trigger sign in from anonymous mode
+   */
+  signIn(): void {
+    // Reset anonymous mode and let the auth component handle sign in
+    this.isAnonymousMode = false;
+  }
+
+  /**
+   * Get ARIA label for event items
+   */
+  getEventAriaLabel(event: CalendarEvent, index: number): string {
+    const startTime = event.startDate.toLocaleString();
+    const endTime = event.endDate.toLocaleString();
+    const confidence = event.confidence ? `${(event.confidence * 100).toFixed(0)}% confidence` : '';
+    const location = event.location ? `, location: ${event.location}` : '';
+    
+    return `Event ${index}: ${event.title} from ${startTime} to ${endTime}${location}. ${confidence}`;
+  }
+
+  /**
+   * Get ARIA label for date cards
+   */
+  getDateAriaLabel(date: Date): string {
+    return `Date: ${date.toLocaleDateString()}`;
+  }
+
+  /**
+   * Get ARIA label for status icons
+   */
+  getStatusIconLabel(type: string): string {
+    switch (type) {
+      case 'success': return 'Success';
+      case 'error': return 'Error';
+      default: return 'Information';
+    }
   }
 }

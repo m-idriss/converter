@@ -62,20 +62,84 @@ export class Calendar {
   }
 
   /**
-   * Simple relative date parsing for common expressions
+   * Enhanced relative date parsing for common expressions
    */
   private parseSimpleRelativeDate(text: string): Date | null {
     const lowerText = text.toLowerCase().trim();
     const now = new Date();
 
+    // Handle "today" and "tonight"
     if (/\b(today|tonight)\b/.test(lowerText)) {
       return startOfDay(now);
     }
+    
+    // Handle "tomorrow"
     if (/\btomorrow\b/.test(lowerText)) {
       return startOfDay(addDays(now, 1));
     }
-    if (/\bnext\s+friday\b/.test(lowerText)) {
-      return startOfDay(addDays(now, (5 - now.getDay() + 7) % 7 || 7));
+    
+    // Handle "next week"
+    if (/\bnext\s+week\b/.test(lowerText)) {
+      return startOfDay(addDays(now, 7));
+    }
+    
+    // Handle specific days like "next Friday", "this Monday", etc.
+    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const dayMap: Record<string, number> = { sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
+    
+    // Next [day] pattern
+    const nextDayMatch = lowerText.match(/\bnext\s+(sunday|monday|tuesday|wednesday|thursday|friday|saturday|sun|mon|tue|wed|thu|fri|sat)\b/);
+    if (nextDayMatch) {
+      const dayName = nextDayMatch[1];
+      let targetDay = dayNames.indexOf(dayName);
+      
+      // Handle abbreviated day names  
+      if (targetDay === -1 && dayName in dayMap) {
+        targetDay = dayMap[dayName];
+      }
+      
+      if (targetDay !== -1) {
+        const currentDay = now.getDay();
+        let daysToAdd = (targetDay - currentDay + 7) % 7;
+        if (daysToAdd === 0) daysToAdd = 7; // Next week if same day
+        return startOfDay(addDays(now, daysToAdd));
+      }
+    }
+    
+    // This [day] pattern (this week)
+    const thisDayMatch = lowerText.match(/\bthis\s+(sunday|monday|tuesday|wednesday|thursday|friday|saturday|sun|mon|tue|wed|thu|fri|sat)\b/);
+    if (thisDayMatch) {
+      const dayName = thisDayMatch[1];
+      let targetDay = dayNames.indexOf(dayName);
+      
+      // Handle abbreviated day names
+      if (targetDay === -1 && dayName in dayMap) {
+        targetDay = dayMap[dayName];
+      }
+      
+      if (targetDay !== -1) {
+        const currentDay = now.getDay();
+        let daysToAdd = (targetDay - currentDay + 7) % 7;
+        return startOfDay(addDays(now, daysToAdd));
+      }
+    }
+
+    // Handle "in X days" pattern
+    const inDaysMatch = lowerText.match(/\bin\s+(\d+)\s+days?\b/);
+    if (inDaysMatch) {
+      const daysToAdd = parseInt(inDaysMatch[1]);
+      if (!isNaN(daysToAdd) && daysToAdd > 0) {
+        return startOfDay(addDays(now, daysToAdd));
+      }
+    }
+
+    // Handle "X days from now" pattern
+    const daysFromNowMatch = lowerText.match(/\b(\d+)\s+days?\s+from\s+now\b/);
+    if (daysFromNowMatch) {
+      const daysToAdd = parseInt(daysFromNowMatch[1]);
+      if (!isNaN(daysToAdd) && daysToAdd > 0) {
+        return startOfDay(addDays(now, daysToAdd));
+      }
     }
 
     return null;
@@ -142,12 +206,20 @@ export class Calendar {
       }, // ex: "Team Meeting 2025-01-15 2:00 PM"
       {
         regex:
-          /^(.+?)\s+(tomorrow|today|tonight|next\s+friday)(?:\s+at\s+(\d{1,2}:\d{2}\s*(?:AM|PM)?))?/i,
+          /^(.+?)\s+(tomorrow|today|tonight|next\s+(?:sunday|monday|tuesday|wednesday|thursday|friday|saturday|week)|this\s+(?:sunday|monday|tuesday|wednesday|thursday|friday|saturday)|in\s+\d+\s+days?|\d+\s+days?\s+from\s+now)(?:\s+at\s+(\d{1,2}:\d{2}\s*(?:AM|PM)?))?/i,
         titleGroup: 1,
         dateGroup: 2,
         timeGroup: 3,
         confidence: 0.8,
-      }, // ex: "Meeting tomorrow at 2 PM"
+      }, // ex: "Meeting tomorrow at 2 PM", "Conference next Friday", "Dinner this Saturday"
+      {
+        regex:
+          /^(.+?)\s+(?:on\s+)?(next\s+(?:sunday|monday|tuesday|wednesday|thursday|friday|saturday)|this\s+(?:sunday|monday|tuesday|wednesday|thursday|friday|saturday))(?:\s+at\s+(\d{1,2}:\d{2}\s*(?:AM|PM)?))?/i,
+        titleGroup: 1,
+        dateGroup: 2,
+        timeGroup: 3,
+        confidence: 0.85,
+      }, // ex: "Meeting on next Friday at 3 PM"
       {
         regex: /(\d{8}T\d{6}Z?)/i,
         titleGroup: null,
@@ -155,6 +227,20 @@ export class Calendar {
         timeGroup: null,
         confidence: 0.95,
       }, // ex: 20231001T090000Z (standalone timestamp)
+      {
+        regex: /^(.+?)\s+(\d{1,2}\/\d{1,2})\s+(\d{1,2}:\d{2}\s*(?:AM|PM)?)/i,
+        titleGroup: 1,
+        dateGroup: 2,
+        timeGroup: 3,
+        confidence: 0.7,
+      }, // ex: "Meeting 12/25 at 2:00 PM" (assumes current year)
+      {
+        regex: /^(.+?)\s+(\d{1,2}-\d{1,2})\s+(\d{1,2}:\d{2}\s*(?:AM|PM)?)/i,
+        titleGroup: 1,
+        dateGroup: 2,
+        timeGroup: 3,
+        confidence: 0.7,
+      }, // ex: "Appointment 12-25 at 14:00" (assumes current year)
     ];
 
     for (const line of lines) {
@@ -204,28 +290,56 @@ export class Calendar {
             eventDate = parseISO(isoString);
             confidence = 0.95;
           } else if (dateStr) {
-            // Try various date formats with native parsing and date-fns
-            const dateTimeCombined = `${dateStr} ${timeStr}`.trim();
-
-            // Use a single reference date for all format attempts
-            const referenceDate = new Date();
-            // Try parsing with different formats
-            const formatAttempts = [
-              () => parse(dateTimeCombined, 'MMMM d, yyyy h:mm a', referenceDate),
-              () => parse(dateTimeCombined, 'MM/dd/yyyy H:mm', referenceDate),
-              () => parse(dateTimeCombined, 'yyyy-MM-dd h:mm a', referenceDate),
-              () => parse(dateTimeCombined, 'yyyy-MM-dd H:mm', referenceDate),
-              () => new Date(dateTimeCombined), // Native parsing as fallback
-            ];
-            for (const formatAttempt of formatAttempts) {
-              try {
-                const parsedDate = formatAttempt();
-                if (isValid(parsedDate)) {
-                  eventDate = parsedDate;
-                  break;
+            // Handle dates without years first (MM/dd or MM-dd)
+            if (/^\d{1,2}[\/\-]\d{1,2}$/.test(dateStr)) {
+              const currentYear = new Date().getFullYear();
+              const dateWithYear = `${dateStr}/${currentYear}`;
+              const dateTimeCombined = `${dateWithYear} ${timeStr}`.trim();
+              
+              const referenceDate = new Date();
+              const formatAttempts = [
+                () => parse(dateTimeCombined, 'M/d/yyyy h:mm a', referenceDate),
+                () => parse(dateTimeCombined, 'MM/dd/yyyy H:mm', referenceDate),
+                () => parse(dateTimeCombined, 'M-d-yyyy h:mm a', referenceDate),
+                () => parse(dateTimeCombined, 'MM-dd-yyyy H:mm', referenceDate),
+                () => new Date(dateTimeCombined),
+              ];
+              
+              for (const formatAttempt of formatAttempts) {
+                try {
+                  const parsedDate = formatAttempt();
+                  if (isValid(parsedDate)) {
+                    eventDate = parsedDate;
+                    break;
+                  }
+                } catch (e) {
+                  // Continue to next format
                 }
-              } catch (e) {
-                // Continue to next format
+              }
+            } else {
+              // Try various date formats with native parsing and date-fns
+              const dateTimeCombined = `${dateStr} ${timeStr}`.trim();
+
+              // Use a single reference date for all format attempts
+              const referenceDate = new Date();
+              // Try parsing with different formats
+              const formatAttempts = [
+                () => parse(dateTimeCombined, 'MMMM d, yyyy h:mm a', referenceDate),
+                () => parse(dateTimeCombined, 'MM/dd/yyyy H:mm', referenceDate),
+                () => parse(dateTimeCombined, 'yyyy-MM-dd h:mm a', referenceDate),
+                () => parse(dateTimeCombined, 'yyyy-MM-dd H:mm', referenceDate),
+                () => new Date(dateTimeCombined), // Native parsing as fallback
+              ];
+              for (const formatAttempt of formatAttempts) {
+                try {
+                  const parsedDate = formatAttempt();
+                  if (isValid(parsedDate)) {
+                    eventDate = parsedDate;
+                    break;
+                  }
+                } catch (e) {
+                  // Continue to next format
+                }
               }
             }
           }

@@ -6,9 +6,14 @@
     (dragover)="onDragOver($event)"
     (dragleave)="onDragLeave($event)"
     (drop)="onDrop($event)"
+    role="button"
+    tabindex="0"
+    [attr.aria-label]="isProcessing ? 'Processing file...' : 'Upload file area. Press Enter to browse files or drag and drop files here.'"
+    (keydown.enter)="onKeydownEnter()"
+    (keydown.space)="onKeydownSpace()"
   >
     <div class="upload-content">
-      <div class="upload-icon">📁</div>
+      <div class="upload-icon" role="img" aria-label="Folder icon">📁</div>
 
       <div *ngIf="!isProcessing; else processingTemplate">
         <h3>Upload Image or PDF</h3>
@@ -19,13 +24,24 @@
           accept="image/*,.pdf"
           (change)="onFileSelected($event)"
           style="display: none"
+          aria-label="Choose file to upload"
         />
-        <button class="browse-btn" (click)="fileInput.click()">Browse Files</button>
+        <button 
+          class="browse-btn" 
+          (click)="fileInput.click()"
+          type="button"
+          aria-describedby="file-requirements"
+        >
+          Browse Files
+        </button>
+        <div id="file-requirements" class="sr-only">
+          Supported file types: Images (JPG, PNG) and PDF documents
+        </div>
       </div>
 
       <ng-template #processingTemplate>
-        <div class="processing-indicator">
-          <div class="spinner"></div>
+        <div class="processing-indicator" role="status" aria-live="polite">
+          <div class="spinner" aria-hidden="true"></div>
           <h3>Processing File...</h3>
           <p>Extracting text from your file. This may take a moment.</p>
         </div>
@@ -33,8 +49,8 @@
     </div>
   </div>
 
-  <div *ngIf="errorMessage" class="error-message">
-    <span class="error-icon">⚠️</span>
+  <div *ngIf="errorMessage" class="error-message" role="alert" aria-live="assertive">
+    <span class="error-icon" role="img" aria-label="Warning">⚠️</span>
     {{ errorMessage }}
   </div>
 </div>

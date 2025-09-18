@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FileProcessor, ExtractedText } from '../../services/file-processor';
 
@@ -10,6 +10,7 @@ import { FileProcessor, ExtractedText } from '../../services/file-processor';
 })
 export class FileUpload {
   @Output() textExtracted = new EventEmitter<ExtractedText>();
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   isProcessing = false;
   errorMessage = '';
@@ -56,6 +57,18 @@ export class FileUpload {
         error instanceof Error ? error.message : 'An error occurred while processing the file.';
     } finally {
       this.isProcessing = false;
+    }
+  }
+
+  onKeydownEnter(): void {
+    if (this.fileInput) {
+      this.fileInput.nativeElement.click();
+    }
+  }
+
+  onKeydownSpace(): void {
+    if (this.fileInput) {
+      this.fileInput.nativeElement.click();
     }
   }
 }

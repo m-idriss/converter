@@ -407,4 +407,77 @@ This includes all the events found in the image.`;
       expect(filename).toMatch(/calendar-events-1events-\d{4}-\d{2}-\d{2}\.ics/);
     });
   });
+
+  describe('Enhanced Date Parsing', () => {
+    it('should parse relative dates like "tomorrow"', () => {
+      const text = 'Meeting tomorrow at 2:00 PM';
+      const events = service.parseTextForEvents(text);
+      
+      expect(events.length).toBe(1);
+      expect(events[0].title).toBe('Meeting');
+      
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      expect(events[0].startDate.getDate()).toBe(tomorrow.getDate());
+    });
+
+    it('should parse "next Friday" correctly', () => {
+      const text = 'Conference next Friday at 9:00 AM';
+      const events = service.parseTextForEvents(text);
+      
+      expect(events.length).toBe(1);
+      expect(events[0].title).toBe('Conference');
+      expect(events[0].startDate.getDay()).toBe(5); // Friday
+    });
+
+    it('should parse "next Monday" relative date', () => {
+      const text = 'Team standup next Monday at 10:00 AM';
+      const events = service.parseTextForEvents(text);
+      
+      expect(events.length).toBe(1);
+      if (events.length > 0) {
+        expect(events[0].title).toBe('Team standup');
+        expect(events[0].startDate.getDay()).toBe(1); // Monday
+      }
+    });
+
+    it('should handle patterns with "in X days"', () => {
+      const text = 'Review meeting in 3 days at 3:00 PM';
+      const events = service.parseTextForEvents(text);
+      
+      expect(events.length).toBeGreaterThanOrEqual(1);
+      if (events.length > 0) {
+        expect(events[0].title).toBe('Review meeting');
+        
+        const expectedDate = new Date();
+        expectedDate.setDate(expectedDate.getDate() + 3);
+        expect(events[0].startDate.getDate()).toBe(expectedDate.getDate());
+      }
+    });
+
+    it('should handle dates without years (MM/dd format)', () => {
+      const text = 'Holiday party 12/25 at 7:00 PM';
+      const events = service.parseTextForEvents(text);
+      
+      expect(events.length).toBeGreaterThanOrEqual(1);
+      if (events.length > 0) {
+        expect(events[0].title).toBe('Holiday party');
+        // Check month and date are parsed correctly
+        expect(events[0].startDate.getMonth()).toBe(11); // December (0-indexed)
+        expect(events[0].startDate.getDate()).toBe(25);
+      }
+    });
+
+    it('should assign higher confidence for more specific dates', () => {
+      const text1 = 'Meeting January 15, 2025 at 2:00 PM';
+      const text2 = 'Meeting tomorrow at 2:00 PM';
+      
+      const events1 = service.parseTextForEvents(text1);
+      const events2 = service.parseTextForEvents(text2);
+      
+      expect(events1.length).toBe(1);
+      expect(events2.length).toBe(1);
+      expect(events1[0].confidence).toBeGreaterThan(events2[0].confidence || 0);
+    });
+  });
 });

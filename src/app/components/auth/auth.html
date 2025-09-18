@@ -4,34 +4,69 @@
     <!-- Desktop View -->
     <div class="desktop-auth">
       <div class="user-profile">
-        <img [src]="user.photoURL" [alt]="user.displayName" class="profile-image" />
+        <img 
+          [src]="user.photoURL" 
+          [alt]="'Profile picture of ' + user.displayName" 
+          class="profile-image" 
+        />
         <div class="user-details">
           <h3>{{ user.displayName }}</h3>
           <p>{{ user.email }}</p>
         </div>
       </div>
-      <button class="sign-out-btn" (click)="signOut()" [disabled]="isLoading">
+      <button 
+        class="sign-out-btn" 
+        (click)="signOut()" 
+        [disabled]="isLoading"
+        [attr.aria-label]="isLoading ? 'Signing out...' : 'Sign out of your account'"
+      >
         {{ isLoading ? 'Signing out...' : 'Sign Out' }}
       </button>
     </div>
 
     <!-- Mobile View -->
     <div class="mobile-auth">
-      <div class="mobile-profile-trigger" (click)="toggleMobileMenu()">
-        <img [src]="user.photoURL" [alt]="user.displayName" class="mobile-profile-image" />
-        <span class="menu-indicator">{{ isMobileMenuOpen() ? '✕' : '☰' }}</span>
-      </div>
+      <button 
+        class="mobile-profile-trigger" 
+        (click)="toggleMobileMenu()"
+        [attr.aria-expanded]="isMobileMenuOpen()"
+        aria-controls="mobile-menu"
+        aria-label="Toggle user menu"
+      >
+        <img 
+          [src]="user.photoURL" 
+          [alt]="'Profile picture of ' + user.displayName" 
+          class="mobile-profile-image" 
+        />
+        <span class="menu-indicator" aria-hidden="true">{{ isMobileMenuOpen() ? '✕' : '☰' }}</span>
+      </button>
 
-      <div class="mobile-menu" [class.open]="isMobileMenuOpen()">
+      <div 
+        id="mobile-menu"
+        class="mobile-menu" 
+        [class.open]="isMobileMenuOpen()"
+        [attr.aria-hidden]="!isMobileMenuOpen()"
+        role="menu"
+      >
         <div class="mobile-menu-content">
-          <div class="mobile-user-info">
-            <img [src]="user.photoURL" [alt]="user.displayName" class="mobile-menu-avatar" />
+          <div class="mobile-user-info" role="menuitem">
+            <img 
+              [src]="user.photoURL" 
+              [alt]="'Profile picture of ' + user.displayName" 
+              class="mobile-menu-avatar" 
+            />
             <div class="mobile-user-details">
               <h3>{{ user.displayName }}</h3>
               <p>{{ user.email }}</p>
             </div>
           </div>
-          <button class="mobile-sign-out-btn" (click)="signOut()" [disabled]="isLoading">
+          <button 
+            class="mobile-sign-out-btn" 
+            (click)="signOut()" 
+            [disabled]="isLoading"
+            role="menuitem"
+            [attr.aria-label]="isLoading ? 'Signing out...' : 'Sign out of your account'"
+          >
             {{ isLoading ? 'Signing out...' : 'Sign Out' }}
           </button>
         </div>
@@ -41,8 +76,13 @@
 
   <!-- Login mode: Show sign-in form when not authenticated -->
   <div *ngIf="mode === 'login' && !(user$ | async)" class="sign-in-container">
-    <button class="google-sign-in-btn" (click)="signInWithGoogle()" [disabled]="isLoading">
-      <span class="google-icon">🔐</span>
+    <button 
+      class="google-sign-in-btn" 
+      (click)="signInWithGoogle()" 
+      [disabled]="isLoading"
+      [attr.aria-label]="isLoading ? 'Signing in with Google...' : 'Sign in with Google to access full features'"
+    >
+      <span class="google-icon" role="img" aria-label="Google">🔐</span>
       {{ isLoading ? 'Signing in...' : 'Sign in with Google' }}
     </button>
   </div>
