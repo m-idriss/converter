@@ -67,6 +67,7 @@ _Target: Q1 2025_ **✅ COMPLETED**
 - [ ] **WCAG 2.1 AA Compliance** _(High Impact)_
   - Add proper ARIA labels and roles
   - Implement keyboard navigation
+  - Ensure color contrast compliance
   - Add screen reader announcements for file processing states
 
 #### Core Functionality Enhancements
