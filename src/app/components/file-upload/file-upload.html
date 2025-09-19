@@ -11,23 +11,45 @@
       <div class="upload-icon">📁</div>
 
       <div *ngIf="!isProcessing; else processingTemplate">
-        <h3>Upload Image or PDF</h3>
-        <p>Drag and drop your file here, or click to browse</p>
+        <h3>Upload Your Event Document</h3>
+        <p class="upload-instructions">Drag and drop your file here, or click to browse</p>
+        <div class="file-info">
+          <p class="supported-files">
+            <strong>Supported files:</strong> JPG, PNG images and PDF documents
+          </p>
+          <p class="what-we-extract">
+            <strong>What we extract:</strong> Event titles, dates, times, locations, and descriptions
+          </p>
+          <p class="processing-note">
+            <strong>Processing:</strong> Uses advanced OCR to read text and AI to identify calendar events
+          </p>
+        </div>
         <input
           type="file"
           #fileInput
           accept="image/*,.pdf"
           (change)="onFileSelected($event)"
           style="display: none"
+          aria-label="Select image or PDF file to convert to calendar events"
         />
-        <button class="browse-btn" (click)="fileInput.click()">Browse Files</button>
+        <button class="browse-btn" (click)="fileInput.click()" aria-describedby="upload-help">Browse Files</button>
+        <div id="upload-help" class="sr-only">
+          Select an image (JPG, PNG) or PDF file containing event information to convert to calendar format
+        </div>
       </div>
 
       <ng-template #processingTemplate>
         <div class="processing-indicator">
           <div class="spinner"></div>
-          <h3>Processing File...</h3>
-          <p>Extracting text from your file. This may take a moment.</p>
+          <h3>Processing Your Document...</h3>
+          <p class="processing-step">Extracting text from your file using OCR technology.</p>
+          <p class="processing-note">This may take 10-30 seconds depending on document complexity.</p>
+          <div class="processing-steps">
+            <div class="step">1. Converting file to image format</div>
+            <div class="step">2. Extracting text using OCR</div>
+            <div class="step">3. Analyzing content for events</div>
+            <div class="step">4. Generating calendar data</div>
+          </div>
         </div>
       </ng-template>
     </div>
