@@ -847,18 +847,7 @@
 }
 
 .auth-section {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 60vh;
-  text-align: center;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.4) 0%,
-    rgba(255, 255, 255, 0.3) 50%,
-    rgba(255, 255, 255, 0.25) 100%
-  );
+  background: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(25px) saturate(1.6);
   -webkit-backdrop-filter: blur(25px) saturate(1.6);
   border-radius: var(--radius-2xl);
@@ -866,8 +855,6 @@
   box-shadow: var(--shadow-glass);
   margin: var(--space-4);
   padding: var(--space-6);
-  max-width: 380px;
-  width: 100%;
   position: relative;
   overflow: hidden;
 
@@ -882,118 +869,107 @@
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
   }
 
-  h2 {
-    margin: 0 0 var(--space-2) 0;
-    color: var(--gray-900);
-    font-size: var(--text-xl);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
+  .auth-content {
+    text-align: center;
+    
+    h2 {
+      margin: 0 0 var(--space-2) 0;
+      color: var(--gray-900);
+      font-size: var(--text-xl);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
 
-  .main-message {
-    margin: 0 0 var(--space-4) 0;
-    color: var(--gray-600);
-    font-size: var(--text-sm);
-    line-height: 1.5;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.4) 0%,
-      rgba(255, 255, 255, 0.3) 50%,
-      rgba(255, 255, 255, 0.25) 100%
-    );
+    .main-message {
+      margin: 0 0 var(--space-5) 0;
+      color: var(--gray-600);
+      font-size: var(--text-sm);
+      line-height: 1.5;
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: var(--radius-lg);
+      padding: var(--space-3);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+}
+
+.auth-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+  text-align: left;
+
+  .auth-reasons,
+  .process-overview {
+    background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.4);
     border-radius: var(--radius-lg);
-    padding: var(--space-3);
+    padding: var(--space-4);
     box-shadow: var(--shadow-sm);
-  }
-
-  .why-auth {
-    margin-bottom: var(--space-4);
-    text-align: left;
 
     h3 {
       margin: 0 0 var(--space-3) 0;
       color: var(--gray-900);
-      font-size: var(--text-lg);
+      font-size: var(--text-base);
       font-weight: 600;
       text-align: center;
-      background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.4) 0%,
-        rgba(255, 255, 255, 0.3) 50%,
-        rgba(255, 255, 255, 0.25) 100%
-      );
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      border-radius: var(--radius-lg);
-      padding: var(--space-3);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .auth-benefits {
-      list-style: none;
-      padding: var(--space-3);
-      margin: 0 0 var(--space-3) 0;
-      background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.3) 0%,
-        rgba(255, 255, 255, 0.2) 50%,
-        rgba(255, 255, 255, 0.15) 100%
-      );
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
-
-      li {
-        margin-bottom: var(--space-2);
-        color: var(--gray-700);
-        font-size: var(--text-sm);
-        line-height: 1.5;
-        padding: var(--space-2) 0;
-
-        &:last-child {
-          margin-bottom: 0;
-        }
-
-        &::before {
-          content: '✓';
-          color: var(--success-600);
-          font-weight: bold;
-          margin-right: var(--space-2);
-        }
-
-        strong {
-          color: var(--gray-900);
-          font-weight: 600;
-        }
-      }
-    }
-
-    .privacy-note {
-      font-size: var(--text-xs);
-      color: var(--gray-500);
-      font-style: italic;
-      text-align: center;
-      margin: 0;
-      background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.3) 0%,
-        rgba(255, 255, 255, 0.2) 50%,
-        rgba(255, 255, 255, 0.15) 100%
-      );
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      border-radius: var(--radius-lg);
-      padding: var(--space-2);
-      box-shadow: var(--shadow-sm);
     }
   }
+}
+
+.auth-benefits-grouped,
+.process-steps-grouped {
+  .benefit-item,
+  .process-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .benefit-icon,
+    .process-icon {
+      font-size: var(--text-lg);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .benefit-content,
+    .process-content {
+      color: var(--gray-700);
+      font-size: var(--text-sm);
+      line-height: 1.5;
+
+      strong {
+        color: var(--gray-900);
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+.privacy-note {
+  font-size: var(--text-xs);
+  color: var(--gray-500);
+  font-style: italic;
+  text-align: center;
+  margin: var(--space-3) 0 0 0;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-base);
+  padding: var(--space-2);
+  box-shadow: var(--shadow-xs);
 }
 
 .content-expansion-section .info-card {
@@ -1240,6 +1216,13 @@
   
   .auth-section {
     min-height: auto;
+    margin: var(--space-2);
+    padding: var(--space-4);
+    
+    .auth-info-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+    }
   }
   
   .content-expansion-section .info-card, .auth-section {
