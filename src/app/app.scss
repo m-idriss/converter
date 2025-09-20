@@ -1,6 +1,6 @@
 .app-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--primary-600) 0%, var(--secondary-600) 100%);
+  background: linear-gradient(135deg, var(--primary-500) 0%, var(--secondary-500) 100%);
   position: relative;
 
   /* Add subtle animated background pattern */
@@ -12,9 +12,9 @@
     right: 0;
     bottom: 0;
     background-image:
-      radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
-    animation: float 20s ease-in-out infinite;
+      radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.04) 0%, transparent 50%);
+    animation: float 30s ease-in-out infinite;
     pointer-events: none;
   }
 }
@@ -32,21 +32,23 @@
 .app-header {
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.3) 0%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.15) 100%
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.18) 50%,
+    rgba(255, 255, 255, 0.12) 100%
   );
-  backdrop-filter: blur(40px) saturate(1.8);
-  -webkit-backdrop-filter: blur(40px) saturate(1.8);
-  padding: var(--space-2) var(--space-6);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  padding: var(--space-4) var(--space-6);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: var(--shadow-glass);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 
+    var(--shadow-glass),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   position: relative;
   z-index: 10;
-  min-height: 56px;
+  min-height: 60px;
 
   .header-content {
     h1 {
@@ -59,13 +61,13 @@
       background-clip: text;
       display: flex;
       align-items: center;
-      gap: var(--space-1);
+      gap: var(--space-2);
       letter-spacing: -0.02em;
       line-height: 1.1;
     }
 
     p {
-      margin: 0;
+      margin: var(--space-1) 0 0 0;
       color: var(--gray-600);
       font-size: var(--text-sm);
       font-weight: 500;
@@ -83,7 +85,7 @@
 }
 
 .app-main {
-  padding: var(--space-3) var(--space-6);
+  padding: var(--space-6) var(--space-6);
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
@@ -827,16 +829,16 @@
   }
 }
 
-/* Layout styles */
+/* Enhanced Layout styles */
 .main-content-layout, .login-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-6);
+  gap: var(--space-8);
   align-items: start;
 }
 
 .login-layout {
-  padding: var(--space-3) var(--space-6);
+  padding: var(--space-6) var(--space-6);
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
@@ -844,13 +846,8 @@
 }
 
 .auth-section {
-  background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(25px) saturate(1.6);
-  -webkit-backdrop-filter: blur(25px) saturate(1.6);
   border-radius: var(--radius-2xl);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: var(--shadow-glass);
-  padding: var(--space-6);
+  padding: var(--space-8);
   position: relative;
   overflow: hidden;
 
@@ -893,15 +890,10 @@
 }
 
 .auth-reasons {
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: var(--radius-lg);
-  padding: var(--space-4);
-  box-shadow: var(--shadow-sm);
+  padding: var(--space-5);
   margin: var(--space-5) 0;
   text-align: left;
+  border-radius: var(--radius-lg);
 
   h3 {
     margin: 0 0 var(--space-3) 0;
@@ -1087,13 +1079,9 @@
 }
 
 .features-list {
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: var(--space-6);
+  margin-top: var(--space-5);
   border-radius: var(--radius-lg);
-  padding: var(--space-4);
-  margin-top: var(--space-4);
 }
 
 .features-list ul {
@@ -1102,12 +1090,12 @@
   margin: 0;
 
   li {
-    margin: var(--space-2) 0;
+    margin: var(--space-3) 0;
     font-size: var(--text-sm);
     color: var(--gray-800);
-    padding-left: var(--space-4);
+    padding-left: var(--space-5);
     position: relative;
-    line-height: 1.5;
+    line-height: 1.6;
     font-weight: 500;
 
     &::before {
@@ -1116,6 +1104,7 @@
       left: 0;
       color: var(--success-600);
       font-weight: 700;
+      font-size: var(--text-base);
     }
 
     strong {
@@ -1192,25 +1181,39 @@
   border: 0;
 }
 
-/* Mobile responsive */
+/* Enhanced Mobile responsive */
 @media (max-width: 768px) {
+  .app-main {
+    padding: var(--space-4) var(--space-4);
+  }
+
   .main-content-layout, .login-layout {
     grid-template-columns: 1fr;
-    gap: var(--space-4);
+    gap: var(--space-6);
+  }
+
+  .login-layout {
+    padding: var(--space-4) var(--space-4);
   }
 
   .auth-section {
     min-height: auto;
-    margin: var(--space-2);
-    padding: var(--space-4);
+    margin: 0;
+    padding: var(--space-6);
 
     .auth-info-grid {
       grid-template-columns: 1fr;
-      gap: var(--space-3);
+      gap: var(--space-4);
     }
   }
 
-  .content-expansion-section .info-card, .auth-section {
+  .features-list {
+    padding: var(--space-5);
+    margin-top: var(--space-4);
+  }
+
+  .auth-reasons {
     padding: var(--space-4);
+    margin: var(--space-4) 0;
   }
 }

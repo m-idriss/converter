@@ -133,13 +133,13 @@ body {
   font-size: var(--text-base);
   line-height: 1.6;
   color: var(--gray-800);
-  /* Apple-inspired gradient background with subtle warmth */
+  /* Refined subtle gradient background for better content focus */
   background: linear-gradient(
     135deg,
-    #f8fafc 0%,
-    #f1f5f9 25%,
-    #e2e8f0 50%,
-    #f8fafc 75%,
+    #fafbff 0%,
+    #f8fafc 20%,
+    #f1f5f9 40%,
+    #f8fafc 80%,
     #ffffff 100%
   );
   background-attachment: fixed;
@@ -148,7 +148,7 @@ body {
   font-feature-settings: 'liga', 'kern';
 }
 
-/* Enhanced Typography */
+/* Enhanced Typography with better hierarchy */
 h1,
 h2,
 h3,
@@ -157,27 +157,32 @@ h5,
 h6 {
   font-weight: 700;
   line-height: 1.2;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--space-3) 0;
 }
 
 h1 {
   font-size: var(--text-4xl);
   color: var(--gray-900);
+  letter-spacing: -0.03em;
 }
 
 h2 {
   font-size: var(--text-3xl);
   color: var(--gray-800);
+  font-weight: 600;
 }
 
 h3 {
   font-size: var(--text-2xl);
   color: var(--gray-800);
+  font-weight: 600;
 }
 
 p {
-  color: var(--gray-600);
-  line-height: 1.7;
+  color: var(--gray-700);
+  line-height: 1.6;
+  margin: 0 0 var(--space-4) 0;
 }
 
 /* Focus styles */
@@ -268,21 +273,24 @@ select {
    COMMON MIXINS & UTILITIES
    ================================= */
 
-/* Apple Liquid Glass morphism effects - Consistent across all elements */
-.glass-effect {
+/* Enhanced Apple Liquid Glass morphism effects - Consistent across all elements */
+.glass-effect,
+.auth-section,
+.features-list,
+.auth-reasons {
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.3) 0%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.15) 100%
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.18) 50%,
+    rgba(255, 255, 255, 0.12) 100%
   );
-  backdrop-filter: blur(40px) saturate(1.8);
-  -webkit-backdrop-filter: blur(40px) saturate(1.8);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 
     var(--shadow-glass),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.03);
 }
 
 /* Enhanced Apple-style inner glow effect */
