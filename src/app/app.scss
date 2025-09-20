@@ -839,13 +839,6 @@
 }
 
 .login-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-6);
-  align-items: start;
-}
-
-.login-layout {
   padding: var(--space-3) var(--space-6);
   max-width: 1200px;
   margin: 0 auto;
