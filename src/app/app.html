@@ -17,6 +17,55 @@
       <div class="converter-section">
         <app-file-upload (textExtracted)="onTextExtracted($event)"> </app-file-upload>
       </div>
+
+      <!-- How it works section - beside file upload -->
+      <div class="content-expansion-section">
+        <div class="info-card">
+          <h2>How It Works</h2>
+          <div class="description-content">
+            <p class="process-description">
+              Upload images or PDF files containing event information, and our intelligent system will automatically detect dates, times, locations, and event details to create downloadable calendar files compatible with Google Calendar, Outlook, and Apple Calendar.
+            </p>
+            <div class="supported-formats">
+              <span class="format-label">Supported formats:</span>
+              <span class="formats">JPG, PNG, PDF</span> •
+              <span class="output-label">Output:</span>
+              <span class="output">ICS Calendar Files</span>
+            </div>
+          </div>
+
+          <div class="process-steps">
+            <div class="step-item">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h3>📤 Upload Your Document</h3>
+                <p>Drag and drop or browse to select images (JPG, PNG) or PDF files containing event information.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h3>🔍 OCR Text Extraction</h3>
+                <p>Our advanced OCR technology reads and extracts all text content from your documents with high accuracy.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h3>🧠 Smart Event Detection</h3>
+                <p>AI algorithms analyze the text to identify event titles, dates, times, locations, and descriptions.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">4</div>
+              <div class="step-content">
+                <h3>📅 Calendar Generation</h3>
+                <p>Generate downloadable ICS files compatible with Google Calendar, Outlook, Apple Calendar, and more.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="results-section" *ngIf="showResults && extractedText">
@@ -152,7 +201,7 @@
       <div class="auth-content">
         <h2>🔐 Authentication Required</h2>
         <p class="main-message">Please sign in with Google to use the file converter</p>
-        
+
         <div class="auth-reasons">
           <h3>Why do we require authentication?</h3>
           <div class="auth-benefits-grouped">
@@ -185,11 +234,11 @@
             <em>Your documents are processed securely and are not stored permanently on our servers.</em>
           </p>
         </div>
-        
+
         <app-auth mode="login"></app-auth>
       </div>
     </div>
-    
+
     <!-- Content expansion section - beside auth -->
     <div class="content-expansion-section">
       <div class="info-card">
@@ -200,12 +249,12 @@
           </p>
           <div class="supported-formats">
             <span class="format-label">Supported formats:</span>
-            <span class="formats">JPG, PNG, PDF</span> • 
+            <span class="formats">JPG, PNG, PDF</span> •
             <span class="output-label">Output:</span>
             <span class="output">ICS Calendar Files</span>
           </div>
         </div>
-        
+
         <div class="features-list">
           <h3>✨ Key Features</h3>
           <ul>
