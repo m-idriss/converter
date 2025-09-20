@@ -14,28 +14,26 @@
     width: 100%;
     padding: var(--space-3) var(--space-5);
     background: linear-gradient(135deg, 
-      rgba(66, 133, 244, 0.95), 
-      rgba(51, 103, 214, 0.98)
+      rgba(66, 133, 244, 1), 
+      rgba(51, 103, 214, 1)
     );
     color: white;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: none;
     border-radius: var(--radius-base);
     font-size: var(--text-base);
     font-weight: 600;
     cursor: pointer;
     transition: all var(--transition-base);
     box-shadow: 
-      0 8px 24px rgba(66, 133, 244, 0.25),
-      0 2px 4px rgba(0, 0, 0, 0.1),
+      0 4px 12px rgba(66, 133, 244, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
     letter-spacing: -0.01em;
     margin-top: var(--space-4);
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    z-index: 10;
 
-    /* Enhanced button shine effect */
+    /* Clean button shine effect */
     &::before {
       content: '';
       position: absolute;
@@ -45,23 +43,21 @@
       height: 100%;
       background: linear-gradient(90deg, 
         transparent, 
-        rgba(255, 255, 255, 0.3) 30%, 
-        rgba(255, 255, 255, 0.5) 50%,
-        rgba(255, 255, 255, 0.3) 70%,
+        rgba(255, 255, 255, 0.2), 
         transparent
       );
       transition: left var(--transition-slow);
+      pointer-events: none;
     }
 
     &:hover:not(:disabled) {
       background: linear-gradient(135deg, 
-        rgba(51, 103, 214, 0.98), 
+        rgba(51, 103, 214, 1), 
         rgba(41, 82, 179, 1)
       );
-      transform: translateY(-3px);
+      transform: translateY(-2px);
       box-shadow: 
-        0 12px 32px rgba(66, 133, 244, 0.35),
-        0 4px 8px rgba(0, 0, 0, 0.15),
+        0 6px 16px rgba(66, 133, 244, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.25);
 
       &::before {
