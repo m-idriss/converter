@@ -10,9 +10,62 @@
     </div>
   </header>
 
+  <!-- Authenticated user view -->
   <main class="app-main" *ngIf="user$ | async">
-    <div class="converter-section" *ngIf="!showResults">
-      <app-file-upload (textExtracted)="onTextExtracted($event)"> </app-file-upload>
+    <div class="main-content-layout" *ngIf="!showResults">
+      <!-- File upload section -->
+      <div class="converter-section">
+        <app-file-upload (textExtracted)="onTextExtracted($event)"> </app-file-upload>
+      </div>
+      
+      <!-- How it works section - beside file upload -->
+      <div class="content-expansion-section">
+        <div class="info-card">
+          <h2>How It Works</h2>
+          <div class="description-content">
+            <p class="process-description">
+              Upload images or PDF files containing event information, and our intelligent system will automatically detect dates, times, locations, and event details to create downloadable calendar files compatible with Google Calendar, Outlook, and Apple Calendar.
+            </p>
+            <div class="supported-formats">
+              <span class="format-label">Supported formats:</span>
+              <span class="formats">JPG, PNG, PDF</span> • 
+              <span class="output-label">Output:</span>
+              <span class="output">ICS Calendar Files</span>
+            </div>
+          </div>
+          
+          <div class="process-steps">
+            <div class="step-item">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h3>📤 Upload Your Document</h3>
+                <p>Drag and drop or browse to select images (JPG, PNG) or PDF files containing event information.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h3>🔍 OCR Text Extraction</h3>
+                <p>Our advanced OCR technology reads and extracts all text content from your documents with high accuracy.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h3>🧠 Smart Event Detection</h3>
+                <p>AI algorithms analyze the text to identify event titles, dates, times, locations, and descriptions.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number">4</div>
+              <div class="step-content">
+                <h3>📅 Calendar Generation</h3>
+                <p>Generate downloadable ICS files compatible with Google Calendar, Outlook, Apple Calendar, and more.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="results-section" *ngIf="showResults && extractedText">
@@ -102,11 +155,30 @@
       </div>
 
       <div class="no-events-card" *ngIf="parsedEvents.length === 0">
-        <h2>⚠️ No Events Found</h2>
-        <p>
-          We couldn't detect any calendar events in the extracted text. Try uploading a file with
-          clear date/time information.
-        </p>
+        <h2>⚠️ No Calendar Events Detected</h2>
+        <div class="no-events-explanation">
+          <p class="main-message">
+            We couldn't detect any calendar events in the extracted text. This can happen for several reasons:
+          </p>
+          <div class="troubleshooting">
+            <h3>💡 Tips for better results:</h3>
+            <ul class="tips-list">
+              <li><strong>Date Format:</strong> Ensure dates are clearly written (e.g., "March 15, 2024" or "15/03/2024")</li>
+              <li><strong>Time Information:</strong> Include specific times (e.g., "2:00 PM" or "14:00")</li>
+              <li><strong>Event Details:</strong> Have clear event titles and descriptions</li>
+              <li><strong>Image Quality:</strong> Use high-resolution, well-lit images with clear text</li>
+              <li><strong>Text Orientation:</strong> Ensure text is not rotated or skewed</li>
+            </ul>
+          </div>
+          <div class="example-formats">
+            <h3>📋 Example formats we recognize:</h3>
+            <ul class="format-examples">
+              <li>"Meeting on March 15, 2024 at 2:00 PM"</li>
+              <li>"Conference: April 20th, 10:00 AM - 5:00 PM"</li>
+              <li>"Appointment scheduled for 03/25/2024 at 3:30 PM"</li>
+            </ul>
+          </div>
+        </div>
         <div class="extraction-info" *ngIf="extractedText.confidence">
           <p class="confidence-info">
             <span class="confidence-label">Text Extraction Confidence:</span>
@@ -114,17 +186,67 @@
               {{ (extractedText.confidence * 100).toFixed(0) }}%
             </span>
           </p>
+          <p class="confidence-help" *ngIf="extractedText.confidence < 0.8">
+            <em>Low confidence may indicate poor image quality or unclear text. Try uploading a clearer image.</em>
+          </p>
         </div>
         <button class="reset-btn" (click)="resetConverter()">🔄 Try Another File</button>
       </div>
     </div>
   </main>
 
-  <div class="login-prompt" *ngIf="!(user$ | async)">
-    <div class="prompt-content">
-      <h2>🔐 Authentication Required</h2>
-      <p>Please sign in with Google to use the file converter</p>
-      <app-auth mode="login"></app-auth>
+  <!-- Non-authenticated user view -->
+  <div class="login-layout" *ngIf="!(user$ | async)">
+    <div class="auth-section">
+      <div class="login-prompt">
+        <div class="prompt-content">
+          <h2>🔐 Authentication Required</h2>
+          <p class="main-message">Please sign in with Google to use the file converter</p>
+          <div class="why-auth">
+            <h3>Why do we require authentication?</h3>
+            <ul class="auth-benefits">
+              <li><strong>Security:</strong> Protect your uploaded documents and ensure privacy</li>
+              <li><strong>Processing Power:</strong> Access to advanced OCR and AI processing capabilities</li>
+              <li><strong>File History:</strong> Keep track of your conversion history (optional)</li>
+              <li><strong>Rate Limiting:</strong> Prevent abuse and ensure fair usage for all users</li>
+            </ul>
+            <p class="privacy-note">
+              <em>Your documents are processed securely and are not stored permanently on our servers.</em>
+            </p>
+          </div>
+          <app-auth mode="login"></app-auth>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Content expansion section - beside auth -->
+    <div class="content-expansion-section">
+      <div class="info-card">
+        <h2>About File to Calendar Converter</h2>
+        <div class="description-content">
+          <p class="process-description">
+            Upload images or PDF files containing event information, and our intelligent system will automatically detect dates, times, locations, and event details to create downloadable calendar files compatible with Google Calendar, Outlook, and Apple Calendar.
+          </p>
+          <div class="supported-formats">
+            <span class="format-label">Supported formats:</span>
+            <span class="formats">JPG, PNG, PDF</span> • 
+            <span class="output-label">Output:</span>
+            <span class="output">ICS Calendar Files</span>
+          </div>
+        </div>
+        
+        <div class="features-list">
+          <h3>✨ Key Features</h3>
+          <ul>
+            <li><strong>📤 Easy Upload:</strong> Drag-and-drop interface for images and PDF files</li>
+            <li><strong>🔍 Advanced OCR:</strong> High-accuracy text extraction from documents</li>
+            <li><strong>🧠 Smart Detection:</strong> AI-powered event information recognition</li>
+            <li><strong>📅 Universal Format:</strong> Creates ICS files compatible with all major calendar apps</li>
+            <li><strong>📱 Mobile Friendly:</strong> Responsive design works on all devices</li>
+            <li><strong>🔐 Secure Processing:</strong> Your documents are processed safely and privately</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </div>
