@@ -277,7 +277,9 @@ select {
 .glass-effect,
 .auth-section,
 .features-list,
-.auth-reasons {
+.auth-reasons,
+.events-card,
+.no-events-card {
   background: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.25) 0%,
@@ -291,6 +293,26 @@ select {
     var(--shadow-glass),
     inset 0 1px 0 rgba(255, 255, 255, 0.25),
     inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+}
+
+/* Enhanced glass effect for cards */
+.glass-card {
+  @extend .glass-effect;
+  border-radius: var(--radius-2xl);
+  padding: var(--space-4);
+  position: relative;
+  overflow: hidden;
+
+  /* Subtle inner glow */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  }
 }
 
 /* Enhanced Apple-style inner glow effect */
@@ -379,4 +401,178 @@ select {
 
 .animate-spin {
   animation: spin 1s linear infinite;
+}
+
+/* =================================
+   UNIFIED BUTTON SYSTEM
+   ================================= */
+
+/* Base button styles */
+.btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border: none;
+  border-radius: var(--radius-base);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  letter-spacing: -0.01em;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  justify-content: center;
+
+  /* Universal button shine effect */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left var(--transition-slow);
+  }
+
+  &:hover:not(:disabled)::before {
+    left: 100%;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+
+    &::before {
+      display: none;
+    }
+  }
+
+  &:not(:disabled):hover {
+    transform: translateY(-2px);
+  }
+
+  &:not(:disabled):active {
+    transform: translateY(0);
+  }
+}
+
+/* Primary button variant */
+.btn-primary {
+  @extend .btn;
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  color: white;
+  box-shadow: var(--shadow-md);
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+/* Success button variant */
+.btn-success {
+  @extend .btn;
+  background: linear-gradient(135deg, var(--success-500), var(--success-600));
+  color: white;
+  box-shadow: var(--shadow-md);
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--success-600), var(--success-700));
+    box-shadow: var(--shadow-xl);
+  }
+
+  &.processing {
+    animation: pulse 2s infinite;
+  }
+}
+
+/* Error/Danger button variant */
+.btn-danger {
+  @extend .btn;
+  background: linear-gradient(135deg, var(--error-500), var(--error-600));
+  color: white;
+  box-shadow: var(--shadow-sm);
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--error-600), var(--error-700));
+    box-shadow: var(--shadow-md);
+  }
+}
+
+/* Secondary/Gray button variant */
+.btn-secondary {
+  @extend .btn;
+  background: linear-gradient(135deg, var(--gray-100), var(--gray-200));
+  color: var(--gray-700);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-300);
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--gray-200), var(--gray-300));
+    box-shadow: var(--shadow-md);
+  }
+}
+
+/* Button size variants */
+.btn-sm {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-xs);
+}
+
+.btn-lg {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--text-base);
+}
+
+/* Full width button */
+.btn-full {
+  width: 100%;
+}
+
+/* =================================
+   STATUS MESSAGE SYSTEM
+   ================================= */
+
+.status-message {
+  animation: slideIn var(--transition-base) ease-out;
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-weight: 600;
+
+  .status-icon {
+    font-size: var(--text-xl);
+    flex-shrink: 0;
+  }
+
+  &.status-success {
+    background: linear-gradient(135deg, var(--success-50), var(--success-100));
+    color: var(--success-700);
+    border: 1px solid var(--success-200);
+  }
+
+  &.status-error {
+    background: linear-gradient(135deg, var(--error-50), var(--error-100));
+    color: var(--error-700);
+    border: 1px solid var(--error-200);
+  }
+
+  &.status-info {
+    background: linear-gradient(135deg, var(--primary-50), var(--primary-100));
+    color: var(--primary-700);
+    border: 1px solid var(--primary-200);
+  }
+
+  &.status-warning {
+    background: linear-gradient(135deg, var(--warning-50), var(--warning-100));
+    color: var(--warning-700);
+    border: 1px solid var(--warning-200);
+  }
 }

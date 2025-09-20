@@ -113,45 +113,7 @@ p {
 }
 
 .browse-btn {
-  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
-  color: white;
-  border: none;
-  padding: var(--space-3) var(--space-6);
-  border-radius: var(--radius-base);
-  font-size: var(--text-base);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition-base);
-  position: relative;
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-  letter-spacing: -0.01em;
-
-  /* Button shine effect */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left var(--transition-slow);
-  }
-
-  &:hover {
-    background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-
-    &::before {
-      left: 100%;
-    }
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
+  // Use btn btn-primary btn-lg classes in template
 }
 
 .processing-indicator {
@@ -186,18 +148,7 @@ p {
 }
 
 .error-message {
-  animation: slideIn var(--transition-base) ease-out;
-  margin-top: var(--space-4);
-  padding: var(--space-4);
-  background: linear-gradient(135deg, var(--error-50), var(--error-100));
-  border: 1px solid var(--error-200);
-  border-radius: var(--radius-lg);
-  color: var(--error-700);
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  font-weight: 600;
-  box-shadow: var(--shadow-sm);
+  // Use status-message status-error classes in template
 }
 
 .error-icon {
