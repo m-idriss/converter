@@ -198,25 +198,21 @@
   <!-- Non-authenticated user view -->
   <div class="login-layout" *ngIf="!(user$ | async)">
     <div class="auth-section">
-      <div class="login-prompt">
-        <div class="prompt-content">
-          <h2>🔐 Authentication Required</h2>
-          <p class="main-message">Please sign in with Google to use the file converter</p>
-          <div class="why-auth">
-            <h3>Why do we require authentication?</h3>
-            <ul class="auth-benefits">
-              <li><strong>Security:</strong> Protect your uploaded documents and ensure privacy</li>
-              <li><strong>Processing Power:</strong> Access to advanced OCR and AI processing capabilities</li>
-              <li><strong>File History:</strong> Keep track of your conversion history (optional)</li>
-              <li><strong>Rate Limiting:</strong> Prevent abuse and ensure fair usage for all users</li>
-            </ul>
-            <p class="privacy-note">
-              <em>Your documents are processed securely and are not stored permanently on our servers.</em>
-            </p>
-          </div>
-          <app-auth mode="login"></app-auth>
-        </div>
+      <h2>🔐 Authentication Required</h2>
+      <p class="main-message">Please sign in with Google to use the file converter</p>
+      <div class="why-auth">
+        <h3>Why do we require authentication?</h3>
+        <ul class="auth-benefits">
+          <li><strong>Security:</strong> Protect your uploaded documents and ensure privacy</li>
+          <li><strong>Processing Power:</strong> Access to advanced OCR and AI processing capabilities</li>
+          <li><strong>File History:</strong> Keep track of your conversion history (optional)</li>
+          <li><strong>Rate Limiting:</strong> Prevent abuse and ensure fair usage for all users</li>
+        </ul>
+        <p class="privacy-note">
+          <em>Your documents are processed securely and are not stored permanently on our servers.</em>
+        </p>
       </div>
+      <app-auth mode="login"></app-auth>
     </div>
     
     <!-- Content expansion section - beside auth -->
