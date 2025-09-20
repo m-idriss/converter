@@ -344,6 +344,31 @@ select {
 .p-5 { padding: var(--space-5); }
 .p-6 { padding: var(--space-6); }
 
+/* Common flexbox utilities */
+.flex { display: flex; }
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flex-align-center {
+  display: flex;
+  align-items: center;
+}
+.flex-justify-center {
+  display: flex;
+  justify-content: center;
+}
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
 /* Common content containers */
 .content-section {
   padding: var(--space-6);
