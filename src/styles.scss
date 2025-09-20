@@ -273,7 +273,11 @@ select {
    COMMON MIXINS & UTILITIES
    ================================= */
 
-/* Enhanced Apple Liquid Glass morphism effects - Consistent across all elements */
+/* =================================
+   UNIFIED GLASS EFFECT SYSTEM
+   ================================= */
+
+/* Primary glass effect - most common usage */
 .glass-effect,
 .auth-section,
 .features-list,
@@ -295,44 +299,129 @@ select {
     inset 0 -1px 0 rgba(0, 0, 0, 0.03);
 }
 
-/* Enhanced glass effect for cards */
-.glass-card {
-  @extend .glass-effect;
-  border-radius: var(--radius-2xl);
-  padding: var(--space-4);
-  position: relative;
-  overflow: hidden;
-
-  /* Subtle inner glow */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
-  }
-}
-
-/* Enhanced Apple-style inner glow effect */
-.inner-glow::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
+/* Glass effect variations for specific use cases */
+.glass-light {
   background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.9) 20%,
-    rgba(255, 255, 255, 1) 50%,
-    rgba(255, 255, 255, 0.9) 80%,
-    transparent 100%
+    135deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.2) 100%
   );
-  border-radius: inherit;
+  backdrop-filter: blur(15px) saturate(1.2);
+  -webkit-backdrop-filter: blur(15px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-base);
 }
+
+.glass-subtle {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-sm);
+}
+
+/* =================================
+   UTILITY CLASSES FOR LAYOUT & SPACING  
+   ================================= */
+
+/* Common spacing utilities */
+.mb-1 { margin-bottom: var(--space-1); }
+.mb-2 { margin-bottom: var(--space-2); }
+.mb-3 { margin-bottom: var(--space-3); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-5 { margin-bottom: var(--space-5); }
+
+.mt-1 { margin-top: var(--space-1); }
+.mt-2 { margin-top: var(--space-2); }
+.mt-3 { margin-top: var(--space-3); }
+.mt-4 { margin-top: var(--space-4); }
+.mt-5 { margin-top: var(--space-5); }
+
+.p-2 { padding: var(--space-2); }
+.p-3 { padding: var(--space-3); }
+.p-4 { padding: var(--space-4); }
+.p-5 { padding: var(--space-5); }
+.p-6 { padding: var(--space-6); }
+
+/* Common content containers */
+.content-section {
+  padding: var(--space-6);
+  margin-top: var(--space-5);
+  border-radius: var(--radius-lg);
+}
+
+.content-section-sm {
+  padding: var(--space-4);
+  margin: var(--space-3) 0;
+  border-radius: var(--radius-lg);
+}
+
+/* Typography utilities */
+.heading-title {
+  margin: 0 0 var(--space-4) 0;
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+.heading-section {
+  margin: 0 0 var(--space-3) 0;
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.heading-subsection {
+  margin: 0 0 var(--space-2) 0;
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--gray-900);
+}
+
+.section-title {
+  margin: 0 0 var(--space-3) 0;
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.section-text {
+  margin: var(--space-2) 0;
+  font-size: var(--text-sm);
+  color: var(--gray-700);
+  line-height: 1.5;
+}
+
+.feature-text {
+  font-size: var(--text-sm);
+  color: var(--gray-800);
+  padding-left: var(--space-5);
+  position: relative;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.feature-text::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--success-600);
+  font-weight: 700;
+  font-size: var(--text-base);
+}
+
+/* Code/monospace styling */
+.code-style {
+  font-family: monospace;
+  background: rgba(255, 255, 255, 0.5);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+/* =================================
+   ENHANCED EFFECTS & INTERACTIONS
+   ================================= */
 
 /* Apple-style button shine effect with smoother animation */
 .button-shine {

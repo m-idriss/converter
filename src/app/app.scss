@@ -99,9 +99,9 @@
   gap: var(--space-3);
 }
 
+/* Event cards use global glass-effect classes */
 .events-card,
 .no-events-card {
-  // Use unified glass card styles - applied via CSS class in templates
   border-radius: var(--radius-2xl);
   padding: var(--space-4);
 }
@@ -118,8 +118,9 @@
   border: 1px solid var(--success-200);
 }
 
-// Use unified button classes - applied via CSS class in templates
+/* Download button animations */
 .download-btn.downloading {
+  animation: pulse 2s infinite;
   background: linear-gradient(135deg, var(--primary-500), var(--primary-600)) !important;
 }
 
@@ -461,23 +462,7 @@
   flex-wrap: wrap;
 }
 
-.download-status {
-  // Use status-message class in template
-}
-
-// Use unified button classes - applied via CSS class in templates
-.download-btn {
-  // These will be applied as btn btn-success in template
-
-  &.downloading {
-    animation: pulse 2s infinite;
-    background: linear-gradient(135deg, var(--primary-500), var(--primary-600)) !important;
-  }
-}
-
-.reset-btn {
-  // Applied as btn btn-secondary in template
-}
+/* Button styles use global button classes */
 
 .no-events-card {
   text-align: center;
@@ -690,7 +675,7 @@
   }
 }
 
-/* Mobile adjustments */
+/* Mobile adjustments - Consolidated */
 @media (max-width: 768px) {
   .events-header {
     flex-direction: column;
@@ -700,6 +685,40 @@
 
   .view-toggle {
     display: none;
+  }
+
+  .app-main {
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .main-content-layout, .login-layout {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .login-layout {
+    padding: var(--space-4) var(--space-4);
+  }
+
+  .auth-section {
+    min-height: auto;
+    margin: 0;
+    padding: var(--space-6);
+
+    .auth-info-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+  }
+
+  .features-list {
+    padding: var(--space-5);
+    margin-top: var(--space-4);
+  }
+
+  .auth-reasons {
+    padding: var(--space-4);
+    margin: var(--space-4) 0;
   }
 }
 
@@ -735,17 +754,22 @@
     }
 
     .main-message {
+      background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0.2) 100%
+      );
+      backdrop-filter: blur(15px) saturate(1.2);
+      -webkit-backdrop-filter: blur(15px) saturate(1.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: var(--shadow-base);
       margin: 0 0 var(--space-5) 0;
       color: var(--gray-600);
       font-size: var(--text-sm);
       line-height: 1.5;
-      background: rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
       border-radius: var(--radius-lg);
       padding: var(--space-3);
-      box-shadow: var(--shadow-sm);
     }
   }
 }
@@ -797,18 +821,18 @@
 }
 
 .privacy-note {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-sm);
   font-size: var(--text-xs);
   color: var(--gray-500);
   font-style: italic;
   text-align: center;
   margin: var(--space-3) 0 0 0;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--radius-base);
   padding: var(--space-2);
-  box-shadow: var(--shadow-xs);
 }
 
 .content-expansion-section .info-card {
@@ -835,10 +859,16 @@
 }
 
 .description-content {
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.2) 100%
+  );
+  backdrop-filter: blur(15px) saturate(1.2);
+  -webkit-backdrop-filter: blur(15px) saturate(1.2);
   border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-base);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
   margin-bottom: var(--space-4);
@@ -942,13 +972,13 @@
   margin: 0;
 
   li {
-    margin: var(--space-3) 0;
     font-size: var(--text-sm);
     color: var(--gray-800);
     padding-left: var(--space-5);
     position: relative;
     line-height: 1.6;
     font-weight: 500;
+    margin: var(--space-3) 0;
 
     &::before {
       content: '✓';
@@ -978,13 +1008,19 @@
   }
 
   .troubleshooting, .example-formats {
-    background: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      rgba(255, 255, 255, 0.2) 100%
+    );
+    backdrop-filter: blur(15px) saturate(1.2);
+    -webkit-backdrop-filter: blur(15px) saturate(1.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-base);
     padding: var(--space-4);
     margin: var(--space-3) 0;
+    border-radius: var(--radius-lg);
 
     h3 {
       margin: 0 0 var(--space-3) 0;
@@ -1033,39 +1069,4 @@
   border: 0;
 }
 
-/* Enhanced Mobile responsive */
-@media (max-width: 768px) {
-  .app-main {
-    padding: var(--space-4) var(--space-4);
-  }
-
-  .main-content-layout, .login-layout {
-    grid-template-columns: 1fr;
-    gap: var(--space-6);
-  }
-
-  .login-layout {
-    padding: var(--space-4) var(--space-4);
-  }
-
-  .auth-section {
-    min-height: auto;
-    margin: 0;
-    padding: var(--space-6);
-
-    .auth-info-grid {
-      grid-template-columns: 1fr;
-      gap: var(--space-4);
-    }
-  }
-
-  .features-list {
-    padding: var(--space-5);
-    margin-top: var(--space-4);
-  }
-
-  .auth-reasons {
-    padding: var(--space-4);
-    margin: var(--space-4) 0;
-  }
-}
+/* All 768px breakpoint rules are now consolidated above */
