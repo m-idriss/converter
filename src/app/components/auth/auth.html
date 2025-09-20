@@ -2,7 +2,7 @@
   <!-- Header mode: Only show user profile when authenticated -->
   <div *ngIf="mode === 'header' && (user$ | async) as user" class="user-info">
     <!-- Desktop View -->
-    <div class="desktop-auth">
+    <div class="desktop-auth glass-effect">
       <div class="user-profile">
         <img [src]="user.photoURL" [alt]="user.displayName" class="profile-image" />
         <div class="user-details">
@@ -10,7 +10,7 @@
           <p>{{ user.email }}</p>
         </div>
       </div>
-      <button class="sign-out-btn" (click)="signOut()" [disabled]="isLoading">
+      <button class="btn btn-danger btn-sm sign-out-btn" (click)="signOut()" [disabled]="isLoading">
         {{ isLoading ? 'Signing out...' : 'Sign Out' }}
       </button>
     </div>
@@ -31,7 +31,7 @@
               <p>{{ user.email }}</p>
             </div>
           </div>
-          <button class="mobile-sign-out-btn" (click)="signOut()" [disabled]="isLoading">
+          <button class="btn btn-danger btn-full mobile-sign-out-btn" (click)="signOut()" [disabled]="isLoading">
             {{ isLoading ? 'Signing out...' : 'Sign Out' }}
           </button>
         </div>
@@ -41,7 +41,7 @@
 
   <!-- Login mode: Show sign-in form when not authenticated -->
   <div *ngIf="mode === 'login' && !(user$ | async)" class="sign-in-container">
-    <button class="google-sign-in-btn" (click)="signInWithGoogle()" [disabled]="isLoading">
+    <button class="btn btn-primary btn-full google-sign-in-btn" (click)="signInWithGoogle()" [disabled]="isLoading">
       <span class="google-icon">🔐</span>
       {{ isLoading ? 'Signing in...' : 'Sign in with Google' }}
     </button>

@@ -20,7 +20,7 @@
 
       <!-- How it works section - beside file upload -->
       <div class="content-expansion-section">
-        <div class="info-card">
+        <div class="info-card glass-card">
           <h2>How It Works</h2>
           <div class="description-content">
             <p class="process-description">
@@ -69,7 +69,7 @@
     </div>
 
     <div class="results-section" *ngIf="showResults && extractedText">
-      <div class="events-card" *ngIf="parsedEvents.length > 0">
+      <div class="events-card glass-card" *ngIf="parsedEvents.length > 0">
         <div class="events-header">
           <h2>📅 Calendar Events ({{ parsedEvents.length }})</h2>
         </div>
@@ -123,7 +123,7 @@
 
         <div class="action-buttons">
           <button
-            class="download-btn"
+            class="btn btn-success download-btn"
             (click)="downloadCalendar()"
             [disabled]="isDownloading"
             [class.downloading]="isDownloading"
@@ -131,11 +131,11 @@
             <span *ngIf="!isDownloading">📥 Download Calendar (.ics)</span>
             <span *ngIf="isDownloading">⏳ Preparing Download...</span>
           </button>
-          <button class="reset-btn" (click)="resetConverter()">🔄 Convert Another File</button>
+          <button class="btn btn-secondary reset-btn" (click)="resetConverter()">🔄 Convert Another File</button>
         </div>
 
         <div
-          class="download-status"
+          class="status-message download-status"
           *ngIf="downloadStatus"
           [class]="'status-' + downloadStatus.type"
         >
@@ -154,7 +154,7 @@
         </div>
       </div>
 
-      <div class="no-events-card" *ngIf="parsedEvents.length === 0">
+      <div class="no-events-card glass-card" *ngIf="parsedEvents.length === 0">
         <h2>⚠️ No Calendar Events Detected</h2>
         <div class="no-events-explanation">
           <p class="main-message">
@@ -190,19 +190,19 @@
             <em>Low confidence may indicate poor image quality or unclear text. Try uploading a clearer image.</em>
           </p>
         </div>
-        <button class="reset-btn" (click)="resetConverter()">🔄 Try Another File</button>
+        <button class="btn btn-secondary reset-btn" (click)="resetConverter()">🔄 Try Another File</button>
       </div>
     </div>
   </main>
 
   <!-- Non-authenticated user view -->
   <div class="login-layout" *ngIf="!(user$ | async)">
-    <div class="auth-section">
+    <div class="auth-section glass-card">
       <div class="auth-content">
         <h2>🔐 Authentication Required</h2>
         <p class="main-message">Please sign in with Google to use the file converter</p>
         <app-auth mode="login"></app-auth>
-        <div class="auth-reasons">
+        <div class="auth-reasons glass-effect">
           <h3>Why do we require authentication?</h3>
           <div class="auth-benefits-grouped">
             <div class="benefit-item">
@@ -239,7 +239,7 @@
 
     <!-- Content expansion section - beside auth -->
     <div class="content-expansion-section">
-      <div class="info-card">
+      <div class="info-card glass-card">
         <h2>About File to Calendar Converter</h2>
         <div class="description-content">
           <p class="process-description">
@@ -253,7 +253,7 @@
           </div>
         </div>
 
-        <div class="features-list">
+        <div class="features-list glass-effect">
           <h3>✨ Key Features</h3>
           <ul>
             <li><strong>📤 Easy Upload:</strong> Drag-and-drop interface for images and PDF files</li>

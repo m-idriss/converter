@@ -32,7 +32,7 @@
           style="display: none"
           aria-label="Select image or PDF file to convert to calendar events"
         />
-        <button class="browse-btn" (click)="fileInput.click()" aria-describedby="upload-help">Browse Files</button>
+        <button class="btn btn-primary btn-lg browse-btn" (click)="fileInput.click()" aria-describedby="upload-help">Browse Files</button>
         <div id="upload-help" class="sr-only">
           Select an image (JPG, PNG) or PDF file containing event information to convert to calendar format
         </div>
@@ -55,8 +55,8 @@
     </div>
   </div>
 
-  <div *ngIf="errorMessage" class="error-message">
-    <span class="error-icon">⚠️</span>
+  <div *ngIf="errorMessage" class="status-message status-error error-message">
+    <span class="status-icon error-icon">⚠️</span>
     {{ errorMessage }}
   </div>
 </div>

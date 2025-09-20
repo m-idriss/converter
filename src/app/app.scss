@@ -101,43 +101,9 @@
 
 .events-card,
 .no-events-card {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.3) 0%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.15) 100%
-  );
-  backdrop-filter: blur(40px) saturate(1.8);
-  -webkit-backdrop-filter: blur(40px) saturate(1.8);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  // Use unified glass card styles - applied via CSS class in templates
   border-radius: var(--radius-2xl);
   padding: var(--space-4);
-  box-shadow: var(--shadow-glass);
-  position: relative;
-  overflow: hidden;
-
-  /* Subtle inner glow */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
-  }
-
-  h2 {
-    margin: 0 0 var(--space-3) 0;
-    color: var(--gray-900);
-    font-size: var(--text-xl);
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    letter-spacing: -0.02em;
-    line-height: 1.3;
-  }
 }
 
 .confidence {
@@ -150,6 +116,11 @@
   display: inline-block;
   margin-bottom: var(--space-4);
   border: 1px solid var(--success-200);
+}
+
+// Use unified button classes - applied via CSS class in templates
+.download-btn.downloading {
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-600)) !important;
 }
 
 // iPhone-style events list
@@ -491,115 +462,21 @@
 }
 
 .download-status {
-  animation: slideIn var(--transition-base) ease-out;
-  margin-top: var(--space-4);
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
-
-  .status-message {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    font-weight: 600;
-  }
-
-  .status-icon {
-    font-size: var(--text-xl);
-  }
-
-  &.status-success {
-    background: linear-gradient(135deg, var(--success-50), var(--success-100));
-    color: var(--success-700);
-    border: 1px solid var(--success-200);
-  }
-
-  &.status-error {
-    background: linear-gradient(135deg, var(--error-50), var(--error-100));
-    color: var(--error-700);
-    border: 1px solid var(--error-200);
-  }
-
-  &.status-info {
-    background: linear-gradient(135deg, var(--primary-50), var(--primary-100));
-    color: var(--primary-700);
-    border: 1px solid var(--primary-200);
-  }
+  // Use status-message class in template
 }
 
-// Centralized button styles with shine effect
-.download-btn,
-.reset-btn {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-6);
-  border: none;
-  border-radius: var(--radius-base);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition-base);
-  letter-spacing: -0.01em;
-  position: relative;
-  overflow: hidden;
-
-  /* Button hover shine effect */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left var(--transition-slow);
-  }
-
-  &:hover:not(:disabled)::before {
-    left: 100%;
-  }
-
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  &:not(:disabled):hover {
-    transform: translateY(-2px);
-  }
-
-  &:not(:disabled):active {
-    transform: translateY(0);
-  }
-}
-
+// Use unified button classes - applied via CSS class in templates
 .download-btn {
-  background: linear-gradient(135deg, var(--success-500), var(--success-600));
-  color: white;
-  box-shadow: var(--shadow-md);
-
-  &:hover:not(:disabled) {
-    background: linear-gradient(135deg, var(--success-600), var(--success-700));
-    box-shadow: var(--shadow-xl);
-  }
+  // These will be applied as btn btn-success in template
 
   &.downloading {
     animation: pulse 2s infinite;
-    background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-600)) !important;
   }
 }
 
 .reset-btn {
-  background: linear-gradient(135deg, var(--gray-100), var(--gray-200));
-  color: var(--gray-700);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--gray-300);
-
-  &:hover:not(:disabled) {
-    background: linear-gradient(135deg, var(--gray-200), var(--gray-300));
-    box-shadow: var(--shadow-md);
-  }
+  // Applied as btn btn-secondary in template
 }
 
 .no-events-card {
@@ -733,16 +610,13 @@
   padding: var(--space-1);
 }
 
-// Toggle buttons now use centralized styles
+// Toggle buttons now use unified button base - applied via CSS classes in template
 .toggle-btn {
+  // Applied as btn btn-sm in template with additional styles
   background: transparent;
-  border: none;
-  padding: var(--space-2);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  font-size: var(--text-sm);
   color: var(--gray-600);
-  transition: all var(--transition-fast);
+  box-shadow: none;
+  padding: var(--space-2);
 
   &:hover {
     background: var(--gray-200);
@@ -846,21 +720,8 @@
 }
 
 .auth-section {
-  border-radius: var(--radius-2xl);
+  // Use glass-card class in template
   padding: var(--space-8);
-  position: relative;
-  overflow: hidden;
-
-  /* Subtle inner glow */
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
-  }
 
   .auth-content {
     text-align: center;
@@ -890,6 +751,7 @@
 }
 
 .auth-reasons {
+  // Use glass-effect class in template
   padding: var(--space-5);
   margin: var(--space-5) 0;
   text-align: left;
@@ -950,18 +812,8 @@
 }
 
 .content-expansion-section .info-card {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.3) 0%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.15) 100%
-  );
-  backdrop-filter: blur(40px) saturate(1.8);
-  -webkit-backdrop-filter: blur(40px) saturate(1.8);
-  border-radius: var(--radius-2xl);
+  // Use glass-card class in template
   padding: var(--space-6);
-  box-shadow: var(--shadow-glass);
-  border: 1px solid rgba(255, 255, 255, 0.25);
 
   h2 {
     margin: 0 0 var(--space-4) 0;
