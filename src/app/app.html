@@ -17,55 +17,6 @@
       <div class="converter-section">
         <app-file-upload (textExtracted)="onTextExtracted($event)"> </app-file-upload>
       </div>
-      
-      <!-- How it works section - beside file upload -->
-      <div class="content-expansion-section">
-        <div class="info-card">
-          <h2>How It Works</h2>
-          <div class="description-content">
-            <p class="process-description">
-              Upload images or PDF files containing event information, and our intelligent system will automatically detect dates, times, locations, and event details to create downloadable calendar files compatible with Google Calendar, Outlook, and Apple Calendar.
-            </p>
-            <div class="supported-formats">
-              <span class="format-label">Supported formats:</span>
-              <span class="formats">JPG, PNG, PDF</span> • 
-              <span class="output-label">Output:</span>
-              <span class="output">ICS Calendar Files</span>
-            </div>
-          </div>
-          
-          <div class="process-steps">
-            <div class="step-item">
-              <div class="step-number">1</div>
-              <div class="step-content">
-                <h3>📤 Upload Your Document</h3>
-                <p>Drag and drop or browse to select images (JPG, PNG) or PDF files containing event information.</p>
-              </div>
-            </div>
-            <div class="step-item">
-              <div class="step-number">2</div>
-              <div class="step-content">
-                <h3>🔍 OCR Text Extraction</h3>
-                <p>Our advanced OCR technology reads and extracts all text content from your documents with high accuracy.</p>
-              </div>
-            </div>
-            <div class="step-item">
-              <div class="step-number">3</div>
-              <div class="step-content">
-                <h3>🧠 Smart Event Detection</h3>
-                <p>AI algorithms analyze the text to identify event titles, dates, times, locations, and descriptions.</p>
-              </div>
-            </div>
-            <div class="step-item">
-              <div class="step-number">4</div>
-              <div class="step-content">
-                <h3>📅 Calendar Generation</h3>
-                <p>Generate downloadable ICS files compatible with Google Calendar, Outlook, Apple Calendar, and more.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <div class="results-section" *ngIf="showResults && extractedText">
@@ -198,24 +149,76 @@
   <!-- Non-authenticated user view -->
   <div class="login-layout" *ngIf="!(user$ | async)">
     <div class="auth-section">
-      <div class="login-prompt">
-        <div class="prompt-content">
-          <h2>🔐 Authentication Required</h2>
-          <p class="main-message">Please sign in with Google to use the file converter</p>
-          <div class="why-auth">
+      <div class="auth-content">
+        <h2>🔐 Authentication Required</h2>
+        <p class="main-message">Please sign in with Google to use the file converter</p>
+        
+        <div class="auth-info-grid">
+          <div class="auth-reasons">
             <h3>Why do we require authentication?</h3>
-            <ul class="auth-benefits">
-              <li><strong>Security:</strong> Protect your uploaded documents and ensure privacy</li>
-              <li><strong>Processing Power:</strong> Access to advanced OCR and AI processing capabilities</li>
-              <li><strong>File History:</strong> Keep track of your conversion history (optional)</li>
-              <li><strong>Rate Limiting:</strong> Prevent abuse and ensure fair usage for all users</li>
-            </ul>
+            <div class="auth-benefits-grouped">
+              <div class="benefit-item">
+                <span class="benefit-icon">🔒</span>
+                <div class="benefit-content">
+                  <strong>Security:</strong> Protect your uploaded documents and ensure privacy
+                </div>
+              </div>
+              <div class="benefit-item">
+                <span class="benefit-icon">⚡</span>
+                <div class="benefit-content">
+                  <strong>Processing Power:</strong> Access to advanced OCR and AI processing capabilities
+                </div>
+              </div>
+              <div class="benefit-item">
+                <span class="benefit-icon">📁</span>
+                <div class="benefit-content">
+                  <strong>File History:</strong> Keep track of your conversion history (optional)
+                </div>
+              </div>
+              <div class="benefit-item">
+                <span class="benefit-icon">⏱️</span>
+                <div class="benefit-content">
+                  <strong>Rate Limiting:</strong> Prevent abuse and ensure fair usage for all users
+                </div>
+              </div>
+            </div>
             <p class="privacy-note">
               <em>Your documents are processed securely and are not stored permanently on our servers.</em>
             </p>
           </div>
-          <app-auth mode="login"></app-auth>
+          
+          <div class="process-overview">
+            <h3>How It Works</h3>
+            <div class="process-steps-grouped">
+              <div class="process-item">
+                <span class="process-icon">📤</span>
+                <div class="process-content">
+                  <strong>Upload Your Document:</strong> Drag and drop images (JPG, PNG) or PDF files
+                </div>
+              </div>
+              <div class="process-item">
+                <span class="process-icon">🔍</span>
+                <div class="process-content">
+                  <strong>OCR Text Extraction:</strong> Advanced technology reads and extracts text with high accuracy
+                </div>
+              </div>
+              <div class="process-item">
+                <span class="process-icon">🧠</span>
+                <div class="process-content">
+                  <strong>Smart Event Detection:</strong> AI algorithms identify event titles, dates, times, and locations
+                </div>
+              </div>
+              <div class="process-item">
+                <span class="process-icon">📅</span>
+                <div class="process-content">
+                  <strong>Calendar Generation:</strong> Generate downloadable ICS files compatible with all major calendar apps
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+        
+        <app-auth mode="login"></app-auth>
       </div>
     </div>
     
