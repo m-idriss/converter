@@ -153,69 +153,37 @@
         <h2>🔐 Authentication Required</h2>
         <p class="main-message">Please sign in with Google to use the file converter</p>
         
-        <div class="auth-info-grid">
-          <div class="auth-reasons">
-            <h3>Why do we require authentication?</h3>
-            <div class="auth-benefits-grouped">
-              <div class="benefit-item">
-                <span class="benefit-icon">🔒</span>
-                <div class="benefit-content">
-                  <strong>Security:</strong> Protect your uploaded documents and ensure privacy
-                </div>
-              </div>
-              <div class="benefit-item">
-                <span class="benefit-icon">⚡</span>
-                <div class="benefit-content">
-                  <strong>Processing Power:</strong> Access to advanced OCR and AI processing capabilities
-                </div>
-              </div>
-              <div class="benefit-item">
-                <span class="benefit-icon">📁</span>
-                <div class="benefit-content">
-                  <strong>File History:</strong> Keep track of your conversion history (optional)
-                </div>
-              </div>
-              <div class="benefit-item">
-                <span class="benefit-icon">⏱️</span>
-                <div class="benefit-content">
-                  <strong>Rate Limiting:</strong> Prevent abuse and ensure fair usage for all users
-                </div>
+        <div class="auth-reasons">
+          <h3>Why do we require authentication?</h3>
+          <div class="auth-benefits-grouped">
+            <div class="benefit-item">
+              <span class="benefit-icon">🔒</span>
+              <div class="benefit-content">
+                <strong>Security:</strong> Protect your uploaded documents and ensure privacy
               </div>
             </div>
-            <p class="privacy-note">
-              <em>Your documents are processed securely and are not stored permanently on our servers.</em>
-            </p>
-          </div>
-          
-          <div class="process-overview">
-            <h3>How It Works</h3>
-            <div class="process-steps-grouped">
-              <div class="process-item">
-                <span class="process-icon">📤</span>
-                <div class="process-content">
-                  <strong>Upload Your Document:</strong> Drag and drop images (JPG, PNG) or PDF files
-                </div>
+            <div class="benefit-item">
+              <span class="benefit-icon">⚡</span>
+              <div class="benefit-content">
+                <strong>Processing Power:</strong> Access to advanced OCR and AI processing capabilities
               </div>
-              <div class="process-item">
-                <span class="process-icon">🔍</span>
-                <div class="process-content">
-                  <strong>OCR Text Extraction:</strong> Advanced technology reads and extracts text with high accuracy
-                </div>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-icon">📁</span>
+              <div class="benefit-content">
+                <strong>File History:</strong> Keep track of your conversion history (optional)
               </div>
-              <div class="process-item">
-                <span class="process-icon">🧠</span>
-                <div class="process-content">
-                  <strong>Smart Event Detection:</strong> AI algorithms identify event titles, dates, times, and locations
-                </div>
-              </div>
-              <div class="process-item">
-                <span class="process-icon">📅</span>
-                <div class="process-content">
-                  <strong>Calendar Generation:</strong> Generate downloadable ICS files compatible with all major calendar apps
-                </div>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-icon">⏱️</span>
+              <div class="benefit-content">
+                <strong>Rate Limiting:</strong> Prevent abuse and ensure fair usage for all users
               </div>
             </div>
           </div>
+          <p class="privacy-note">
+            <em>Your documents are processed securely and are not stored permanently on our servers.</em>
+          </p>
         </div>
         
         <app-auth mode="login"></app-auth>
