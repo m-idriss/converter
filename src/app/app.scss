@@ -611,18 +611,34 @@
   position: relative;
   z-index: 1;
   padding: var(--space-3);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  backdrop-filter: blur(30px) saturate(1.5);
+  -webkit-backdrop-filter: blur(30px) saturate(1.5);
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: var(--shadow-glass);
 
   .prompt-content {
     text-align: center;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      rgba(255, 255, 255, 0.25) 100%
+    );
+    backdrop-filter: blur(25px) saturate(1.6);
+    -webkit-backdrop-filter: blur(25px) saturate(1.6);
     padding: var(--space-6);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-xl);
     max-width: 380px;
     width: 100%;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     position: relative;
     overflow: hidden;
 
@@ -902,6 +918,19 @@
   justify-content: center;
   align-items: center;
   min-height: 60vh;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  backdrop-filter: blur(40px) saturate(1.8);
+  -webkit-backdrop-filter: blur(40px) saturate(1.8);
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: var(--shadow-glass);
+  margin: var(--space-4);
+  padding: var(--space-4);
 }
 
 .content-expansion-section .info-card {
