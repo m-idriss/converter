@@ -1,62 +1,62 @@
 /* Global styles with enhanced design system */
 
 :root {
-  /* Enhanced Color Palette */
-  --primary-50: #f0f4ff;
-  --primary-100: #e0e7ff;
-  --primary-200: #c7d2fe;
-  --primary-300: #a5b4fc;
-  --primary-400: #818cf8;
-  --primary-500: #6366f1;
-  --primary-600: #4f46e5;
-  --primary-700: #4338ca;
-  --primary-800: #3730a3;
-  --primary-900: #312e81;
+  /* Apple-inspired Color Palette with warmth and vibrancy */
+  --primary-50: #f0f7ff;
+  --primary-100: #e1efff;
+  --primary-200: #c7deff;
+  --primary-300: #a8caff;
+  --primary-400: #7bb1ff;
+  --primary-500: #007aff; /* Apple Blue */
+  --primary-600: #0056cc;
+  --primary-700: #004bb3;
+  --primary-800: #003d99;
+  --primary-900: #002f7a;
 
-  --secondary-50: #fdf4ff;
-  --secondary-100: #fae8ff;
-  --secondary-200: #f5d0fe;
-  --secondary-300: #f0abfc;
-  --secondary-400: #e879f9;
-  --secondary-500: #d946ef;
-  --secondary-600: #c026d3;
-  --secondary-700: #a21caf;
-  --secondary-800: #86198f;
-  --secondary-900: #701a75;
+  --secondary-50: #fff4f8;
+  --secondary-100: #ffe8f1;
+  --secondary-200: #ffd1e4;
+  --secondary-300: #ffb5d6;
+  --secondary-400: #ff8cc7;
+  --secondary-500: #ff2d92; /* Apple Pink */
+  --secondary-600: #e6296b;
+  --secondary-700: #cc2458;
+  --secondary-800: #b31f46;
+  --secondary-900: #991a33;
 
-  /* Neutral Colors */
-  --gray-50: #f9fafb;
-  --gray-100: #f3f4f6;
-  --gray-200: #e5e7eb;
-  --gray-300: #d1d5db;
-  --gray-400: #9ca3af;
-  --gray-500: #6b7280;
-  --gray-600: #4b5563;
-  --gray-700: #374151;
-  --gray-800: #1f2937;
-  --gray-900: #111827;
+  /* Warmer Neutral Colors inspired by Apple's design */
+  --gray-50: #fafbfc;
+  --gray-100: #f4f5f7;
+  --gray-200: #e8eaed;
+  --gray-300: #dadce0;
+  --gray-400: #9aa0a6;
+  --gray-500: #70777f;
+  --gray-600: #5f6368;
+  --gray-700: #3c4043;
+  --gray-800: #202124;
+  --gray-900: #1a1d21;
 
-  /* Semantic Colors */
-  --success-50: #ecfdf5;
-  --success-100: #d1fae5;
-  --success-500: #10b981;
-  --success-600: #059669;
-  --success-700: #047857;
-  --error-50: #fef2f2;
-  --error-100: #fee2e2;
-  --error-500: #ef4444;
-  --error-600: #dc2626;
-  --error-700: #b91c1c;
-  --warning-50: #fffbeb;
-  --warning-100: #fef3c7;
-  --warning-500: #f59e0b;
-  --warning-600: #d97706;
-  --warning-700: #b45309;
-  --info-50: #eff6ff;
-  --info-100: #dbeafe;
-  --info-500: #3b82f6;
-  --info-600: #2563eb;
-  --info-700: #1d4ed8;
+  /* Apple-inspired Semantic Colors */
+  --success-50: #f1fdf4;
+  --success-100: #e3faec;
+  --success-500: #34c759; /* Apple Green */
+  --success-600: #2fb84d;
+  --success-700: #28a145;
+  --error-50: #fff5f5;
+  --error-100: #fed7d7;
+  --error-500: #ff3b30; /* Apple Red */
+  --error-600: #e53e3e;
+  --error-700: #c53030;
+  --warning-50: #fffbf0;
+  --warning-100: #feebc8;
+  --warning-500: #ff9500; /* Apple Orange */
+  --warning-600: #dd6b20;
+  --warning-700: #c05621;
+  --info-50: #f0f9ff;
+  --info-100: #e0f2fe;
+  --info-500: #5ac8fa; /* Apple Light Blue */
+  --info-600: #0284c7;
+  --info-700: #0369a1;
 
   /* Typography Scale */
   --text-xs: 0.75rem;
@@ -82,13 +82,15 @@
   --space-16: 4rem;
   --space-20: 5rem;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-base: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  /* Apple-style enhanced shadows with subtle warmth */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.02);
+  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  --shadow-glass-lg: 0 24px 48px 0 rgba(31, 38, 135, 0.25), 0 8px 24px 0 rgba(0, 0, 0, 0.08);
 
   /* Border Radius */
   --radius-sm: 0.375rem;
@@ -99,10 +101,11 @@
   --radius-2xl: 2rem;
   --radius-full: 9999px;
 
-  /* Transitions */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-base: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  /* Transitions - Apple-style eased curves */
+  --transition-fast: 150ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-base: 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-slow: 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-spring: 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 * {
@@ -119,21 +122,30 @@ body {
   margin: 0;
   padding: 0;
   font-family:
-    'Inter',
     -apple-system,
     BlinkMacSystemFont,
+    'SF Pro Display',
+    'Inter',
     'Segoe UI',
     'Roboto',
-    'Oxygen',
-    'Ubuntu',
-    'Cantarell',
+    'Helvetica Neue',
     sans-serif;
   font-size: var(--text-base);
   line-height: 1.6;
   color: var(--gray-800);
-  background: var(--gray-50);
+  /* Apple-inspired gradient background with subtle warmth */
+  background: linear-gradient(
+    135deg,
+    #f8fafc 0%,
+    #f1f5f9 25%,
+    #e2e8f0 50%,
+    #f8fafc 75%,
+    #ffffff 100%
+  );
+  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga', 'kern';
 }
 
 /* Enhanced Typography */
@@ -256,26 +268,69 @@ select {
    COMMON MIXINS & UTILITIES
    ================================= */
 
-/* Glass morphism effect used throughout the app */
+/* Apple Liquid Glass morphism effects */
 .glass-effect {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.18) 50%,
+    rgba(255, 255, 255, 0.12) 100%
+  );
+  backdrop-filter: blur(40px) saturate(1.8);
+  -webkit-backdrop-filter: blur(40px) saturate(1.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    var(--shadow-glass),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
 }
 
-/* Subtle inner glow effect */
+/* Enhanced glass effect with more depth */
+.glass-effect-intense {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.15) 100%
+  );
+  backdrop-filter: blur(60px) saturate(2.0) brightness(1.1);
+  -webkit-backdrop-filter: blur(60px) saturate(2.0) brightness(1.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    var(--shadow-glass-lg),
+    inset 0 2px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+}
+
+/* Subtle glass effect for secondary elements */
+.glass-effect-subtle {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: var(--shadow-md);
+}
+
+/* Enhanced Apple-style inner glow effect */
 .inner-glow::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.9) 20%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0.9) 80%,
+    transparent 100%
+  );
+  border-radius: inherit;
 }
 
-/* Button shine effect */
+/* Apple-style button shine effect with smoother animation */
 .button-shine {
   position: relative;
   overflow: hidden;
@@ -288,12 +343,47 @@ select {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 30%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0.4) 70%,
+    transparent 100%
+  );
   transition: left var(--transition-slow);
+  border-radius: inherit;
 }
 
 .button-shine:hover:not(:disabled)::before {
   left: 100%;
+}
+
+/* Apple-style interactive glow effect */
+.interactive-glow {
+  position: relative;
+  transition: all var(--transition-base);
+}
+
+.interactive-glow::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 122, 255, 0.2),
+    rgba(255, 45, 146, 0.2)
+  );
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.interactive-glow:hover::after,
+.interactive-glow:focus::after {
+  opacity: 1;
 }
 
 /* Animation utility classes */

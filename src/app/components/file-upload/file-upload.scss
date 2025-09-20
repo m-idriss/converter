@@ -5,19 +5,24 @@
 }
 
 .drop-zone {
-  border: 2px dashed var(--gray-300);
-  border-radius: var(--radius-xl);
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-2xl);
   padding: var(--space-8) var(--space-6);
   text-align: center;
   transition: all var(--transition-base);
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  backdrop-filter: blur(30px) saturate(1.6);
+  -webkit-backdrop-filter: blur(30px) saturate(1.6);
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  box-shadow: var(--shadow-glass);
 
-  /* Subtle gradient overlay */
+  /* Apple-style subtle gradient overlay */
   &::before {
     content: '';
     position: absolute;
@@ -25,7 +30,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.02), rgba(217, 70, 239, 0.02));
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.04), rgba(255, 45, 146, 0.04));
     opacity: 0;
     transition: opacity var(--transition-base);
     pointer-events: none;
@@ -33,10 +38,14 @@
 
   &:hover,
   &.drag-over {
-    border-color: var(--primary-400);
-    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 122, 255, 0.6);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.25) 0%,
+      rgba(255, 255, 255, 0.15) 100%
+    );
     transform: translateY(-2px);
-    box-shadow: var(--shadow-xl);
+    box-shadow: var(--shadow-glass-lg);
 
     &::before {
       opacity: 1;
@@ -48,13 +57,17 @@
   }
 
   &.processing {
-    border-color: var(--success-400);
-    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(52, 199, 89, 0.6);
+    background: linear-gradient(
+      135deg,
+      rgba(52, 199, 89, 0.08) 0%,
+      rgba(52, 199, 89, 0.04) 100%
+    );
     cursor: default;
     transform: none;
 
     &::before {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(5, 150, 105, 0.05));
+      background: linear-gradient(135deg, rgba(52, 199, 89, 0.08), rgba(40, 161, 69, 0.08));
       opacity: 1;
     }
   }
