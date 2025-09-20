@@ -17,7 +17,7 @@
       <div class="converter-section">
         <app-file-upload (textExtracted)="onTextExtracted($event)"> </app-file-upload>
       </div>
-      
+
       <!-- How it works section - beside file upload -->
       <div class="content-expansion-section">
         <div class="info-card">
@@ -28,12 +28,12 @@
             </p>
             <div class="supported-formats">
               <span class="format-label">Supported formats:</span>
-              <span class="formats">JPG, PNG, PDF</span> • 
+              <span class="formats">JPG, PNG, PDF</span> •
               <span class="output-label">Output:</span>
               <span class="output">ICS Calendar Files</span>
             </div>
           </div>
-          
+
           <div class="process-steps">
             <div class="step-item">
               <div class="step-number">1</div>
@@ -198,27 +198,47 @@
   <!-- Non-authenticated user view -->
   <div class="login-layout" *ngIf="!(user$ | async)">
     <div class="auth-section">
-      <div class="login-prompt">
-        <div class="prompt-content">
-          <h2>🔐 Authentication Required</h2>
-          <p class="main-message">Please sign in with Google to use the file converter</p>
-          <div class="why-auth">
-            <h3>Why do we require authentication?</h3>
-            <ul class="auth-benefits">
-              <li><strong>Security:</strong> Protect your uploaded documents and ensure privacy</li>
-              <li><strong>Processing Power:</strong> Access to advanced OCR and AI processing capabilities</li>
-              <li><strong>File History:</strong> Keep track of your conversion history (optional)</li>
-              <li><strong>Rate Limiting:</strong> Prevent abuse and ensure fair usage for all users</li>
-            </ul>
-            <p class="privacy-note">
-              <em>Your documents are processed securely and are not stored permanently on our servers.</em>
-            </p>
+      <div class="auth-content">
+        <h2>🔐 Authentication Required</h2>
+        <p class="main-message">Please sign in with Google to use the file converter</p>
+
+        <div class="auth-reasons">
+          <h3>Why do we require authentication?</h3>
+          <div class="auth-benefits-grouped">
+            <div class="benefit-item">
+              <span class="benefit-icon">🔒</span>
+              <div class="benefit-content">
+                <strong>Security:</strong> Protect your uploaded documents and ensure privacy
+              </div>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-icon">⚡</span>
+              <div class="benefit-content">
+                <strong>Processing Power:</strong> Access to advanced OCR and AI processing capabilities
+              </div>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-icon">📁</span>
+              <div class="benefit-content">
+                <strong>File History:</strong> Keep track of your conversion history (optional)
+              </div>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-icon">⏱️</span>
+              <div class="benefit-content">
+                <strong>Rate Limiting:</strong> Prevent abuse and ensure fair usage for all users
+              </div>
+            </div>
           </div>
-          <app-auth mode="login"></app-auth>
+          <p class="privacy-note">
+            <em>Your documents are processed securely and are not stored permanently on our servers.</em>
+          </p>
         </div>
+
+        <app-auth mode="login"></app-auth>
       </div>
     </div>
-    
+
     <!-- Content expansion section - beside auth -->
     <div class="content-expansion-section">
       <div class="info-card">
@@ -229,12 +249,12 @@
           </p>
           <div class="supported-formats">
             <span class="format-label">Supported formats:</span>
-            <span class="formats">JPG, PNG, PDF</span> • 
+            <span class="formats">JPG, PNG, PDF</span> •
             <span class="output-label">Output:</span>
             <span class="output">ICS Calendar Files</span>
           </div>
         </div>
-        
+
         <div class="features-list">
           <h3>✨ Key Features</h3>
           <ul>
