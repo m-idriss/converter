@@ -5,18 +5,19 @@
 }
 
 .drop-zone {
-  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: var(--radius-2xl);
   padding: var(--space-8) var(--space-6);
   text-align: center;
   transition: all var(--transition-base);
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.15) 0%,
-    rgba(255, 255, 255, 0.08) 100%
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.15) 100%
   );
-  backdrop-filter: blur(30px) saturate(1.6);
-  -webkit-backdrop-filter: blur(30px) saturate(1.6);
+  backdrop-filter: blur(40px) saturate(1.8);
+  -webkit-backdrop-filter: blur(40px) saturate(1.8);
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -41,11 +42,11 @@
     border-color: rgba(0, 122, 255, 0.6);
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.25) 0%,
-      rgba(255, 255, 255, 0.15) 100%
+      rgba(255, 255, 255, 0.35) 0%,
+      rgba(255, 255, 255, 0.25) 100%
     );
     transform: translateY(-2px);
-    box-shadow: var(--shadow-glass-lg);
+    box-shadow: var(--shadow-glass);
 
     &::before {
       opacity: 1;
@@ -60,8 +61,8 @@
     border-color: rgba(52, 199, 89, 0.6);
     background: linear-gradient(
       135deg,
-      rgba(52, 199, 89, 0.08) 0%,
-      rgba(52, 199, 89, 0.04) 100%
+      rgba(52, 199, 89, 0.1) 0%,
+      rgba(52, 199, 89, 0.05) 100%
     );
     cursor: default;
     transform: none;

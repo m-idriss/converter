@@ -32,18 +32,18 @@
 .app-header {
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.4) 0%,
-    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
     rgba(255, 255, 255, 0.15) 100%
   );
-  backdrop-filter: blur(60px) saturate(2.0) brightness(1.1);
-  -webkit-backdrop-filter: blur(60px) saturate(2.0) brightness(1.1);
+  backdrop-filter: blur(40px) saturate(1.8);
+  -webkit-backdrop-filter: blur(40px) saturate(1.8);
   padding: var(--space-2) var(--space-6);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: var(--shadow-glass-lg);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-glass);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
   position: relative;
   z-index: 10;
   min-height: 56px;
@@ -104,13 +104,13 @@
 .no-events-card {
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.25) 0%,
-    rgba(255, 255, 255, 0.18) 50%,
-    rgba(255, 255, 255, 0.12) 100%
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.15) 100%
   );
   backdrop-filter: blur(40px) saturate(1.8);
   -webkit-backdrop-filter: blur(40px) saturate(1.8);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: var(--radius-2xl);
   padding: var(--space-4);
   box-shadow: var(--shadow-glass);
@@ -907,16 +907,16 @@
 .content-expansion-section .info-card {
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.4) 0%,
-    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
     rgba(255, 255, 255, 0.15) 100%
   );
-  backdrop-filter: blur(60px) saturate(2.0) brightness(1.1);
-  -webkit-backdrop-filter: blur(60px) saturate(2.0) brightness(1.1);
+  backdrop-filter: blur(40px) saturate(1.8);
+  -webkit-backdrop-filter: blur(40px) saturate(1.8);
   border-radius: var(--radius-2xl);
   padding: var(--space-6);
-  box-shadow: var(--shadow-glass-lg);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-glass);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   
   h2 {
     margin: 0 0 var(--space-4) 0;

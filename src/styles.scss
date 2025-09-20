@@ -268,47 +268,21 @@ select {
    COMMON MIXINS & UTILITIES
    ================================= */
 
-/* Apple Liquid Glass morphism effects */
+/* Apple Liquid Glass morphism effects - Consistent across all elements */
 .glass-effect {
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.25) 0%,
-    rgba(255, 255, 255, 0.18) 50%,
-    rgba(255, 255, 255, 0.12) 100%
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.15) 100%
   );
   backdrop-filter: blur(40px) saturate(1.8);
   -webkit-backdrop-filter: blur(40px) saturate(1.8);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 
     var(--shadow-glass),
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
     inset 0 -1px 0 rgba(0, 0, 0, 0.05);
-}
-
-/* Enhanced glass effect with more depth */
-.glass-effect-intense {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.4) 0%,
-    rgba(255, 255, 255, 0.25) 50%,
-    rgba(255, 255, 255, 0.15) 100%
-  );
-  backdrop-filter: blur(60px) saturate(2.0) brightness(1.1);
-  -webkit-backdrop-filter: blur(60px) saturate(2.0) brightness(1.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 
-    var(--shadow-glass-lg),
-    inset 0 2px 0 rgba(255, 255, 255, 0.4),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.08);
-}
-
-/* Subtle glass effect for secondary elements */
-.glass-effect-subtle {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: var(--shadow-md);
 }
 
 /* Enhanced Apple-style inner glow effect */
