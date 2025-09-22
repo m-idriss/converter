@@ -490,10 +490,15 @@
     align-items: center;
     gap: var(--space-3);
     font-weight: 600;
+    animation: slideIn var(--transition-base) ease-out;
+    margin-top: var(--space-4);
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
   }
 
   .status-icon {
     font-size: var(--text-xl);
+    flex-shrink: 0;
   }
 
   &.status-success {

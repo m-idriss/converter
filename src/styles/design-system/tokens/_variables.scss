@@ -1,0 +1,221 @@
+/**
+ * Design System - Core Variables
+ * =================================
+ * Central definition of all design tokens for the File to Calendar Converter
+ * Apple-inspired design system with consistent variables across all components
+ */
+
+:root {
+  /* =================================
+     COLOR PALETTE - Apple-inspired
+     ================================= */
+  
+  /* Primary Colors - Apple Blue */
+  --primary-50: #f0f7ff;
+  --primary-100: #e1efff;
+  --primary-200: #c7deff;
+  --primary-300: #a8caff;
+  --primary-400: #7bb1ff;
+  --primary-500: #007aff; /* Apple Blue */
+  --primary-600: #0056cc;
+  --primary-700: #004bb3;
+  --primary-800: #003d99;
+  --primary-900: #002f7a;
+
+  /* Secondary Colors - Apple Pink */
+  --secondary-50: #fff4f8;
+  --secondary-100: #ffe8f1;
+  --secondary-200: #ffd1e4;
+  --secondary-300: #ffb5d6;
+  --secondary-400: #ff8cc7;
+  --secondary-500: #ff2d92; /* Apple Pink */
+  --secondary-600: #e6296b;
+  --secondary-700: #cc2458;
+  --secondary-800: #b31f46;
+  --secondary-900: #991a33;
+
+  /* Neutral Colors - Warmer Apple-inspired grays */
+  --gray-50: #fafbfc;
+  --gray-100: #f4f5f7;
+  --gray-200: #e8eaed;
+  --gray-300: #dadce0;
+  --gray-400: #9aa0a6;
+  --gray-500: #70777f;
+  --gray-600: #5f6368;
+  --gray-700: #3c4043;
+  --gray-800: #202124;
+  --gray-900: #1a1d21;
+
+  /* Semantic Colors */
+  --success-50: #f1fdf4;
+  --success-100: #e3faec;
+  --success-200: #c7f0d3;
+  --success-300: #a3e6b8;
+  --success-400: #7dd99c;
+  --success-500: #34c759; /* Apple Green */
+  --success-600: #2fb84d;
+  --success-700: #28a145;
+  --success-800: #228b3c;
+  --success-900: #1e7533;
+
+  --error-50: #fff5f5;
+  --error-100: #fed7d7;
+  --error-200: #feb2b2;
+  --error-300: #fc8181;
+  --error-400: #f56565;
+  --error-500: #ff3b30; /* Apple Red */
+  --error-600: #e53e3e;
+  --error-700: #c53030;
+  --error-800: #9b2c2c;
+  --error-900: #742a2a;
+
+  --warning-50: #fffbf0;
+  --warning-100: #feebc8;
+  --warning-200: #fbd38d;
+  --warning-300: #f6ad55;
+  --warning-400: #ed8936;
+  --warning-500: #ff9500; /* Apple Orange */
+  --warning-600: #dd6b20;
+  --warning-700: #c05621;
+  --warning-800: #9c4221;
+  --warning-900: #7b341e;
+
+  --info-50: #f0f9ff;
+  --info-100: #e0f2fe;
+  --info-200: #bae6fd;
+  --info-300: #7dd3fc;
+  --info-400: #38bdf8;
+  --info-500: #5ac8fa; /* Apple Light Blue */
+  --info-600: #0284c7;
+  --info-700: #0369a1;
+  --info-800: #075985;
+  --info-900: #0c4a6e;
+
+  /* =================================
+     TYPOGRAPHY SCALE
+     ================================= */
+  
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;   /* 14px */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-xl: 1.25rem;    /* 20px */
+  --text-2xl: 1.5rem;    /* 24px */
+  --text-3xl: 1.875rem;  /* 30px */
+  --text-4xl: 2.25rem;   /* 36px */
+  --text-5xl: 3rem;      /* 48px */
+  --text-6xl: 3.75rem;   /* 60px */
+
+  /* Font Weights */
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+
+  /* Line Heights */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+
+  /* =================================
+     SPACING SCALE
+     ================================= */
+  
+  --space-0: 0;
+  --space-px: 1px;
+  --space-0_5: 0.125rem;  /* 2px */
+  --space-1: 0.25rem;     /* 4px */
+  --space-1_5: 0.375rem;  /* 6px */
+  --space-2: 0.5rem;      /* 8px */
+  --space-2_5: 0.625rem;  /* 10px */
+  --space-3: 0.75rem;     /* 12px */
+  --space-3_5: 0.875rem;  /* 14px */
+  --space-4: 1rem;        /* 16px */
+  --space-5: 1.25rem;     /* 20px */
+  --space-6: 1.5rem;      /* 24px */
+  --space-7: 1.75rem;     /* 28px */
+  --space-8: 2rem;        /* 32px */
+  --space-9: 2.25rem;     /* 36px */
+  --space-10: 2.5rem;     /* 40px */
+  --space-11: 2.75rem;    /* 44px */
+  --space-12: 3rem;       /* 48px */
+  --space-14: 3.5rem;     /* 56px */
+  --space-16: 4rem;       /* 64px */
+  --space-20: 5rem;       /* 80px */
+  --space-24: 6rem;       /* 96px */
+  --space-28: 7rem;       /* 112px */
+  --space-32: 8rem;       /* 128px */
+
+  /* =================================
+     BORDER RADIUS
+     ================================= */
+  
+  --radius-none: 0;
+  --radius-sm: 0.125rem;   /* 2px */
+  --radius-base: 0.25rem;  /* 4px */
+  --radius-md: 0.375rem;   /* 6px */
+  --radius-lg: 0.5rem;     /* 8px */
+  --radius-xl: 0.75rem;    /* 12px */
+  --radius-2xl: 1rem;      /* 16px */
+  --radius-3xl: 1.5rem;    /* 24px */
+  --radius-full: 9999px;
+
+  /* =================================
+     SHADOWS - Apple-inspired
+     ================================= */
+  
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-base: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-2xl: 0 50px 100px -20px rgba(0, 0, 0, 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  
+  /* Glass morphism shadows */
+  --shadow-glass: 
+    0 8px 32px rgba(31, 38, 135, 0.37),
+    0 2px 8px rgba(31, 38, 135, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  
+  --shadow-glass-hover:
+    0 12px 40px rgba(31, 38, 135, 0.45),
+    0 4px 16px rgba(31, 38, 135, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+
+  /* =================================
+     TRANSITIONS - Apple-style curves
+     ================================= */
+  
+  --transition-fast: 150ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-base: 300ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-slow: 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-spring: 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --transition-elastic: 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* =================================
+     BREAKPOINTS
+     ================================= */
+  
+  --breakpoint-mobile: 480px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1024px;
+  --breakpoint-wide: 1280px;
+
+  /* =================================
+     Z-INDEX SCALE
+     ================================= */
+  
+  --z-dropdown: 1000;
+  --z-overlay: 1010;
+  --z-modal: 1020;
+  --z-popover: 1030;
+  --z-tooltip: 1040;
+  --z-toast: 1050;
+}

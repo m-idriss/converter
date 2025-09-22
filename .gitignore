@@ -47,6 +47,7 @@ Thumbs.db
 *.backup
 *.swp
 *~
+*-backup.scss
 
 src/environments/environment.local.ts
 
