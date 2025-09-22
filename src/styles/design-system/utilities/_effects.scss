@@ -1,0 +1,373 @@
+/**
+ * Design System - Visual Effects
+ * =================================
+ * Glass morphism, glow effects, and other visual utilities
+ */
+
+/* =================================
+   GLASS MORPHISM EFFECTS
+   ================================= */
+
+/* Base glass effect - Apple-inspired liquid glass */
+.glass-effect,
+.glass-card,
+.glass-panel {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.18) 50%,
+    rgba(255, 255, 255, 0.12) 100%
+  );
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    var(--shadow-glass),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+}
+
+/* Enhanced glass effect for cards */
+.glass-card {
+  border-radius: var(--radius-2xl);
+  padding: var(--space-4);
+  position: relative;
+  overflow: hidden;
+
+  /* Subtle inner glow */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  }
+}
+
+/* Stronger glass effect for modals/overlays */
+.glass-modal {
+  @extend .glass-effect;
+  backdrop-filter: blur(40px) saturate(1.8);
+  -webkit-backdrop-filter: blur(40px) saturate(1.8);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.15) 100%
+  );
+}
+
+/* Subtle glass effect for backgrounds */
+.glass-subtle {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Dark glass variants */
+.glass-dark {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.15) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.05) 100%
+  );
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* =================================
+   GLOW EFFECTS
+   ================================= */
+
+/* Apple-style interactive glow effect */
+.interactive-glow {
+  position: relative;
+  transition: all var(--transition-base);
+}
+
+.interactive-glow::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 122, 255, 0.2),
+    rgba(255, 45, 146, 0.2)
+  );
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.interactive-glow:hover::after,
+.interactive-glow:focus::after {
+  opacity: 1;
+}
+
+/* Primary glow */
+.glow-primary {
+  box-shadow: 0 0 20px rgba(0, 122, 255, 0.3);
+}
+
+.glow-primary:hover {
+  box-shadow: 0 0 30px rgba(0, 122, 255, 0.5);
+}
+
+/* Success glow */
+.glow-success {
+  box-shadow: 0 0 20px rgba(52, 199, 89, 0.3);
+}
+
+.glow-success:hover {
+  box-shadow: 0 0 30px rgba(52, 199, 89, 0.5);
+}
+
+/* Error glow */
+.glow-error {
+  box-shadow: 0 0 20px rgba(255, 59, 48, 0.3);
+}
+
+.glow-error:hover {
+  box-shadow: 0 0 30px rgba(255, 59, 48, 0.5);
+}
+
+/* Warning glow */
+.glow-warning {
+  box-shadow: 0 0 20px rgba(255, 149, 0, 0.3);
+}
+
+.glow-warning:hover {
+  box-shadow: 0 0 30px rgba(255, 149, 0, 0.5);
+}
+
+/* =================================
+   SHINE EFFECTS
+   ================================= */
+
+/* Button shine effect with smoother animation */
+.button-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.button-shine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 30%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0.4) 70%,
+    transparent 100%
+  );
+  transition: left var(--transition-slow);
+  border-radius: inherit;
+}
+
+.button-shine:hover:not(:disabled)::before {
+  left: 100%;
+}
+
+/* Card shine effect */
+.card-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-shine::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 70%
+  );
+  transform: rotate(45deg);
+  transition: transform var(--transition-slow);
+  pointer-events: none;
+}
+
+.card-shine:hover::before {
+  transform: rotate(45deg) translate(50%, 50%);
+}
+
+/* =================================
+   INNER GLOW EFFECTS
+   ================================= */
+
+/* Enhanced Apple-style inner glow effect */
+.inner-glow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.9) 20%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0.9) 80%,
+    transparent 100%
+  );
+  border-radius: inherit;
+}
+
+/* Bottom inner glow */
+.inner-glow-bottom::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.5),
+    transparent
+  );
+  border-radius: inherit;
+}
+
+/* =================================
+   BORDER EFFECTS
+   ================================= */
+
+/* Gradient borders */
+.border-gradient {
+  position: relative;
+  background: linear-gradient(var(--gray-50), var(--gray-50)) padding-box,
+              linear-gradient(135deg, var(--primary-400), var(--secondary-400)) border-box;
+  border: 2px solid transparent;
+  border-radius: var(--radius-lg);
+}
+
+.border-gradient-primary {
+  background: linear-gradient(var(--gray-50), var(--gray-50)) padding-box,
+              linear-gradient(135deg, var(--primary-300), var(--primary-600)) border-box;
+  border: 1px solid transparent;
+}
+
+.border-gradient-success {
+  background: linear-gradient(var(--gray-50), var(--gray-50)) padding-box,
+              linear-gradient(135deg, var(--success-300), var(--success-600)) border-box;
+  border: 1px solid transparent;
+}
+
+/* Animated borders */
+.border-animated {
+  position: relative;
+  border: 2px solid transparent;
+  background: linear-gradient(var(--gray-50), var(--gray-50)) padding-box;
+}
+
+.border-animated::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  background: linear-gradient(45deg, var(--primary-400), var(--secondary-400), var(--primary-400));
+  border-radius: inherit;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  animation: borderRotate 3s linear infinite;
+}
+
+@keyframes borderRotate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* =================================
+   SHADOW UTILITIES
+   ================================= */
+
+.shadow-xs { box-shadow: var(--shadow-xs); }
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-base { box-shadow: var(--shadow-base); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+.shadow-xl { box-shadow: var(--shadow-xl); }
+.shadow-2xl { box-shadow: var(--shadow-2xl); }
+.shadow-inner { box-shadow: var(--shadow-inner); }
+.shadow-none { box-shadow: none; }
+
+/* Glass shadows */
+.shadow-glass { box-shadow: var(--shadow-glass); }
+.shadow-glass-hover { box-shadow: var(--shadow-glass-hover); }
+
+/* Colored shadows */
+.shadow-primary {
+  box-shadow: 0 10px 25px -5px rgba(0, 122, 255, 0.2);
+}
+
+.shadow-success {
+  box-shadow: 0 10px 25px -5px rgba(52, 199, 89, 0.2);
+}
+
+.shadow-error {
+  box-shadow: 0 10px 25px -5px rgba(255, 59, 48, 0.2);
+}
+
+.shadow-warning {
+  box-shadow: 0 10px 25px -5px rgba(255, 149, 0, 0.2);
+}
+
+/* =================================
+   BACKDROP UTILITIES
+   ================================= */
+
+.backdrop-blur-sm { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.backdrop-blur-base { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.backdrop-blur-md { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.backdrop-blur-lg { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.backdrop-blur-xl { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+.backdrop-blur-2xl { backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); }
+.backdrop-blur-none { backdrop-filter: none; -webkit-backdrop-filter: none; }
+
+.backdrop-brightness-50 { backdrop-filter: brightness(0.5); -webkit-backdrop-filter: brightness(0.5); }
+.backdrop-brightness-75 { backdrop-filter: brightness(0.75); -webkit-backdrop-filter: brightness(0.75); }
+.backdrop-brightness-100 { backdrop-filter: brightness(1); -webkit-backdrop-filter: brightness(1); }
+.backdrop-brightness-125 { backdrop-filter: brightness(1.25); -webkit-backdrop-filter: brightness(1.25); }
+.backdrop-brightness-150 { backdrop-filter: brightness(1.5); -webkit-backdrop-filter: brightness(1.5); }
+
+.backdrop-saturate-0 { backdrop-filter: saturate(0); -webkit-backdrop-filter: saturate(0); }
+.backdrop-saturate-50 { backdrop-filter: saturate(0.5); -webkit-backdrop-filter: saturate(0.5); }
+.backdrop-saturate-100 { backdrop-filter: saturate(1); -webkit-backdrop-filter: saturate(1); }
+.backdrop-saturate-150 { backdrop-filter: saturate(1.5); -webkit-backdrop-filter: saturate(1.5); }
+.backdrop-saturate-200 { backdrop-filter: saturate(2); -webkit-backdrop-filter: saturate(2); }

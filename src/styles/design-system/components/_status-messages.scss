@@ -1,0 +1,453 @@
+/**
+ * Design System - Status Messages
+ * =================================
+ * Consistent status message components for success, error, warning, and info states
+ */
+
+/* =================================
+   BASE STATUS MESSAGE
+   ================================= */
+
+.status-message {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  font-weight: var(--font-medium);
+  line-height: var(--leading-relaxed);
+  animation: slideIn var(--transition-base) ease-out;
+  position: relative;
+  overflow: hidden;
+
+  /* Icon styling */
+  .status-icon {
+    font-size: var(--text-xl);
+    flex-shrink: 0;
+    margin-top: var(--space-0_5); /* Align with first line of text */
+  }
+
+  /* Content styling */
+  .status-content {
+    flex: 1;
+    
+    .status-title {
+      font-weight: var(--font-semibold);
+      margin: 0 0 var(--space-1) 0;
+      line-height: var(--leading-tight);
+    }
+    
+    .status-description {
+      margin: 0;
+      opacity: 0.9;
+      font-size: var(--text-sm);
+    }
+  }
+
+  /* Action button */
+  .status-action {
+    margin-left: var(--space-2);
+    flex-shrink: 0;
+  }
+
+  /* Dismiss button */
+  .status-dismiss {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-1);
+    border-radius: var(--radius-sm);
+    opacity: 0.7;
+    transition: opacity var(--transition-fast);
+    
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+/* =================================
+   STATUS VARIANTS
+   ================================= */
+
+/* Success Status */
+.status-success {
+  background: linear-gradient(135deg, var(--success-50), var(--success-100));
+  color: var(--success-800);
+  border: 1px solid var(--success-200);
+  
+  .status-icon {
+    color: var(--success-600);
+  }
+  
+  .status-dismiss {
+    color: var(--success-700);
+    
+    &:hover {
+      background: var(--success-200);
+    }
+  }
+}
+
+/* Error Status */
+.status-error {
+  background: linear-gradient(135deg, var(--error-50), var(--error-100));
+  color: var(--error-800);
+  border: 1px solid var(--error-200);
+  
+  .status-icon {
+    color: var(--error-600);
+  }
+  
+  .status-dismiss {
+    color: var(--error-700);
+    
+    &:hover {
+      background: var(--error-200);
+    }
+  }
+}
+
+/* Warning Status */
+.status-warning {
+  background: linear-gradient(135deg, var(--warning-50), var(--warning-100));
+  color: var(--warning-800);
+  border: 1px solid var(--warning-200);
+  
+  .status-icon {
+    color: var(--warning-600);
+  }
+  
+  .status-dismiss {
+    color: var(--warning-700);
+    
+    &:hover {
+      background: var(--warning-200);
+    }
+  }
+}
+
+/* Info Status */
+.status-info {
+  background: linear-gradient(135deg, var(--info-50), var(--info-100));
+  color: var(--info-800);
+  border: 1px solid var(--info-200);
+  
+  .status-icon {
+    color: var(--info-600);
+  }
+  
+  .status-dismiss {
+    color: var(--info-700);
+    
+    &:hover {
+      background: var(--info-200);
+    }
+  }
+}
+
+/* Neutral Status */
+.status-neutral {
+  background: linear-gradient(135deg, var(--gray-50), var(--gray-100));
+  color: var(--gray-800);
+  border: 1px solid var(--gray-200);
+  
+  .status-icon {
+    color: var(--gray-600);
+  }
+  
+  .status-dismiss {
+    color: var(--gray-700);
+    
+    &:hover {
+      background: var(--gray-200);
+    }
+  }
+}
+
+/* =================================
+   STATUS SIZES
+   ================================= */
+
+.status-sm {
+  padding: var(--space-3);
+  gap: var(--space-2);
+  border-radius: var(--radius-base);
+  
+  .status-icon {
+    font-size: var(--text-base);
+  }
+  
+  .status-content {
+    .status-title {
+      font-size: var(--text-sm);
+    }
+    
+    .status-description {
+      font-size: var(--text-xs);
+    }
+  }
+}
+
+.status-lg {
+  padding: var(--space-6);
+  gap: var(--space-4);
+  border-radius: var(--radius-xl);
+  
+  .status-icon {
+    font-size: var(--text-2xl);
+  }
+  
+  .status-content {
+    .status-title {
+      font-size: var(--text-lg);
+    }
+    
+    .status-description {
+      font-size: var(--text-base);
+    }
+  }
+}
+
+/* =================================
+   STATUS LAYOUTS
+   ================================= */
+
+/* Compact layout - icon and text only */
+.status-compact {
+  padding: var(--space-3);
+  gap: var(--space-2);
+  align-items: center;
+  
+  .status-content {
+    .status-title {
+      margin: 0;
+    }
+    
+    .status-description {
+      display: none;
+    }
+  }
+}
+
+/* Banner layout - full width, minimal padding */
+.status-banner {
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  padding: var(--space-4) var(--space-6);
+}
+
+/* Toast layout - positioned for notifications */
+.status-toast {
+  position: fixed;
+  top: var(--space-6);
+  right: var(--space-6);
+  max-width: 420px;
+  z-index: var(--z-toast);
+  box-shadow: var(--shadow-lg);
+  
+  @media (max-width: 479px) {
+    left: var(--space-4);
+    right: var(--space-4);
+    top: var(--space-4);
+    max-width: none;
+  }
+}
+
+/* =================================
+   SPECIAL STATUS TYPES
+   ================================= */
+
+/* Loading status */
+.status-loading {
+  @extend .status-info;
+  
+  .status-icon {
+    animation: spin 1s linear infinite;
+  }
+}
+
+/* Progress status */
+.status-progress {
+  @extend .status-info;
+  position: relative;
+  overflow: hidden;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: var(--info-500);
+    transition: width var(--transition-base);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  }
+  
+  &[data-progress="0"]::after { width: 0%; }
+  &[data-progress="10"]::after { width: 10%; }
+  &[data-progress="20"]::after { width: 20%; }
+  &[data-progress="30"]::after { width: 30%; }
+  &[data-progress="40"]::after { width: 40%; }
+  &[data-progress="50"]::after { width: 50%; }
+  &[data-progress="60"]::after { width: 60%; }
+  &[data-progress="70"]::after { width: 70%; }
+  &[data-progress="80"]::after { width: 80%; }
+  &[data-progress="90"]::after { width: 90%; }
+  &[data-progress="100"]::after { width: 100%; }
+}
+
+/* Validation status - for forms */
+.status-validation {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  margin-top: var(--space-1);
+  
+  .status-icon {
+    font-size: var(--text-sm);
+    margin-top: 0;
+  }
+}
+
+/* =================================
+   STATUS CONTAINERS
+   ================================= */
+
+/* Status list - for multiple status messages */
+.status-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  
+  .status-message {
+    margin-bottom: 0;
+  }
+}
+
+/* Status stack - for overlapping notifications */
+.status-stack {
+  position: fixed;
+  top: var(--space-6);
+  right: var(--space-6);
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 420px;
+  
+  @media (max-width: 479px) {
+    left: var(--space-4);
+    right: var(--space-4);
+    top: var(--space-4);
+    max-width: none;
+  }
+}
+
+/* =================================
+   ANIMATIONS
+   ================================= */
+
+/* Slide in from right for toasts */
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide out to right for dismissal */
+@keyframes slideOutToRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* Toast-specific animations */
+.status-toast.entering {
+  animation: slideInFromRight var(--transition-base) ease-out;
+}
+
+.status-toast.leaving {
+  animation: slideOutToRight var(--transition-base) ease-in;
+}
+
+/* Shake animation for error states */
+@keyframes statusShake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+  20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+
+.status-error.shake {
+  animation: statusShake 0.6s ease-in-out;
+}
+
+/* =================================
+   RESPONSIVE DESIGN
+   ================================= */
+
+@media (max-width: 479px) {
+  .status-message {
+    padding: var(--space-3);
+    gap: var(--space-2);
+    
+    .status-icon {
+      font-size: var(--text-lg);
+    }
+    
+    .status-content {
+      .status-title {
+        font-size: var(--text-sm);
+      }
+      
+      .status-description {
+        font-size: var(--text-xs);
+      }
+    }
+  }
+  
+  .status-banner {
+    padding: var(--space-3) var(--space-4);
+  }
+}
+
+/* =================================
+   ACCESSIBILITY
+   ================================= */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .status-message {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .status-message {
+    animation: none;
+  }
+  
+  .status-loading .status-icon {
+    animation: none;
+  }
+  
+  .status-toast.entering,
+  .status-toast.leaving {
+    animation: none;
+  }
+}
