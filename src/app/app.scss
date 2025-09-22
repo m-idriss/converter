@@ -30,22 +30,11 @@
 }
 
 .app-header {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.25) 0%,
-    rgba(255, 255, 255, 0.18) 50%,
-    rgba(255, 255, 255, 0.12) 100%
-  );
-  backdrop-filter: blur(20px) saturate(1.5);
-  -webkit-backdrop-filter: blur(20px) saturate(1.5);
-  padding: var(--space-4) var(--space-6);
+
+  padding: var(--space-4);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 
-    var(--shadow-glass),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   position: relative;
   z-index: 10;
   min-height: 60px;
@@ -85,7 +74,7 @@
 }
 
 .app-main {
-  padding: var(--space-6) var(--space-6);
+  padding: var(--space-4);
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
@@ -101,9 +90,43 @@
 
 .events-card,
 .no-events-card {
-  // Use unified glass card styles - applied via CSS class in templates
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.15) 100%
+  );
+  backdrop-filter: blur(40px) saturate(1.8);
+  -webkit-backdrop-filter: blur(40px) saturate(1.8);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: var(--radius-2xl);
   padding: var(--space-4);
+  box-shadow: var(--shadow-glass);
+  position: relative;
+  overflow: hidden;
+
+  /* Subtle inner glow */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  }
+
+  h2 {
+    margin: 0 0 var(--space-3) 0;
+    color: var(--gray-900);
+    font-size: var(--text-xl);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
 }
 
 .confidence {
@@ -116,11 +139,6 @@
   display: inline-block;
   margin-bottom: var(--space-4);
   border: 1px solid var(--success-200);
-}
-
-// Use unified button classes - applied via CSS class in templates
-.download-btn.downloading {
-  background: linear-gradient(135deg, var(--primary-500), var(--primary-600)) !important;
 }
 
 // iPhone-style events list
@@ -462,21 +480,115 @@
 }
 
 .download-status {
-  // Use status-message class in template
+  animation: slideIn var(--transition-base) ease-out;
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+
+  .status-message {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-weight: 600;
+  }
+
+  .status-icon {
+    font-size: var(--text-xl);
+  }
+
+  &.status-success {
+    background: linear-gradient(135deg, var(--success-50), var(--success-100));
+    color: var(--success-700);
+    border: 1px solid var(--success-200);
+  }
+
+  &.status-error {
+    background: linear-gradient(135deg, var(--error-50), var(--error-100));
+    color: var(--error-700);
+    border: 1px solid var(--error-200);
+  }
+
+  &.status-info {
+    background: linear-gradient(135deg, var(--primary-50), var(--primary-100));
+    color: var(--primary-700);
+    border: 1px solid var(--primary-200);
+  }
 }
 
-// Use unified button classes - applied via CSS class in templates
+// Centralized button styles with shine effect
+.download-btn,
+.reset-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: none;
+  border-radius: var(--radius-base);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  letter-spacing: -0.01em;
+  position: relative;
+  overflow: hidden;
+
+  /* Button hover shine effect */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left var(--transition-slow);
+  }
+
+  &:hover:not(:disabled)::before {
+    left: 100%;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  &:not(:disabled):hover {
+    transform: translateY(-2px);
+  }
+
+  &:not(:disabled):active {
+    transform: translateY(0);
+  }
+}
+
 .download-btn {
-  // These will be applied as btn btn-success in template
+  background: linear-gradient(135deg, var(--success-500), var(--success-600));
+  color: white;
+  box-shadow: var(--shadow-md);
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--success-600), var(--success-700));
+    box-shadow: var(--shadow-xl);
+  }
 
   &.downloading {
     animation: pulse 2s infinite;
-    background: linear-gradient(135deg, var(--primary-500), var(--primary-600)) !important;
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
   }
 }
 
 .reset-btn {
-  // Applied as btn btn-secondary in template
+  background: linear-gradient(135deg, var(--gray-100), var(--gray-200));
+  color: var(--gray-700);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-300);
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--gray-200), var(--gray-300));
+    box-shadow: var(--shadow-md);
+  }
 }
 
 .no-events-card {
@@ -610,13 +722,16 @@
   padding: var(--space-1);
 }
 
-// Toggle buttons now use unified button base - applied via CSS classes in template
+// Toggle buttons now use centralized styles
 .toggle-btn {
-  // Applied as btn btn-sm in template with additional styles
   background: transparent;
-  color: var(--gray-600);
-  box-shadow: none;
+  border: none;
   padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--text-sm);
+  color: var(--gray-600);
+  transition: all var(--transition-fast);
 
   &:hover {
     background: var(--gray-200);
@@ -707,12 +822,12 @@
 .main-content-layout, .login-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-8);
+  gap: var(--space-4);
   align-items: start;
 }
 
 .login-layout {
-  padding: var(--space-6) var(--space-6);
+  padding: var(--space-4);
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
@@ -720,8 +835,42 @@
 }
 
 .auth-section {
-  // Use glass-card class in template
-  padding: var(--space-8);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-4);
+  position: relative;
+  overflow: hidden;
+
+  .privacy-note {
+    font-size: var(--text-xs);
+    color: var(--gray-600);
+    padding: var(--space-2);
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: var(--space-1);
+
+    .format-label, .output-label {
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .formats, .output {
+      font-weight: 600;
+      color: var(--primary-600);
+    }
+  }
+
+
+  /* Subtle inner glow */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  }
 
   .auth-content {
     text-align: center;
@@ -751,11 +900,17 @@
 }
 
 .auth-reasons {
-  // Use glass-effect class in template
   padding: var(--space-5);
-  margin: var(--space-5) 0;
   text-align: left;
   border-radius: var(--radius-lg);
+
+  p {
+    margin: var(--space-1) 0 0 0;
+    color: var(--gray-600);
+    font-size: var(--text-sm);
+    font-weight: 300;
+    line-height: 1;
+  }
 
   h3 {
     margin: 0 0 var(--space-3) 0;
@@ -771,7 +926,6 @@
     display: flex;
     align-items: flex-start;
     gap: var(--space-2);
-    margin-bottom: var(--space-3);
 
     &:last-child {
       margin-bottom: 0;
@@ -806,17 +960,27 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: var(--radius-base);
+  border-radius: var(--radius-lg);
   padding: var(--space-2);
   box-shadow: var(--shadow-xs);
 }
 
 .content-expansion-section .info-card {
-  // Use glass-card class in template
-  padding: var(--space-6);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.15) 100%
+  );
+  backdrop-filter: blur(40px) saturate(1.8);
+  -webkit-backdrop-filter: blur(40px) saturate(1.8);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-glass);
+  border: 1px solid rgba(255, 255, 255, 0.25);
 
   h2 {
-    margin: 0 0 var(--space-4) 0;
+    margin: 0 0 var(--space-2) 0;
     font-size: var(--text-xl);
     font-weight: 700;
     color: var(--gray-900);
@@ -824,6 +988,8 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    display: flex;
+    justify-content: center;
   }
 
   h3 {
@@ -931,7 +1097,7 @@
 }
 
 .features-list {
-  padding: var(--space-6);
+  padding: var(--space-4);
   margin-top: var(--space-5);
   border-radius: var(--radius-lg);
 }
@@ -1041,7 +1207,7 @@
 
   .main-content-layout, .login-layout {
     grid-template-columns: 1fr;
-    gap: var(--space-6);
+    gap: var(--space-4);
   }
 
   .login-layout {
@@ -1051,7 +1217,7 @@
   .auth-section {
     min-height: auto;
     margin: 0;
-    padding: var(--space-6);
+    padding: var(--space-4);
 
     .auth-info-grid {
       grid-template-columns: 1fr;
@@ -1066,6 +1232,5 @@
 
   .auth-reasons {
     padding: var(--space-4);
-    margin: var(--space-4) 0;
   }
 }
