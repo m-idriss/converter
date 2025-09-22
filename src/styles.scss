@@ -95,10 +95,10 @@
   /* Border Radius */
   --radius-sm: 0.375rem;
   --radius-base: 0.5rem;
-  --radius-md: 0.75rem;
+  --radius-md: 1rem;
   --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
-  --radius-2xl: 2rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1rem;
   --radius-full: 9999px;
 
   /* Transitions - Apple-style eased curves */
@@ -289,7 +289,7 @@ select {
   backdrop-filter: blur(20px) saturate(1.5);
   -webkit-backdrop-filter: blur(20px) saturate(1.5);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 
+  box-shadow:
     var(--shadow-glass),
     inset 0 1px 0 rgba(255, 255, 255, 0.25),
     inset 0 -1px 0 rgba(0, 0, 0, 0.03);

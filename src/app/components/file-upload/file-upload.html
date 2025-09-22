@@ -7,11 +7,10 @@
     (dragleave)="onDragLeave($event)"
     (drop)="onDrop($event)"
   >
+  <h2>Upload Your Event Document</h2>
     <div class="upload-content">
-      <div class="upload-icon">📁</div>
 
       <div *ngIf="!isProcessing; else processingTemplate">
-        <h3>Upload Your Event Document</h3>
         <p class="upload-instructions">Drag and drop your file here, or click to browse</p>
         <div class="file-info">
           <p class="supported-files">

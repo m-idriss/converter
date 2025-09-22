@@ -1,13 +1,12 @@
 .file-upload-container {
   width: 100%;
-  max-width: 640px;
   margin: 0 auto;
 }
 
 .drop-zone {
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: var(--radius-2xl);
-  padding: var(--space-8) var(--space-6);
+  padding: var(--space-4);
   text-align: center;
   transition: all var(--transition-base);
   background: linear-gradient(
@@ -75,12 +74,62 @@
 }
 
 .upload-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-4);
-  position: relative;
-  z-index: 1;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.15) 100%
+  );
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3);
+  box-shadow: var(--shadow-sm);
+
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-2) 0;
+    margin-bottom: var(--space-2);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .step-number {
+      background: linear-gradient(135deg, var(--primary-600), var(--secondary-600));
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: var(--text-xs);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-content {
+      h3 {
+        margin: 0 0 var(--space-1) 0;
+        font-size: var(--text-sm);
+        font-weight: 600;
+        color: var(--gray-900);
+      }
+
+      p {
+        margin: 0;
+        font-size: var(--text-xs);
+        color: var(--gray-700);
+        line-height: 1.4;
+        font-weight: 500;
+      }
+    }
+  }
 }
 
 .upload-icon {
@@ -95,6 +144,17 @@
   align-items: center;
   justify-content: center;
 }
+
+  h2 {
+    margin: 0 0 var(--space-2) 0;
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--gray-900);
+    background: linear-gradient(135deg, var(--primary-600), var(--secondary-600));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 
 h3 {
   margin: 0;
@@ -113,7 +173,47 @@ p {
 }
 
 .browse-btn {
-  // Use btn btn-primary btn-lg classes in template
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  color: white;
+  border: none;
+  padding: var(--space-3);
+  border-radius: var(--radius-base);
+  font-size: var(--text-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  letter-spacing: -0.01em;
+  width: 100%;
+  margin: var(--space-2) 0;
+
+  /* Button shine effect */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left var(--transition-slow);
+  }
+
+  &:hover {
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
 }
 
 .processing-indicator {
@@ -148,7 +248,18 @@ p {
 }
 
 .error-message {
-  // Use status-message status-error classes in template
+  animation: slideIn var(--transition-base) ease-out;
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  background: linear-gradient(135deg, var(--error-50), var(--error-100));
+  border: 1px solid var(--error-200);
+  border-radius: var(--radius-lg);
+  color: var(--error-700);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
 }
 
 .error-icon {
@@ -159,8 +270,8 @@ p {
 /* Enhanced Mobile Responsiveness */
 @media (max-width: 768px) {
   .drop-zone {
-    padding: var(--space-6) var(--space-4);
-    border-radius: var(--radius-lg);
+    padding: var(--space-4) var(--space-4);
+    border-radius: var(--radius-2xl);
   }
 
   .upload-icon {
